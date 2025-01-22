@@ -1,0 +1,11 @@
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/
+*.pyc
+s3_utilities.egg-info/
+*.txt
+# CodeGPT related nonsense:
+/notebooks
+.codegpt

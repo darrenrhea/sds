@@ -1,0 +1,7 @@
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/
+*.pyc
+rodrigues_utils.egg-info/

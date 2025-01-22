@@ -1,0 +1,12 @@
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/
+*.pyc
+color_calibration.egg-info/
+
+a.png
+b.png
+corrected.png
+overwritten.png

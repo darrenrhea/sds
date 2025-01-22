@@ -1,0 +1,10 @@
+imgui.ini
+/temp
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/settings.json
+*.pyc
+fake_basketball.egg-info/
+*.png

@@ -1,0 +1,10 @@
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/settings.json
+*.pyc
+file_shit.egg-info/
+.vscode/*.log
+
+notebooks

@@ -1,0 +1,10 @@
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/
+*.pyc
+ffmpeg_utilities.egg-info/
+*.mp4
+temp
+concat.txt

@@ -1,0 +1,8 @@
+/temp
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/settings.json
+*.pyc
+connected_components.egg-info/
