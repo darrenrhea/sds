@@ -1,0 +1,8 @@
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/
+*.pyc
+image_openers.egg-info/
+generated_setup.py

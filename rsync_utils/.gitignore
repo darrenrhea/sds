@@ -1,0 +1,8 @@
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/
+*.pyc
+rsync_utils.egg-info/
+22-23_SAS_CITY_0039.jpg

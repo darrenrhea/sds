@@ -1,0 +1,8 @@
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/
+*.pyc
+alpha_compositing_utils.egg-info/
+result.png

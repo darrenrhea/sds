@@ -1,0 +1,7 @@
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/
+*.pyc
+keypoint_matching_utilities.egg-info/
