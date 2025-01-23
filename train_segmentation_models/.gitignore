@@ -1,0 +1,8 @@
+dist/
+.DS_Store
+.pytest_cache/
+__pycache__/
+.vscode/
+*.pyc
+train_segmentation_models.egg-info/
+generated_setup.py
