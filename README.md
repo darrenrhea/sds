@@ -4,7 +4,7 @@
 
 ```bash
 # clone it somewhere:
-git clone git@github.com:darrenrhea/sds
+git clone git@github.com:awecom/sds
 
 # cd into it:
 cd sds
@@ -22,10 +22,9 @@ pip install -r requirements.txt
 source scripts/install_python_libraries_in_editable_mode.sh
 ```
 
-Make fake important people convention
-=====================================
+# train a segmentation model
 
-cd fake_basketball
-python make_people_free_backgrounds_by_overwriting_people_with_floor_texture_and_led_ads.py
-
-python make_fake_important_people_annotations_from_people_free_backgrounds.py
+```bash
+cd ~/sds/train_segmentation_models
+CUDA_VISIBLE_DEVICES=0 python train_rockets_core.py
+```
