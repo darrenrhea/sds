@@ -40,6 +40,7 @@ segmentation_utils
 string_utilities
 syntax_highlighting
 texture_utils
+various_architectures
 via_ssh
 )
 

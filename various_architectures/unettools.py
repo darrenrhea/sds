@@ -4,9 +4,6 @@ from load_model_u3 import (
 from load_model_repl import (
      load_model_repl
 )
-from load_model_duat import (
-     load_model_duat
-)
 from load_model_ege import (
      load_model_ege
 )
@@ -39,7 +36,6 @@ MODEL_LOADERS = {
     'effm': lambda *args, **kwargs: load_model_eff('m', *args, **kwargs),
     'effl': lambda *args, **kwargs: load_model_eff('l', *args, **kwargs),
     'ege': load_model_ege,
-    'duat': load_model_duat,
     'resnet34basedunet': load_resnet34_based_unet,
     'replb': lambda *args, **kwargs: load_model_repl('b', *args, **kwargs),
     'repll': lambda *args, **kwargs: load_model_repl('l', *args, **kwargs),
