@@ -1,6 +1,25 @@
 # sds: segmentation-data-synthesis / synthetic data sets
 
 
+## Get some training data
+
+```bash
+mkdir -p /shared/all_training_data/floor_not_floor
+
+time aws s3 sync \
+s3://awecomai-shared/all_training_data/floor_not_floor \
+/shared/all_training_data/floor_not_floor
+```
+
+And some fixtures we don't want to commit to the repo
+
+```bash
+mkdir -p /shared/fixtures/sds
+time aws s3 sync \
+s3://awecomai-shared/fixtures \
+/shared/fixtures
+```
+
 ## Docker install
 
 ```bash
@@ -36,7 +55,7 @@ CUDA_VISIBLE_DEVICES=0 python train_rockets_core.py
 ```bash
 cd /workspaces/sds/onnx_stuff
 
-export name=u3fasternets-floor-6551frames-1920x1088-darrenjerry_epoch000001
+export name=u3fasternets-floor-1541frames-1920x1088-darrenjerry_epoch000010
 export CUDA_VISIBLE_DEVICES=0
 export model_architecture_family_id=u3fasternets
 export weights_file_path=/shared/checkpoints/${name}.pt
@@ -63,6 +82,10 @@ $weights_file_path \
 
 ```bash
 # try running the onnx on a frame.  Worry if sigmoid is built in.
+
+mkdir -p /shared/clips/bos-mia-2024-04-21-mxf/frames
+cp /shared/fixtures/sds/frames/* /shared/clips/bos-mia-2024-04-21-mxf/frames/
+
 python onnx_infer.py \
 --original_suffix _original.jpg \
 --frames_dir /shared/clips/bos-mia-2024-04-21-mxf/frames \
