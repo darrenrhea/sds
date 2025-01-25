@@ -20,3 +20,5 @@ pip install scikit-image
 
 pip install jsonlines
 pip install pyjson5
+
+pip install onnxruntime-gpu

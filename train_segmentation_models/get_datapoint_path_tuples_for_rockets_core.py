@@ -95,14 +95,14 @@ def get_datapoint_path_tuples_for_rockets_core(
                 or
                 "exotic_viewpoints_hou_city" in str(dataset_folder)
             ):
-                for i in range(9): 
+                for i in range(1):
                     datapoint_path_tuples.append(
                         (original_path, mask_path, maybe_relevance_path)
                     )
             elif (
                 original_path.name.startswith("hou-det-2025-01-20-sdi")
             ):
-                for i in range(10): 
+                for i in range(1):
                     datapoint_path_tuples.append(
                         (original_path, mask_path, maybe_relevance_path)
                     )
@@ -113,7 +113,7 @@ def get_datapoint_path_tuples_for_rockets_core(
                 or
                 original_path.name.startswith("hou-was-2024-11-11-sdi")
             ):
-                for i in range(12): 
+                for i in range(1):
                     datapoint_path_tuples.append(
                         (original_path, mask_path, maybe_relevance_path)
                     )
