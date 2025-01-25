@@ -31,5 +31,6 @@ statistics
 tensorboard
 tensorboardX
 tqdm
+pip install onnxruntime-gpu
 git+https://github.com/sail-sg/Adan.git@66adee7c6c913b0465e2f10b71640e24a0e4d596#egg=adan
 mmcv==2.1.0 --index-url https://download.openmmlab.com/mmcv/dist/cu121/torch2.1/index.html
