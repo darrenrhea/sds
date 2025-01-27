@@ -1,18 +1,11 @@
 from get_bucket_name_and_s3_key_from_s3_file_uri import (
      get_bucket_name_and_s3_key_from_s3_file_uri
 )
-
-
 import sys
 import boto3
 from pathlib import Path
 import pprint as pp
 from colorama import Fore, Style
-
-# prepare for people to do: from s3_utilities import *:
-__all__ = [
-    "get_bucket_name_and_s3_key_from_s3_file_uri",
-]
 
 
 def download_this_s3_file_uri_to_this_file_path(
@@ -31,8 +24,9 @@ def download_this_s3_file_uri_to_this_file_path(
             Key=s3_key 
         )
         pp.pprint(resp)
-    except:
-        print(f"{Fore.RED}WTF")
+    except Exception as e:
+        print(f"{Fore.RED}")
+        print(f"Failed to download {s3_file_uri}: {e}")
         print(f"bucket_name is: {bucket_name}")
         print(f"s3_key is: {s3_key}")
         print(f"aws s3 ls s3://{bucket_name}/{s3_key}")
