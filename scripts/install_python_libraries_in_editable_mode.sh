@@ -23,6 +23,7 @@ ffmpeg_utilities
 file_shit
 first_order_jets
 flatten_leds
+floor_texture_utilities
 hash_tools
 homography_utils
 image_openers
@@ -31,6 +32,7 @@ keypoint_matching_utilities
 led_alignment
 nuke_lens_distortion
 nuke_texture_rendering
+primitive_logging
 print_image_in_iterm2
 rodrigues_utils
 rsync_utils
@@ -42,6 +44,7 @@ syntax_highlighting
 texture_utils
 various_architectures
 via_ssh
+video_frame_data_utils
 )
 
 ls scripts || printf "Run this like source scripts/install_python_libraries_in_editable_mode.sh"
