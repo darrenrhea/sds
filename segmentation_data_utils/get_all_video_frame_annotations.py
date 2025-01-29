@@ -39,7 +39,7 @@ def get_all_video_frame_annotations(
     a camera_pose, relevance masks, etc.
     See also the test,
 
-    get_local_file_paths_for_annotations_test.py
+    get_local_file_pathed_annotations_test.py
     """
 
     valid_label_names = set(

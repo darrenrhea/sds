@@ -1,7 +1,11 @@
-import sys
-from get_python_internalized_video_frame_annotations import (
-     get_python_internalized_video_frame_annotations
+from make_python_internalized_video_frame_annotation import (
+     make_python_internalized_video_frame_annotation
 )
+from get_local_file_pathed_annotations import (
+     get_local_file_pathed_annotations
+)
+import argparse
+import textwrap
 import time
 from get_a_random_floor_texture_for_this_context import (
      get_a_random_floor_texture_for_this_context
@@ -51,15 +55,46 @@ def get_a_floor_texture_with_random_shadows_and_lights(
 
 
 
-
 def make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath():
     """
     This inserts a color-corrected floor texture underneath the players etc. in a floor-not-floor annotated frame
     to make fake training data.
     """
+    argp = argparse.ArgumentParser(
+        description="make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath",
+        usage=textwrap.dedent(
+            """\
+            Do something like this:
 
-    floor_id = sys.argv[1]
-    prefix = sys.argv[2]
+            cd ~/sds/nuke_texture_rendering
+
+            python make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath.py \\
+            --floor_id 22-23_CHI_CORE \\
+            --prefix chunk0 \\
+            --out_dir ~/a/crap
+            """
+        )
+    )
+    argp.add_argument(
+        "--floor_id",
+        help="The floor_id of the floor that you want to insert underneath the players etc.",
+        required=True,
+    )
+    argp.add_argument(
+        "--prefix",
+        help="The prefix of the video_frame_annotations_metadata_sha256 that you want to use.",
+        required=True,
+    )
+    argp.add_argument(
+        "--out_dir",
+        help="The directory where you want to save the fake annotations.",
+        required=True,
+    )
+    opt = argp.parse_args()
+    floor_id = opt.floor_id
+    prefix = opt.prefix
+    out_dir = Path(opt.out_dir)
+
     # TODO: edition?
     assert (
         prefix in [
@@ -91,22 +126,32 @@ def make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath():
     )
     video_frame_annotations_metadata_sha256 = mydict[prefix]
 
-    work_items = get_python_internalized_video_frame_annotations(
+   
+
+    print("Gathering appropriate local_file_pathed_annotations")
+
+    # For the task of sticking a floor underneath the a floor_not_floor annotation, we need the following labels:
+    desired_labels = set(["camera_pose", "floor_not_floor", "original"])
+
+    local_file_pathed_annotations = get_local_file_pathed_annotations(
         video_frame_annotations_metadata_sha256=video_frame_annotations_metadata_sha256,
-        limit=None
+        desired_labels=desired_labels,
+        desired_leagues=["nba"],
+        max_num_annotations=None,
+        print_in_iterm2=False,
+        print_inadequate_annotations = False,
     )
 
     print_in_iterm2 = False
-   
-    out_dir = Path(
-         f"/shared/fake_nba/{floor_id}/{prefix}"
-    ).expanduser()
     out_dir.mkdir(exist_ok=True, parents=True)
     
     start_time = time.time()
     num_completed = 0
-    out_of = len(work_items)
-    for work_item in work_items:
+    out_of = len(local_file_pathed_annotations)
+    for local_file_pathed_annotation in local_file_pathed_annotations:
+        work_item = make_python_internalized_video_frame_annotation(
+            local_file_pathed_annotation=local_file_pathed_annotation
+        )
         clip_id = work_item["clip_id"]
         frame_index = work_item["frame_index"]
         original_rgb_np_u8 = work_item["original_rgb_np_u8"]
@@ -114,7 +159,9 @@ def make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath():
         camera_pose = work_item["camera_pose"]
 
         
-        assert camera_pose.f > 0, "camera_pose.f is 0.0 for {clip_id=} {frame_index=}"
+
+        
+        assert camera_pose.f > 0, f"camera_pose.f is 0.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
             
 
         dct = get_a_floor_texture_with_random_shadows_and_lights(
@@ -167,6 +214,14 @@ def make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath():
 
         fake_original_path = out_dir / f"{fake_annotation_id}_original.jpg"
         fake_mask_path = out_dir / f"{fake_annotation_id}_nonfloor.png"
+
+        record = dict(
+            clip_id=clip_id,
+            frame_index=frame_index,
+            fake_annotation_id=fake_annotation_id,
+            fake_original_path=fake_original_path,
+            fake_mask_path=fake_mask_path,
+        )
 
         
         

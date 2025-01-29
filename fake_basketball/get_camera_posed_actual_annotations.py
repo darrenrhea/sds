@@ -13,7 +13,7 @@ def get_camera_posed_actual_annotations(
     pull_again: bool = False
 ) -> List[Dict[str, Path]]:
     """
-    see segmentation_data_utils/get_local_file_paths_for_annotations_test.py
+    see segmentation_data_utils/get_local_file_pathed_annotations_test.py
     for a different way.
     
     WARNING: these days we start with fake background images,

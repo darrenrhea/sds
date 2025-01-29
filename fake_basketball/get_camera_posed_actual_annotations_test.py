@@ -5,7 +5,7 @@ from CameraParameters import CameraParameters
 
 def test_get_camera_posed_actual_annotations_1():
     """
-    see segmentation_data_utils/get_local_file_paths_for_annotations_test.py
+    see segmentation_data_utils/get_local_file_pathed_annotations_test.py
     for a different way.
     """
     repo_ids_to_use = [
