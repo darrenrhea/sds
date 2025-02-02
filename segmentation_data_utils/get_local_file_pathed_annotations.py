@@ -21,7 +21,7 @@ import pprint
 
 
 def get_local_file_pathed_annotations(
-    video_frame_annotations_metadata_sha256: str,
+    video_frame_annotations_metadata: List[dict],
     desired_labels: Set[str],
     desired_leagues: Set[str],  # nba, euroleague, london, etc.
     max_num_annotations: int = None,
@@ -60,26 +60,20 @@ def get_local_file_pathed_annotations(
         "camera_pose",
         "depth_map",
         "floor_not_floor",
-        "original"
+        "original",
     ])
     assert (
         set(desired_labels).issubset(possible_desired_labels)
     ), f"{desired_labels=} is mentions unknown labels.  Available labels are {possible_desired_labels=}"
 
     
-    json_file_path = get_file_path_of_sha256(
-        sha256=video_frame_annotations_metadata_sha256
-    )
-
-    segmentation_annotations = bj.load(
-        json_file_path
-    )
+   
 
     # Especially when you are developing,
     # you may want to limit the number of annotations you are working with to certain bad / interesting ones.
     # BEGIN filter by desired_clip_id_frame_index_pairs:
     if desired_clip_id_frame_index_pairs is None:
-        filtered_by_clip_id_frame_index_pairs = segmentation_annotations
+        filtered_by_clip_id_frame_index_pairs = video_frame_annotations_metadata
     else:
         assert (
             isinstance(desired_clip_id_frame_index_pairs, list)
@@ -89,7 +83,7 @@ def get_local_file_pathed_annotations(
             assert isinstance(frame_index, int), f"Error: {frame_index=} is not an int"
 
         filtered_by_clip_id_frame_index_pairs = []
-        for annotation in segmentation_annotations:
+        for annotation in video_frame_annotations_metadata:
             clip_id = annotation["clip_id"]
             frame_index = annotation["frame_index"]
             if (clip_id, frame_index) in desired_clip_id_frame_index_pairs:
@@ -106,7 +100,7 @@ def get_local_file_pathed_annotations(
     
     # BEGIN eliminate annotations that do not have all the desired labels:
     annotations_with_at_least_the_desired_labels = []
-    for annotation in segmentation_annotations:
+    for annotation in league_filtered:
         clip_id = annotation["clip_id"]
         frame_index = annotation["frame_index"]
         label_name_to_sha256 = annotation["label_name_to_sha256"]
