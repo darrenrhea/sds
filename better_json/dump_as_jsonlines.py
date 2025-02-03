@@ -23,7 +23,7 @@ def dump_as_jsonlines(fp, obj):
         isinstance(fp, Path)
         or
         isinstance(fp, TextIOWrapper)
-    ), "better_json.open takes in only a Path or a string that can be interpreted as a Path or a TextIO file-object"
+    ), "dump_as_jsonlines takes in only a Path or a string that can be interpreted as a Path or a TextIO file-object"
     
     if isinstance(fp, TextIOWrapper):
         out_fp = fp

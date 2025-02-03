@@ -24,7 +24,7 @@ def save_jsonable(fp, obj, indent=4, sort_keys=False):
         isinstance(fp, Path)
         or
         isinstance(fp, TextIOWrapper)
-    ), "better_json.open takes in only a Path or a string that can be interpreted as a Path or a TextIO file-object"
+    ), "save_jsonable takes fp which must be either a Path or a string that can be interpreted as a Path or a TextIO file-object"
     
     if isinstance(fp, TextIOWrapper):
         json.dump(fp=fp, obj=obj, indent=indent, sort_keys=sort_keys)

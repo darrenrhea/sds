@@ -21,7 +21,7 @@ def load_json_file(
         isinstance(path_or_string_or_fp, Path)
         or
         isinstance(path_or_string_or_fp, TextIOWrapper)
-    ), "better_json.open takes in only a Path or a string that can be interpreted as a Path or a TextIO file-object"
+    ), f"load_json_file takes in only a Path or a string that can be interpreted as a Path or a TextIO file-object, but you gave it {path_or_string_or_fp}"
 
 
     if isinstance(path_or_string_or_fp, TextIOWrapper):

@@ -164,7 +164,7 @@ def save(fp, obj, indent=4):
         isinstance(fp, Path)
         or
         isinstance(fp, TextIOWrapper)
-    ), "better_json.open takes in only a Path or a string that can be interpreted as a Path or a TextIO file-object"
+    ), "better_json.save takes in only a Path or a string that can be interpreted as a Path or a TextIO file-object"
     
     if isinstance(fp, TextIOWrapper):
         json.dump(fp=fp, obj=obj, indent=indent)
