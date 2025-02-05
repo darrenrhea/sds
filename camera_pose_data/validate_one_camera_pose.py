@@ -24,6 +24,7 @@ def validate_one_camera_pose(
     frame_index: int,
 ):
     """
+    See also vovfa_validate_one_video_frame_annotation.py
     This function will validate one camera pose.
     See also the for-loopification of this, validate_camera_poses
     """
