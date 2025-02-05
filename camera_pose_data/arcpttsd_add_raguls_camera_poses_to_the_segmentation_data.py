@@ -1,3 +1,8 @@
+import pprint
+import sys
+from asccfn_a_simple_camera_classifier_for_nba import (
+     asccfn_a_simple_camera_classifier_for_nba
+)
 from get_camera_pose_from_sha256 import (
      get_camera_pose_from_sha256
 )
@@ -19,15 +24,19 @@ from get_file_path_of_sha256 import (
 )
 import copy
 import better_json as bj
+from prii import prii
  
 
 def arcpttsd_add_raguls_camera_poses_to_the_segmentation_data():
+    """
+    This destroys weird leagues, leaving only the nba league.
+    """
     sha256_of_raguls_answers = (
         "49132e1a700146719b66c37ac32802ab4a10c9194bdcd44f56f5f399d888bbca"
     )
 
     sha256_of_all_segmentation_annotations = (
-        "db67948e37f4622f7ffd761c42937724a9c77efe86772988261360ad0200c156"
+        "40d074a13b7ea71c9d04c6e33ba69e2c15d45b0476d79a96d3e313586fce9c3c"
     )
     
     non_nba_counter = 0
@@ -45,6 +54,12 @@ def arcpttsd_add_raguls_camera_poses_to_the_segmentation_data():
             sha256_of_all_segmentation_annotations
         )
     )
+    cntr_of_camera_poses_in_all_segmentation_annotations = 0
+    for x in all_segmentation_annotations:
+        pprint.pprint(x)
+        if x["label_name_to_sha256"]["camera_pose"] is not None:
+            cntr_of_camera_poses_in_all_segmentation_annotations += 1
+    print(f"{cntr_of_camera_poses_in_all_segmentation_annotations=}")
 
     # BEGIN CHECK raguls_answers:
     assert isinstance(raguls_answers, list)
@@ -66,7 +81,6 @@ def arcpttsd_add_raguls_camera_poses_to_the_segmentation_data():
             check=True
         )
     # ENDOF CHECK raguls_answers.
-
 
     # BEGIN index raguls_answers by original_sha256:
     original_sha256_mapsto_raguls_answers = dict()
@@ -122,7 +136,28 @@ def arcpttsd_add_raguls_camera_poses_to_the_segmentation_data():
                 k2=camera_pose_jsonable["k2"],
             )
 
-        del mycopy["label_name_to_sha256"]["camera_pose"]
+       
+        if camera_name is not None:
+            x, y, z = camera_pose.loc
+            prediction = asccfn_a_simple_camera_classifier_for_nba(
+                x=x,
+                y=y,
+                z=z,
+            )
+            assert (
+                prediction == camera_name
+            ), f"{prediction=} {camera_name=} {x=} {y=} {z=}"
+        
+        if camera_name is None and camera_pose is not None:  # classifier can add the camera_name
+            x, y, z = camera_pose.loc
+            prediction = asccfn_a_simple_camera_classifier_for_nba(
+                x=x,
+                y=y,
+                z=z,
+            )
+            camera_name = prediction
+
+        #del mycopy["label_name_to_sha256"]["camera_pose"]
         if camera_pose is not None:
             mycopy["camera_pose"] = camera_pose.to_jsonable()
         else:
@@ -138,10 +173,26 @@ if __name__ == "__main__":
     better_segmentation_annotations = (
         arcpttsd_add_raguls_camera_poses_to_the_segmentation_data()
     )
+    camera_pose_counter = 0
+    for x in better_segmentation_annotations:
+        camera_pose = x["camera_pose"]
+        original_sha256 = x["label_name_to_sha256"]["original"]
+        mask_sha256 = x["label_name_to_sha256"]["floor_not_floor"]
+        if camera_pose is None:
+            pass
+            # original = get_file_path_of_sha256(sha256=original_sha256)
+            # mask = get_file_path_of_sha256(sha256=mask_sha256)
+            # prii(original)
+            # prii(mask)
+        else:
+            camera_pose_counter += 1
+    
     out_path = Path("~/better_segmentation_annotations.json5").expanduser()
     bj.dump(
         obj=better_segmentation_annotations,
         fp=out_path
     )
     print(f"There are {len(better_segmentation_annotations)} records in the better_segmentation_annotations")
+    print(f"There are {camera_pose_counter} records with a camera_pose")
     print(f"cat {out_path}")
+    print("bye")
