@@ -24,7 +24,6 @@ from get_file_path_of_sha256 import (
 )
 import copy
 import better_json as bj
-from prii import prii
  
 
 def arcpttsd_add_raguls_camera_poses_to_the_segmentation_data():
@@ -116,9 +115,9 @@ def arcpttsd_add_raguls_camera_poses_to_the_segmentation_data():
 
         raguls_answer = original_sha256_mapsto_raguls_answers.get(original_sha256)
         if raguls_answer is None:
-            print("Ragul didn't answer this one.")
             camera_name = None
-            camera_pose = chazs_camera_pose
+            if chazs_camera_pose is not None and chazs_camera_pose.f > 0:
+                camera_pose = chazs_camera_pose
         else:
             camera_pose_candidates = raguls_answer["camera_pose_candidates"]
             camera_pose_jsonable = camera_pose_candidates[0]

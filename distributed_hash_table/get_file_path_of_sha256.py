@@ -86,7 +86,7 @@ def get_file_path_of_sha256(
         if local_path.exists():
             exists_locally = True
             if check:
-                print(f"Checking the sha256 hash of the file:\n{local_path}")
+                # print(f"Checking the sha256 hash of the file:\n{local_path}")
                 recalculated_sha256 = sha256_of_file(local_path)
                 if recalculated_sha256[:len(the_sha256_hash)] != the_sha256_hash:
                     for index, c in enumerate(the_sha256_hash):
