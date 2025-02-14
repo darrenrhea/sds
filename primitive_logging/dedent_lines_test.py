@@ -1,6 +1,4 @@
 import numpy as np
-import sys
-from colorama import Fore, Style
 import textwrap
 from dedent_lines import dedent_lines
 
@@ -12,9 +10,8 @@ def random_string_x574873875():
         s.append(np.random.choice(["a", " ", "\n"]))
     return "".join(s)
 
-a='\na aa    \n'
 def test_dedent_lines_1():
-
+    a='\na aa    \n'
     actual = dedent_lines(a)
     should_be = textwrap.dedent(a)
     print(f"{a=}")
@@ -27,10 +24,13 @@ def test_dedent_lines_2():
     for cntr in range(1000):
         a = random_string_x574873875()
         actual = dedent_lines(a)
-        if not actual == textwrap.dedent(a):
-            print(f"{a=}")
-            print(f"{actual=}")
-            print(f"{textwrap.dedent(a)=}")
+        d = textwrap.dedent(a)
+        if not actual == d:
+            print(f"s:\n{a=}")
+            print("dedent_lines:")
+            print(repr(actual))
+            print("textwrap.dedent:")
+            print(repr(d))
             break
    
 

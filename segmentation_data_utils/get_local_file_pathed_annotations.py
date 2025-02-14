@@ -1,3 +1,6 @@
+from dvfam_denormalize_video_frame_annotations_metadata import (
+     dvfam_denormalize_video_frame_annotations_metadata
+)
 from add_local_file_paths_to_annotation import (
      add_local_file_paths_to_annotation
 )
@@ -66,8 +69,11 @@ def get_local_file_pathed_annotations(
         set(desired_labels).issubset(possible_desired_labels)
     ), f"{desired_labels=} is mentions unknown labels.  Available labels are {possible_desired_labels=}"
 
-    
-   
+    video_frame_annotations_metadata = (
+        dvfam_denormalize_video_frame_annotations_metadata(
+            video_frame_annotations_metadata
+        )
+    )
 
     # Especially when you are developing,
     # you may want to limit the number of annotations you are working with to certain bad / interesting ones.

@@ -9,9 +9,10 @@ from is_sha256 import (
 
 def gfpfwmbasoafoafps_get_file_path_from_what_might_be_a_sha256_of_a_file_or_a_file_path_str(
     s: str
-):
+) -> Path:
     """
-    People may want to give a file directly, or they may want to give the sha256 of the file.
+    People may want to give a file path directly at a string
+    or they may want to give the sha256 of the file.
     """
     if is_sha256(s):
         the_sha256_of_the_file = s

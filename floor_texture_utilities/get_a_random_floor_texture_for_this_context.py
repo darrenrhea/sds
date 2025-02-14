@@ -1,3 +1,6 @@
+from get_valid_floor_ids import (
+     get_valid_floor_ids
+)
 from make_placement_descriptor_for_nba_floor_texture import (
      make_placement_descriptor_for_nba_floor_texture
 )
@@ -33,16 +36,9 @@ def get_a_random_floor_texture_for_this_context(
     which is both the rgb color information, and how it is placed into the world.
     """
     assert isinstance(floor_id, str)
-    assert floor_id in [
-        "24-25_HOU_CORE",
-        "24-25_HOU_STMT",
-        "24-25_HOU_CITY",
-        "22-23_ATL_CORE",
-        "22-23_CHI_CORE",
-        "22-23_WAS_CORE",
-    ]
-
-   
+    valid_floor_ids = get_valid_floor_ids()
+    assert floor_id in valid_floor_ids, f"{floor_id=} is not in {valid_floor_ids=}"
+    
     floor_texture_jsonable_object = get_a_random_floor_texture_jsonable_object_for_this_context(
         floor_id=floor_id
     )

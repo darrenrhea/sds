@@ -28,7 +28,7 @@ def dedent_lines(s: str):
     min_indentation = float(np.inf)
     for index, line in enumerate(lines):
         indent = how_many_spaces_could_be_considered_as_indentation(line)
-        print(f"line {index} has {indent=}")
+        # print(f"line {index} has {indent=}")
 
         if indent < min_indentation:
             min_indentation = indent
@@ -37,7 +37,7 @@ def dedent_lines(s: str):
         indentation_to_remove = 0
     else:
         indentation_to_remove = int(min_indentation)
-    print(f"{indentation_to_remove=}")
+   # print(f"{indentation_to_remove=}")
 
     new_lines = []
     for line in lines:

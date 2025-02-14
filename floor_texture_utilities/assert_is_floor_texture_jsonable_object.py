@@ -51,5 +51,5 @@ def assert_is_floor_texture_jsonable_object(
         image_path=image_file_path
     )
     assert rgba_hwc_np_u8.shape[2] == 4
-    assert rgba_hwc_np_u8.shape[0] == texture_height_in_pixels
+    assert rgba_hwc_np_u8.shape[0] == texture_height_in_pixels, f"{floor_texture_jsonable_object}"
     assert rgba_hwc_np_u8.shape[1] == texture_width_in_pixels

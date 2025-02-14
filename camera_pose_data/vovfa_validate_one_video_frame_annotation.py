@@ -1,10 +1,7 @@
-from gacpvfa_get_all_camera_posed_video_frame_annotations import (
-     gacpvfa_get_all_camera_posed_video_frame_annotations
-)
+from typing import Optional
+
 import numpy as np
-from prii import (
-     prii
-)
+
 from CameraParameters import (
      CameraParameters
 )
@@ -24,12 +21,16 @@ from open_as_rgb_hwc_np_u8 import (
 
 
 def vovfa_validate_one_video_frame_annotation(
-    annotation: dict
-):
+    annotation: dict,
+    draw_a_certificate_image: bool = False,
+) -> Optional[np.ndarray]:
     """
-    To be well organized, we need to have a wide variety of video frames where
+    To be well-organized, we need to have a wide variety of NBA basketball video frames where
     we know the floor_not_floor segmentation, the camera pose,
     which floor/court it is, which teams and what uniforms they are wearing, etc.
+    If you set draw_a_certificate to True, then this function will draw a "certificate image"
+    that would allow a human to determine if the data is corrupt:
+    if the camera pose is wrong, things will not all the floor_not_floor segmentation is wrong, etc.
     """
     clip_id = annotation["clip_id"]
     assert isinstance(clip_id, str)
@@ -69,6 +70,10 @@ def vovfa_validate_one_video_frame_annotation(
     #     frame_index=frame_index
     # ) 
 
+
+    if not draw_a_certificate_image:
+        return None
+
     landmark_name_to_xyz = get_enough_landmarks_to_validate_camera_pose(
         league=league
     )
@@ -82,26 +87,3 @@ def vovfa_validate_one_video_frame_annotation(
     )
 
     return drawn_on
-
-    
-
-if __name__ == "__main__":
-    
-    all_camera_posed_video_frame_annotations = (
-            gacpvfa_get_all_camera_posed_video_frame_annotations()
-    )
-    
-    np.random.shuffle(
-        all_camera_posed_video_frame_annotations
-    )
-    
-    for annotation in all_camera_posed_video_frame_annotations:
-        print(annotation)
-        drawn_on = vovfa_validate_one_video_frame_annotation(
-            annotation=annotation
-        )
-
-        prii(
-            drawn_on
-        )
-   

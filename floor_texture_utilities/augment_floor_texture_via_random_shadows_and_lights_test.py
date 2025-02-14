@@ -13,7 +13,7 @@ from augment_floor_texture_via_random_shadows_and_lights import (
 
 
 def test_augment_floor_texture_via_random_shadows_and_lights_1():
-    floor_id = "24-25_HOU_CORE"
+    floor_id = "24-25_ALL_STAR"
 
     floor_texture = get_a_random_floor_texture_for_this_context(
         floor_id=floor_id,
@@ -46,9 +46,6 @@ def test_augment_floor_texture_via_random_shadows_and_lights_1():
     #     default_color=(0, 255, 0),  # green is the default
     #     dont_show=False,
     # )
-
-
-
 
 
 if __name__ == "__main__":

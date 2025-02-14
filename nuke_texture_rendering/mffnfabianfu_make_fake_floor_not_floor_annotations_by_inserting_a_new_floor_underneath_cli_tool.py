@@ -1,3 +1,9 @@
+from get_a_floor_texture_with_random_shadows_and_lights import (
+     get_a_floor_texture_with_random_shadows_and_lights
+)
+from get_valid_floor_ids import (
+     get_valid_floor_ids
+)
 from gfpfwmbasoafoafps_get_file_path_from_what_might_be_a_sha256_of_a_file_or_a_file_path_str import (
      gfpfwmbasoafoafps_get_file_path_from_what_might_be_a_sha256_of_a_file_or_a_file_path_str
 )
@@ -13,12 +19,6 @@ from get_local_file_pathed_annotations import (
 import argparse
 import textwrap
 import time
-from get_a_random_floor_texture_for_this_context import (
-     get_a_random_floor_texture_for_this_context
-)
-from augment_floor_texture_via_random_shadows_and_lights import (
-     augment_floor_texture_via_random_shadows_and_lights
-)
 from blur_rgb_hwc_np_linear_f32 import (
      blur_rgb_hwc_np_linear_f32
 )
@@ -47,24 +47,7 @@ from prii import (
 import numpy as np
 import better_json as bj
 
-gfpfwmbasoafoafps_get_file_path_from_what_might_be_a_sha256_of_a_file_or_a_file_path_str
-    
-
-
-def get_a_floor_texture_with_random_shadows_and_lights(
-    floor_id: str,
-):
-    floor_texture = get_a_random_floor_texture_for_this_context(
-        floor_id=floor_id,
-    )
-
-    augmented = augment_floor_texture_via_random_shadows_and_lights(
-        floor_texture=floor_texture,
-    )
-    return augmented
-
-
-
+      
 def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath_cli_tool():
     """
     This inserts a color-corrected floor texture underneath the players etc. in a floor-not-floor annotated frame
@@ -79,22 +62,25 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
 
             conda activate sds
 
-
             mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath \\
-            --floor_id 22-23_CHI_CORE \\
-            --video_frame_annotations "37deb6dd165db2a0b1d1ea42ecffa1f1161656526ebc7b1fb0410f37718649b2" \\
-            --out_dir ~/a/crap
+            --floor_id 24-25_ALL_STAR \\
+            --video_frame_annotations 37deb6dd165db2a0b1d1ea42ecffa1f1161656526ebc7b1fb0410f37718649b2 \\
+            --out_dir ~/a/crap \\
+            --print_in_iterm2
     
             or you can use a local .json5 file like:
 
+            cd ~/sds
+
             mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath \\
             --floor_id 22-23_CHI_CORE \\
-            --video_frame_annotations my_video_annotations.json5 \\
-            --out_dir ~/a/crap
+            --video_frame_annotations ~/temp/my_video_annotations.json5 \\
+            --out_dir ~/a/crap \\
+            --print_in_iterm2
             
             where
 
-            my_video_annotations.json5 is a json5 file of video_frame_annotations_metadata like:
+            my_video_annotations.json5 is a JSON5 file of video_frame_annotations_metadata like:
 
             [
                 {
@@ -104,10 +90,16 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
                         "camera_pose": "95c8ad68915e9c9956de970b82e08a258551423a3c3b8f952dc3cc6b3a26310e",
                         "original": "9f6fb0a79c094c44a0112a676909e4a9331c6c7334b44f42a7031f5ef8a006fe",
                         "floor_not_floor": "3ec993256576525887bd5007deddb681eaa3cb6e34391edd412c7adb84d1ea58",
-                        "depth_map": "bd343e29689109ec4588400cc54f4c4f2ba8b341293be187b943fab6e6eb66c1"
                     },
                 },
             ]
+
+            
+            chunk0="37deb6dd165db2a0b1d1ea42ecffa1f1161656526ebc7b1fb0410f37718649b2",
+            chunk1="f2ffa2041832a30582b2e3bfe9b609480f433a194cae53dfc13ecd2485ef634d",
+            chunk2="67d58da3f9ccfbbab13334419eddbf0c64277df7def568c6de72c7fb37fc7f16",
+            chunk3="d551828911e76b7e7ac2eae6a61dc96ac67791a28cc66baefd82ec3614b8f303",
+    )
 
 
             """
@@ -128,8 +120,14 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         help="The directory where you want to save the fake annotations.",
         required=True,
     )
+    argp.add_argument(
+        "--print_in_iterm2",
+        help="print the images in iterm2.",
+        action="store_true",
+    )
     opt = argp.parse_args()
     video_frame_annotations_json_file_or_sha256 = opt.video_frame_annotations
+    print_in_iterm2 = opt.print_in_iterm2
     
     floor_id = opt.floor_id
     out_dir = Path(opt.out_dir)
@@ -157,6 +155,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         "24-25_HOU_CORE",
         "24-25_HOU_STMT",
     ]
+    valid_floor_ids = get_valid_floor_ids()
     assert (
         floor_id in valid_floor_ids
     ), f"{floor_id=} is not valid. Valid values are {valid_floor_ids=}"
@@ -184,12 +183,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         
     # video_frame_annotations_metadata_sha256 = "99bc2c688a6bd35f08b873495d062604e0b954244e6bb20f5c5a76826ac53524"
 
-    mydict = dict(
-        chunk0="37deb6dd165db2a0b1d1ea42ecffa1f1161656526ebc7b1fb0410f37718649b2",
-        chunk1="f2ffa2041832a30582b2e3bfe9b609480f433a194cae53dfc13ecd2485ef634d",
-        chunk2="67d58da3f9ccfbbab13334419eddbf0c64277df7def568c6de72c7fb37fc7f16",
-        chunk3="d551828911e76b7e7ac2eae6a61dc96ac67791a28cc66baefd82ec3614b8f303",
-    )
+   
 
    
 
@@ -207,7 +201,6 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         print_inadequate_annotations = False,
     )
 
-    print_in_iterm2 = False
     out_dir.mkdir(exist_ok=True, parents=True)
     
     start_time = time.time()
@@ -318,11 +311,11 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         
         num_completed += 1
         duration = time.time() - start_time
-        print(f"it has been {duration/60} minutes")
+        print(f"So far, it has been {duration/60} minutes")
         seconds_per_item = duration / num_completed
         estimated_remaining = (out_of - num_completed) * seconds_per_item
         print(f"completed {num_completed} / {out_of}")
-        print(f"Estimated remaining {estimated_remaining/60}")
+        print(f"Estimated time remaining: {estimated_remaining/60} minutes.")
 
 
 
