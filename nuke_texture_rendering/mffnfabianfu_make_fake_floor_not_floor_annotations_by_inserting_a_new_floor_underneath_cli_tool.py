@@ -99,7 +99,6 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
             chunk1="f2ffa2041832a30582b2e3bfe9b609480f433a194cae53dfc13ecd2485ef634d",
             chunk2="67d58da3f9ccfbbab13334419eddbf0c64277df7def568c6de72c7fb37fc7f16",
             chunk3="d551828911e76b7e7ac2eae6a61dc96ac67791a28cc66baefd82ec3614b8f303",
-    )
 
 
             """
@@ -168,6 +167,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     # BEGIN checking that the video_frame_annotations_metadata is valid:
     assert isinstance(video_frame_annotations_metadata, list)
     for annotation in video_frame_annotations_metadata:
+        print()
         assert isinstance(annotation, dict)
         assert "clip_id" in annotation
         assert isinstance(annotation["clip_id"], str)
@@ -176,7 +176,8 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         assert "label_name_to_sha256" in annotation
         assert isinstance(annotation["label_name_to_sha256"], dict)
         for label_name in ["original", "camera_pose", "floor_not_floor"]:
-            assert is_sha256(annotation["label_name_to_sha256"][label_name])
+            maybe_sha256 = annotation["label_name_to_sha256"][label_name]
+            assert maybe_sha256 is None or is_sha256(maybe_sha256)
     # ENDOF checking that the video_frame_annotations_metadata is valid:
     
 
@@ -237,8 +238,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         
         assert floor_not_floor_hw_np_u8  is not None
         assert isinstance(floor_not_floor_hw_np_u8 , np.ndarray)
-        if print_in_iterm2:
-            prii(floor_not_floor_hw_np_u8)
+        
 
         inserted_with_color_correction_linear_f32 = insert_quads_into_camera_posed_image_behind_mask(
             anti_aliasing_factor=2,
@@ -304,10 +304,10 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
                 caption="this is the final color corrected result",
             )
 
-            prii(
-                x=original_rgb_np_u8,
-                caption="this is the original frame:",
-            )
+            # prii(
+            #     x=original_rgb_np_u8,
+            #     caption="this is the original frame:",
+            # )
         
         num_completed += 1
         duration = time.time() - start_time
