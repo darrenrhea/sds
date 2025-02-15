@@ -1,3 +1,15 @@
+from make_rgba_hwc_np_u8_from_rgb_and_alpha import (
+     make_rgba_hwc_np_u8_from_rgb_and_alpha
+)
+from group_cutouts_by_kind import (
+     group_cutouts_by_kind
+)
+from get_cutouts import (
+     get_cutouts
+)
+from paste_multiple_cutouts_onto_one_camera_posed_segmentation_annotation import (
+     paste_multiple_cutouts_onto_one_camera_posed_segmentation_annotation
+)
 from get_a_floor_texture_with_random_shadows_and_lights import (
      get_a_floor_texture_with_random_shadows_and_lights
 )
@@ -28,12 +40,6 @@ from write_rgb_hwc_np_u8_to_jpg import (
 from convert_linear_f32_to_u8 import (
      convert_linear_f32_to_u8
 )
-from write_rgb_and_alpha_to_png import (
-     write_rgb_and_alpha_to_png
-)
-from prii_linear_f32 import (
-     prii_linear_f32
-)
 from convert_u8_to_linear_f32 import (
      convert_u8_to_linear_f32
 )
@@ -46,6 +52,33 @@ from prii import (
 )
 import numpy as np
 import better_json as bj
+
+from convert_u8_to_linear_f32 import (
+     convert_u8_to_linear_f32
+)
+from write_rgba_hwc_np_u8_to_png import (
+     write_rgba_hwc_np_u8_to_png
+)
+import argparse
+import numpy as np
+import time
+from pathlib import Path
+from prii import (
+     prii
+)
+from group_cutouts_by_kind import (
+     group_cutouts_by_kind
+)
+from get_cutouts import (
+     get_cutouts
+)
+from paste_multiple_cutouts_onto_one_camera_posed_segmentation_annotation import (
+     paste_multiple_cutouts_onto_one_camera_posed_segmentation_annotation
+)
+from get_cutout_augmentation import (
+     get_cutout_augmentation
+)
+
 
       
 def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath_cli_tool():
@@ -70,10 +103,10 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     
             or you can use a local .json5 file like:
 
-            cd ~/sds
+            rm -rf ~/a/crap/*
 
             mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath \\
-            --floor_id 22-23_CHI_CORE \\
+            --floor_id 24-25_ALL_STAR \\
             --video_frame_annotations ~/temp/my_video_annotations.json5 \\
             --out_dir ~/a/crap \\
             --print_in_iterm2
@@ -127,34 +160,66 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     opt = argp.parse_args()
     video_frame_annotations_json_file_or_sha256 = opt.video_frame_annotations
     print_in_iterm2 = opt.print_in_iterm2
-    
     floor_id = opt.floor_id
     out_dir = Path(opt.out_dir)
 
-    """
-    [
-        {
-            "clip_id": "den1",
-            "frame_index": 421000,
-            "label_name_to_sha256": {
-                "camera_pose": "95c8ad68915e9c9956de970b82e08a258551423a3c3b8f952dc3cc6b3a26310e",
-                "original": "9f6fb0a79c094c44a0112a676909e4a9331c6c7334b44f42a7031f5ef8a006fe",
-                "floor_not_floor": "3ec993256576525887bd5007deddb681eaa3cb6e34391edd412c7adb84d1ea58",
-                "depth_map": "bd343e29689109ec4588400cc54f4c4f2ba8b341293be187b943fab6e6eb66c1"
-            },
-        }
-    ]
-    """
+    # context_id = "dallas_mavericks"
+    # context_id = "boston_celtics"
+    context_id = "nba_floor_not_floor_pasting"
 
-    valid_floor_ids = [
-        "22-23_ATL_CORE",
-        "22-23_CHI_CORE",
-        "22-23_WAS_CORE",
-        "24-25_HOU_CITY",
-        "24-25_HOU_CORE",
-        "24-25_HOU_STMT",
+    cutout_dirs_str = [
+        "~/r/nba_misc_cutouts_approved/coaches",
+        "~/r/nba_misc_cutouts_approved/coach_kidd",
+        "~/r/nba_misc_cutouts_approved/randos",
+        "~/r/nba_misc_cutouts_approved/referees",
+        "~/r/nba_misc_cutouts_approved/balls",
+        "~/r/nba_misc_cutouts_approved/objects",
+        "~/r/allstar2025_cutouts_approved/phx_lightblue",
+        # "~/r/houston_cutouts_approved/icon",
+        # "~/r/houston_cutouts_approved/statement",
+        
+        # "~/r/miami_heat_cutouts_approved/statement",
+        # "~/r/cleveland_cavaliers_cutouts_approved/statement",
+        
+        # "~/r/dallas_mavericks_cutouts_approved/association",
+        # "~/r/boston_celtics_cutouts_approved/statement",
+
+        # # June 12:
+        # "~/r/dallas_mavericks_cutouts_approved/statement",
+        # "~/r/boston_celtics_cutouts_approved/association",
+
+        # # June 17:
+        # "~/r/dallas_mavericks_cutouts_approved/association",
+        # "~/r/boston_celtics_cutouts_approved/icon",
+
+
+        # "~/r/efs_cutouts_approved/white_with_blue_and_orange",
+        # "~/r/athens_cutouts_approved/white_with_green",  # seem quality
+        # "~/r/zalgiris_cutouts_approved/white_with_green",  # seem quality
+        # "~/r/munich_cutouts_approved/maroon_uniform_shoes",  # just one guy
+        # "~/r/munich_cutouts_approved/maroon_uniforms",  # color seems off
+        # "~/r/munich_cutouts_approved/balls",
+        # "~/r/munich_cutouts_approved/coaches_faithful",
+        # "~/r/munich_cutouts_approved/referees_faithful",
     ]
+
+    cutout_dirs = [Path(x).expanduser() for x in cutout_dirs_str]
+    diminish_cutouts_for_debugging = False
+    sport = "basketball"
+    league = "nba"
+    cutouts = get_cutouts(
+        sport=sport,
+        league=league,
+        cutout_dirs=cutout_dirs,
+        diminish_for_debugging=diminish_cutouts_for_debugging
+    )
+    cutouts_by_kind = group_cutouts_by_kind(
+        sport=sport,
+        cutouts=cutouts
+    ) 
+
     valid_floor_ids = get_valid_floor_ids()
+
     assert (
         floor_id in valid_floor_ids
     ), f"{floor_id=} is not valid. Valid values are {valid_floor_ids=}"
@@ -184,7 +249,13 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         
     # video_frame_annotations_metadata_sha256 = "99bc2c688a6bd35f08b873495d062604e0b954244e6bb20f5c5a76826ac53524"
 
-   
+    cutout_kind_to_transform = dict(
+        player=get_cutout_augmentation("player"),
+        referee=get_cutout_augmentation("referee"),
+        coach=get_cutout_augmentation("coach"),
+        ball=get_cutout_augmentation("ball"),
+        led_screen_occluding_object=get_cutout_augmentation("led_screen_occluding_object"),
+    )
 
    
 
@@ -260,6 +331,40 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         else:
             blended_rgb_hwc_np_linear_f32 = inserted_with_color_correction_linear_f32
 
+        blended_rgb_hwc_np_linear_u8 = convert_linear_f32_to_u8(
+            blended_rgb_hwc_np_linear_f32
+        )
+
+        rgba_hwc_np_u8 = make_rgba_hwc_np_u8_from_rgb_and_alpha(
+            rgb=blended_rgb_hwc_np_linear_u8,
+            alpha=floor_not_floor_hw_np_u8,
+        )
+
+        do_paste_cutouts = True
+        if do_paste_cutouts:
+            # choose how many of each kind somehow:
+            cutout_kind_to_num_cutouts_to_paste = dict(
+                player=np.random.randint(0, 12),
+                referee=np.random.randint(0, 3),
+                coach=np.random.randint(0, 3),
+                ball=np.random.randint(0, 10),
+                led_screen_occluding_object=np.random.randint(0, 2),
+            )
+            league = "nba"
+            pasted_rgba_np_u8 = paste_multiple_cutouts_onto_one_camera_posed_segmentation_annotation(
+                league=league,
+                context_id=context_id,
+                cutouts_by_kind=cutouts_by_kind,
+                rgba_np_u8=rgba_hwc_np_u8,  # this is not violated by this procedure.
+                camera_pose=camera_pose,  # to get realistics locations and sizes we need to know the camera pose.
+                cutout_kind_to_transform=cutout_kind_to_transform, # what albumentations augmentation to use per kind of cutout
+                cutout_kind_to_num_cutouts_to_paste=cutout_kind_to_num_cutouts_to_paste
+            )
+
+        else:
+            print("we are not pasting cutouts this time.")
+            pasted_rgba_np_u8 = rgba_hwc_np_u8
+
         annotation_id = f"{clip_id}_{frame_index:06d}"
         rid = np.random.randint(0, 1_000_000_000_000_000)
         fake_annotation_id = f"{annotation_id}_fake{rid:015d}"
@@ -275,12 +380,10 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
             fake_mask_path=fake_mask_path,
         )
 
-        blended_rgb_hwc_np_linear_u8 = convert_linear_f32_to_u8(
-            blended_rgb_hwc_np_linear_f32
-        )
+       
 
         write_rgb_hwc_np_u8_to_jpg(
-            rgb_hwc_np_u8=blended_rgb_hwc_np_linear_u8,
+            rgb_hwc_np_u8=pasted_rgba_np_u8[:, :, 0:3],
             out_abs_file_path=fake_original_path,
             verbose=True
         )
@@ -291,23 +394,34 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         #     verbose=False,
         # )
 
-        write_rgb_and_alpha_to_png(
-            rgb_hwc_np_u8=blended_rgb_hwc_np_linear_u8,
-            alpha_hw_np_u8=floor_not_floor_hw_np_u8,
+        write_rgba_hwc_np_u8_to_png(
+            rgba_hwc_np_u8=pasted_rgba_np_u8,
             out_abs_file_path=fake_mask_path,
             verbose=False
         )
+            
+        # write_rgb_and_alpha_to_png(
+        #     rgb_hwc_np_u8=pasted_rgba_np_u8,
+        #     alpha_hw_np_u8=floor_not_floor_hw_np_u8,
+        #     out_abs_file_path=fake_mask_path,
+        #     verbose=False
+        # )
 
         if print_in_iterm2:
-            prii_linear_f32(
-                x=blended_rgb_hwc_np_linear_f32,
-                caption="this is the final color corrected result",
+            # prii_linear_f32(
+            #     x=blended_rgb_hwc_np_linear_f32,
+            #     caption="this is the final color corrected result",
+            # )
+            
+            prii(
+                x=pasted_rgba_np_u8[:, :, 0:3],
+                caption="this is the original frame:",
             )
 
-            # prii(
-            #     x=original_rgb_np_u8,
-            #     caption="this is the original frame:",
-            # )
+            prii(
+                x=original_rgb_np_u8,
+                caption="this is the original frame:",
+            )
         
         num_completed += 1
         duration = time.time() - start_time
