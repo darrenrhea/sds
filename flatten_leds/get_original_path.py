@@ -14,9 +14,11 @@ def get_original_path(
     clip_id_to_folder = {
         "hou-ind-2024-11-20-sdi": "/hd2",
         "hou-lac-2024-11-15-sdi": "/hd2",
+        "allstar-2025-02-16-sdi": "/hd2",
     }
+    print(f"{clip_id=}")
     if clip_id in clip_id_to_folder:
-        shared_dir  = Path("/hd2")
+        shared_dir  = Path(clip_id_to_folder[clip_id])
     else:
         shared_dir = get_the_large_capacity_shared_directory()
 

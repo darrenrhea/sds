@@ -1,3 +1,4 @@
+import pprint
 from feathered_paste_for_images_of_the_same_size import (
      feathered_paste_for_images_of_the_same_size
 )
@@ -100,12 +101,22 @@ def paste_multiple_cutouts_onto_one_camera_posed_segmentation_annotation(
     for placement_descriptor in placement_descriptors:
         bottom_xy = placement_descriptor["bottom_xy"]
         how_many_pixels_is_six_feet_at_that_point = placement_descriptor["how_many_pixels_is_six_feet_at_that_point"]
+        if how_many_pixels_is_six_feet_at_that_point <= 0:
+            print("Ut oh error:")
+            pprint.pprint(placement_descriptor)
+            assert False, f"ERROR: {how_many_pixels_is_six_feet_at_that_point=}"
+        
         cutout_kind = placement_descriptor["cutout_kind"]
         cutouts_of_that_kind = cutouts_by_kind[cutout_kind]
         # pick a cutout of that kind to add to the actual annotation:
         cutout_index = np.random.randint(0, len(cutouts_of_that_kind))
         cutout = cutouts_of_that_kind[cutout_index]
         assert cutout.kind == cutout_kind, "ERROR: cutout.kind != cutout_kind?!"
+        if cutout.how_many_pixels_is_six_feet <= 0:
+            print("error jimminy:")
+            pprint.pprint(cutout)
+            assert False, f"ERROR: {how_many_pixels_is_six_feet_at_that_point=}"
+
         original_cutout_rgba_np_u8 = cutout.rgba_np_u8
         
        

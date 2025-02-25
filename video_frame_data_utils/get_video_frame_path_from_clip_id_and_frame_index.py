@@ -82,6 +82,7 @@ def get_video_frame_path_from_clip_id_and_frame_index(
         "was-uta-2022-11-12-ingest": ("lam", "/hd2"),
         "chi-den-2022-11-13-ingest": ("lam", "/hd2"),
         "atl-bos-2022-11-16-ingest": ("lam", "/hd2"),
+        "allstar-2025-02-16-sdi": ("lam", "/hd2"),
     }
 
     if clip_id not in clip_id_to_machine_and_dir:

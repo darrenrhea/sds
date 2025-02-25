@@ -73,6 +73,14 @@ def make_placement_descriptors_for_this_cutout_kind(
             photograph_height_in_pixels=photograph_height_in_pixels
         )
         how_many_pixels_is_one_tenth = y_pixel - head_y_pixel
+        if how_many_pixels_is_one_tenth <= 0 and is_visible and slightly_higher_is_visible:
+            print(f"{Fore.RED}ERROR: {how_many_pixels_is_one_tenth=} is not > 0{Style.RESET_ALL}")
+            print(f"{p_giwc=}", p_giwc)
+            print(f"{camera_pose=}")
+            print(f"{slightly_higher_is_visible=}")
+            print(f"{is_visible=}")
+            assert False, f"ERROR: {how_many_pixels_is_one_tenth=} is negative!"
+
         # one tenth of a meter is 0.328084 feet
         if league == "euroleague":
             how_many_pixels_is_six_feet_at_that_point = 6 / .328084 * how_many_pixels_is_one_tenth
@@ -81,7 +89,7 @@ def make_placement_descriptors_for_this_cutout_kind(
             how_many_pixels_is_six_feet_at_that_point = 6 / 0.1 * how_many_pixels_is_one_tenth # whatever unit
         else:
             raise Exception(f"ERROR: {league=} is not in ['euroleague', 'nba']")
-        if is_visible and slightly_higher_is_visible:
+        if is_visible and slightly_higher_is_visible and how_many_pixels_is_one_tenth > 0:
             placement_descriptor = dict(
                 bottom_xy=(
                     int(round(x_pixel)),

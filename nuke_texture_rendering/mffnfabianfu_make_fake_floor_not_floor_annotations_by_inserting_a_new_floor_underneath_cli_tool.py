@@ -52,28 +52,8 @@ from prii import (
 )
 import numpy as np
 import better_json as bj
-
-from convert_u8_to_linear_f32 import (
-     convert_u8_to_linear_f32
-)
 from write_rgba_hwc_np_u8_to_png import (
      write_rgba_hwc_np_u8_to_png
-)
-import argparse
-import numpy as np
-import time
-from pathlib import Path
-from prii import (
-     prii
-)
-from group_cutouts_by_kind import (
-     group_cutouts_by_kind
-)
-from get_cutouts import (
-     get_cutouts
-)
-from paste_multiple_cutouts_onto_one_camera_posed_segmentation_annotation import (
-     paste_multiple_cutouts_onto_one_camera_posed_segmentation_annotation
 )
 from get_cutout_augmentation import (
      get_cutout_augmentation
@@ -130,7 +110,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
             
             chunk0="37deb6dd165db2a0b1d1ea42ecffa1f1161656526ebc7b1fb0410f37718649b2",
             chunk1="f2ffa2041832a30582b2e3bfe9b609480f433a194cae53dfc13ecd2485ef634d",
-            chunk2="67d58da3f9ccfbbab13334419eddbf0c64277df7def568c6de72c7fb37fc7f16",
+            chunk2="09b0d09f4309313c70484847313b3c12b22c2f2923aa565cc71d261372fb7221",
             chunk3="d551828911e76b7e7ac2eae6a61dc96ac67791a28cc66baefd82ec3614b8f303",
 
 
@@ -175,7 +155,10 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         "~/r/nba_misc_cutouts_approved/balls",
         "~/r/nba_misc_cutouts_approved/objects",
         "~/r/allstar2025_cutouts_approved/phx_lightblue",
-        # "~/r/houston_cutouts_approved/icon",
+        "~/r/denver_nuggets_cutouts_approved/icon",
+        "~/r/denver_nuggets_cutouts_approved/statement",
+        "~/r/houston_cutouts_approved/icon",
+
         # "~/r/houston_cutouts_approved/statement",
         
         # "~/r/miami_heat_cutouts_approved/statement",
@@ -289,7 +272,8 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         camera_pose = work_item["camera_pose"]
 
         assert camera_pose.f > 0, f"camera_pose.f is 0.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
-        
+        assert camera_pose.loc[1] < 180.0, f"camera loc y is > 180.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
+
         dct = get_a_floor_texture_with_random_shadows_and_lights(
             floor_id=floor_id,
         )
@@ -310,7 +294,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         assert floor_not_floor_hw_np_u8  is not None
         assert isinstance(floor_not_floor_hw_np_u8 , np.ndarray)
         
-
+       
         inserted_with_color_correction_linear_f32 = insert_quads_into_camera_posed_image_behind_mask(
             anti_aliasing_factor=2,
             use_linear_light=True, # this should be true, because of all the averaging processes going on.
