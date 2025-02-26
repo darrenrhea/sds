@@ -1,3 +1,12 @@
+from print_green import (
+     print_green
+)
+from print_yellow import (
+     print_yellow
+)
+from print_red import (
+     print_red
+)
 from s3_file_uri_exists import (
      s3_file_uri_exists
 )
@@ -16,8 +25,9 @@ from what_computer_is_this import (
 
 
 def store_file_by_sha256(
-    file_path: Path
-):
+    file_path: Path,
+    verbose: bool = False
+) -> str:  # debatably there should be a SHA256 type
     """
     Saves the file in many places such as locally
     in the sha256 directory, and on the server lam,
@@ -33,25 +43,27 @@ def store_file_by_sha256(
     sha256_local_cache_dir = shared_dir / "sha256"
 
     if not file_path.exists():
-        print(f"{file_path} does not exist!")
+        print_red(f"{file_path} does not exist!")
         sys.exit(1)
 
     if file_path.is_dir():
-        print("That is a directory!")
+        print_red("That is a directory!")
         sys.exit(1)
 
     if not file_path.is_file():
-        print("That is not a regular file!")
+        print_red("That is not a regular file!")
         sys.exit(1)
 
     the_hash = sha256_of_file(file_path)
-    print("The sha256 of the file:")
-    print(f"    {file_path}")
-    print("is:")
-    print(f"    {the_hash}")
+    if verbose:
+        print_green("The sha256 of the file:")
+        print_green(f"    {file_path}")
+        print_green("is:")
+        print_green(f"    {the_hash}")
 
     the_extension = file_path.suffix  # what the extension should be 
-    print(f"The extension is '{the_extension}'")
+    if verbose:
+        print_green(f"The extension is '{the_extension}'")
 
     newbasename = f"{the_hash}{the_extension}"
 
@@ -65,27 +77,28 @@ def store_file_by_sha256(
     storage_location = new_dir / newbasename
     
     if storage_location.is_file():
-        print(f"{storage_location} already exists!")
+        print_yellow(f"{storage_location} already exists!")
         the_previous_hash = sha256_of_file(storage_location)
-        print(
-            textwrap.dedent(
-                f"""\
-                The sha256 of the file:
-                    {storage_location}
-                is:
-                    {the_hash}
-                """
+        if verbose:
+            print_green(
+                textwrap.dedent(
+                    f"""\
+                    The sha256 of the file:
+                        {storage_location}
+                    is:
+                        {the_hash}
+                    """
+                )
             )
-        )
         if the_previous_hash != the_hash:
-            print(f"ERROR: The file {storage_location} already exists and has a different sha256 hash than it claims to!")
+            print_red(f"ERROR: The file {storage_location} already exists and has a different sha256 hash than it claims to!")
             sys.exit(1)
         else:
-            print("We already have a local file which we just confirmed has this sha256 hash, so no need to store it locally again.")
+            print_yellow("We already have a local file which we just confirmed has this sha256 hash, so no need to store it locally again.")
     else:
-        print(f"Copying {file_path} to {storage_location}")
+        print_yellow(f"Copying {file_path} to {storage_location}")
         shutil.copy(src=file_path, dst=storage_location)
-        print(f"now stored locally at {storage_location}")
+        print_green(f"now stored locally at {storage_location}")
 
         # local permissions get transported to the server, which causes problems when they aren't 0664
         subprocess.run(
@@ -120,9 +133,9 @@ def store_file_by_sha256(
 
     # TODO: get the head object of the s3 file and check if the sha256 is the same
     if s3_file_uri_exists(s3_file_uri=s3_file_uri):
-        print("It was already stored in s3.")
+        print_green("It was already stored in s3.")
     else:
-        print("We need to upload it to s3 because it is not there yet.")
+        print_yellow("We need to upload it to s3 because it is not there yet.")
 
         # TODO: upload it in such a manner that s3 puts the sha256 on the metadata of s3:
         subprocess.run(
@@ -135,7 +148,7 @@ def store_file_by_sha256(
             ]
         )
 
-    print(
+    print_green(
         textwrap.dedent(
             f"""\
             Anyone could get a copy from s3 via:
@@ -144,10 +157,6 @@ def store_file_by_sha256(
         )
     )
 
-
-    # print("available by clicking on:")
-    # print(f"https://draa.cc/sha256/{newbasename}")
-    
     return the_hash
 
 
