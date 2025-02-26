@@ -24,7 +24,7 @@ s3://awecomai-shared/fixtures \
 
 ```bash
 cd ~
-git clone git@github.com:awecom/sds
+GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git clone git@github.com:awecom/sds
 cd ~/sds
 
 # Kill the container if it already exists:
