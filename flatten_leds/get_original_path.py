@@ -1,10 +1,8 @@
-from print_green import (
-     print_green
-)
 from get_the_large_capacity_shared_directory import (
      get_the_large_capacity_shared_directory
 )
 from pathlib import Path
+
 
 def get_original_path(
     clip_id: str,
