@@ -34,3 +34,5 @@ tensorboardX
 tqdm
 onnxruntime-gpu
 git+https://github.com/sail-sg/Adan.git@66adee7c6c913b0465e2f10b71640e24a0e4d596#egg=adan
+mmcv
+
