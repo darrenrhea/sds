@@ -23,7 +23,9 @@ eval "$__conda_setup"
 which conda
 
 # this does not error even if the environment does not exist:
-conda env remove --name $conda_environment_name
+# conda env remove --name $conda_environment_name
+
+rm -rf /home/ubuntu/miniconda3/envs/sds
 
 if [[ $(uname) = "Darwin" ]]
 then
