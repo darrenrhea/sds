@@ -10,7 +10,9 @@ from pathlib import Path
 def train_a_model(
     datapoint_path_tuples: List[Tuple[Path, Path, Optional[Path]]],
     other: str,
-    resume_checkpoint_path: Optional[str] = None,
+    resume_checkpoint_path: Optional[str],
+    drop_a_model_this_often: int,
+    num_epochs: Optional[int],
 ):
 
     print(f"{datapoint_path_tuples=}")
@@ -18,11 +20,9 @@ def train_a_model(
     print(f"{Fore.YELLOW}{num_training_points=}{Style.RESET_ALL}")
 
     segmentation_convention = "floor"
-    howmuchdata = f"{len(datapoint_path_tuples)}frames"
     patch_width = 1920
     patch_height = 1088
     model_architecture_family_id = "u3fasternets"
-    resolution = f"{patch_width}x{patch_height}"
     augmentation_strategy_id = "wednesday" # felix3" # imagemaskmotionblur
 
     checkpoint_prefix = form_checkpoint_prefix(
@@ -41,7 +41,9 @@ def train_a_model(
     loss_function_family_id = "mse"
     loss_parameters = {}
     train_on_binarized_masks = False
-    num_epochs = 100000
+    if num_epochs is None:
+        num_epochs = 100000
+    
     workers_per_gpu = 8
     frame_height = 1088
     frame_width = 1920
@@ -49,7 +51,7 @@ def train_a_model(
     do_mixed_precision = True
     do_padding = True
     train_patches_per_image = 1
-    test_model_interval = 1
+    test_model_interval = drop_a_model_this_often
 
     resume_optimization = False
 
