@@ -102,6 +102,10 @@ python onnx_infer.py \
 
 ```bash
 # clone it somewhere:
+
+# we don't want it asking us about recognizing the host, so:
+ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
 git clone git@github.com:awecom/sds
 
 # cd into it:
