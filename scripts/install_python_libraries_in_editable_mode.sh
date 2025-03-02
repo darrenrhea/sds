@@ -24,6 +24,7 @@ file_shit
 first_order_jets
 flatten_leds
 floor_texture_utilities
+gpu_utilities
 hash_tools
 homography_utils
 image_openers
@@ -32,6 +33,7 @@ keypoint_matching_utilities
 led_alignment
 nuke_lens_distortion
 nuke_texture_rendering
+onnx_stuff
 primitive_logging
 print_image_in_iterm2
 rodrigues_utils

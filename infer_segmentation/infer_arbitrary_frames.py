@@ -33,6 +33,7 @@ def infer_arbitrary_frames(
 
     shared_dir = get_the_large_capacity_shared_directory()
     output_dir = shared_dir / "inferences"
+    output_dir.mkdir(exist_ok=True)
 
     infer_from_id(
         final_model_id=final_model_id,
