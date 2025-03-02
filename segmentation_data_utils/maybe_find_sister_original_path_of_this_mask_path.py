@@ -1,8 +1,6 @@
 import textwrap
 from pathlib import Path
 from typing import Optional
-import sys
-
 from colorama import Fore, Style
 
 
@@ -19,6 +17,7 @@ def maybe_find_sister_original_path_of_this_mask_path(
     assert (
         mask_path.name.endswith("_nonfloor.png")
     ), "ERROR: mask_path must end with _nonfloor.png!"
+
     annotation_id = mask_path.name[:-len("_nonfloor.png")]
 
     assert (
