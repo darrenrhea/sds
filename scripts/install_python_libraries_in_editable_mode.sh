@@ -51,12 +51,6 @@ ls scripts || printf "Run this like source scripts/install_python_libraries_in_e
 
 for i in "${L[@]}"
 do
-echo "checking for the existence of $i"
-ls "$i" || printf "$i missing"
-done
-
-for i in "${L[@]}"
-do
     echo installing $i
     (cd $i && pip install --no-deps -e .)
 done

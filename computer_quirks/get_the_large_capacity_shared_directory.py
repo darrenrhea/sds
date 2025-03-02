@@ -48,13 +48,18 @@ def get_the_large_capacity_shared_directory(
         shared_dir = Path("/Users/annaayzenshtat/a").expanduser()
     elif computer_name == "korra":
         shared_dir = Path("/Users/anna/a").expanduser()
+    elif computer_name == "dockercontainer":
+        shared_dir = Path("/shared")
     else:
         raise Exception(
             f"I don't know what the large capacity shared directory is for the computer {computer_name}"
         )
     
     if input_computer_name is None:  # if the caller was asking about the shared directory on their current computer, you can check it exists easily:
-        assert shared_dir.is_dir(), f"ERROR: {shared_dir=} is not an extant directory"
+        assert (
+            shared_dir.is_dir()
+        ), f"ERROR: {shared_dir=} is not an extant directory"
+    
     return shared_dir
 
     
