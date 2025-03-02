@@ -1,3 +1,12 @@
+from color_print_json import (
+     color_print_json
+)
+from is_sha256 import (
+     is_sha256
+)
+from print_yellow import (
+     print_yellow
+)
 import subprocess
 from get_file_path_of_sha256 import (
      get_file_path_of_sha256
@@ -15,25 +24,33 @@ from functools import lru_cache
 def get_final_model_from_id(final_model_id):
     assert isinstance(final_model_id, str), f"final_model_id must be a string, not {final_model_id}"
     assert len(final_model_id) >= 3, "final_model_id must be at least 3 characters long, like Za7, that is 52 * 62 * 62 = 199888 possible model ids"
-    assert final_model_id[0] in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     for i in range(1, len(final_model_id)):
         assert final_model_id[i] in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     
-    subprocess.run(
-        [
-            "git",
-            "pull",
-        ],
-        cwd=Path("~/r/final_models").expanduser(),
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+    if is_sha256(final_model_id):
+        print_yellow("This is a sha256 style final_model_id")
+        json_path = get_file_path_of_sha256(
+            sha256=final_model_id
+        )
+        
+    else:
+        subprocess.run(
+            [
+                "git",
+                "pull",
+            ],
+            cwd=Path("~/r/final_models").expanduser(),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
-    json_path = Path(
-        f"~/r/final_models/models/{final_model_id}.json5"
-    ).expanduser()
+        json_path = Path(
+            f"~/r/final_models/models/{final_model_id}.json5"
+        ).expanduser()
 
     jsonable = bj.load(json_path)
+    
+    color_print_json(jsonable)
 
     for k in [
         "model_architecture_family_id",
@@ -53,15 +70,16 @@ def get_final_model_from_id(final_model_id):
     assert model_architecture_family_id in get_valid_model_architecture_family_ids()
 
     weights = jsonable["pytorch_weights_file"]
-    if "local_path" in weights:
-        weights_file_path = Path(weights["local_path"]).resolve()
-        assert weights_file_path.exists(), f"weights_file_path {weights_file_path} does not exist"
-    elif "sha256" in weights:
+    
+    if "sha256" in weights:
         weights_file_sha256 = jsonable["pytorch_weights_file"]["sha256"]
 
         weights_file_path = get_file_path_of_sha256(
             sha256=weights_file_sha256
         )
+    elif "local_path" in weights:
+        weights_file_path = Path(weights["local_path"]).resolve()
+        assert weights_file_path.exists(), f"weights_file_path {weights_file_path} does not exist"
     else:
         raise Exception(f"weights {weights} does not have local_abs_path or sha256")
 

@@ -44,10 +44,12 @@ def infer_from_id(
     pad_height = final_model.pad_height
 
     # TODO: ad assertions
+    current_file_path = Path(__file__).resolve()
+    dir_path = current_file_path.parent
 
     args = [
         "python",
-        str(Path("~/sds/infer_segmentation/parallel_infer3.py").expanduser()),
+        str(dir_path / "parallel_infer3.py"),
         model_architecture_family_id,
         str(weights_file_path),
         "--original-size",
