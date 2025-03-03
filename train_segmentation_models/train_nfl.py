@@ -5,6 +5,8 @@ from get_datapoint_path_tuples_for_nfl import (
      get_datapoint_path_tuples_for_nfl
 )
 
+training_data = "c0d38c24dc78b4fc714279ae5c80ae6e8d5580898503b63fc7fde129fcdd0a35"
+
 datapoint_path_tuples = get_datapoint_path_tuples_for_nfl()
 other = "thisisshit"
 resume_checkpoint_path = None
