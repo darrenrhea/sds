@@ -1,12 +1,14 @@
-# import jstyleson  # WE used to use this, but it does not handle JSON5 not maintained
-# maybe use pyjson5 instead, it is apparently fast and actually maintained
+from ptse import (
+     ptse
+)
 import json
 from pygments import highlight, lexers, formatters
 
 
 def color_print_json(jsonable):
     """
-    syntax highlights then prints a jsonable python object
+    formats with 4 space indent,
+    then syntax highlights then prints a jsonable python object.
     """
     formatted_json = json.dumps(
         obj=jsonable,
@@ -18,5 +20,5 @@ def color_print_json(jsonable):
         lexer=lexers.JsonLexer(),
         formatter=formatters.TerminalFormatter()
     )
-    print(colorful_json)
+    ptse(colorful_json)
 
