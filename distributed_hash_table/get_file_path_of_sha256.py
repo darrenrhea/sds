@@ -1,3 +1,4 @@
+import time
 from colorama import Fore, Style
 from list_all_s3_keys_in_this_bucket_with_this_prefix import (
      list_all_s3_keys_in_this_bucket_with_this_prefix
@@ -10,7 +11,9 @@ from hash_tools import sha256_of_file
 from get_the_large_capacity_shared_directory import (
      get_the_large_capacity_shared_directory
 )
-from download_sha256_from_s3 import download_sha256_from_s3
+from download_sha256_from_s3 import (
+     download_sha256_from_s3
+)
 
 
 def get_file_path_of_sha256(
@@ -99,10 +102,13 @@ def get_file_path_of_sha256(
             break
 
     if not exists_locally:
+        start = time.time()
         keys = list_all_s3_keys_in_this_bucket_with_this_prefix(
             bucket="awecomai-shared",
             prefix=f"sha256/{the_sha256_hash}"
         )
+        end = time.time()
+        print(f"list_all_s3_keys_in_this_bucket_with_this_prefix took {end - start} seconds")
         print(f"{keys=}")
         if len(keys) == 0:
             print(
@@ -142,13 +148,16 @@ def get_file_path_of_sha256(
         local_dir = sha256_local_cache_dir / d01 / d23 / d45 / d67
         local_dir.mkdir(parents=True, exist_ok=True)
         local_path = local_dir / f"{full_length_sha256}{extension}"
-        # local_path does not exist, download it from s3:        
+        # local_path does not exist, download it from s3:    
+        start = time.time()    
         success = download_sha256_from_s3(
             sha256=full_length_sha256,
             extension=extension,
             destination_file_path=local_path,
             verbose=True
         )
+        end = time.time()
+        print(f"download_sha256_from_s3 took {end - start} seconds")
         if not success:
             print(f"Note: The file:\n{local_path}\n"
                   "does not exist locally, nor could we download it from s3!")

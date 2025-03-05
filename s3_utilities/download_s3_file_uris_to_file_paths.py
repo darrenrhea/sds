@@ -34,7 +34,7 @@ def download_file(s3_uri, local_path):
 
 
 def download_s3_file_uris_to_file_paths(
-    src_s3_file_uri_dst_file_path_pairs: List[Tuple[Path, str]],
+    src_s3_file_uri_dst_file_path_pairs: List[Tuple[str, Path]],
     max_workers: int,
     verbose: bool = True
 ):
@@ -52,10 +52,11 @@ def download_s3_file_uris_to_file_paths(
         assert isinstance(pair, tuple), f"ERROR: {pair} is not a tuple"
         assert len(pair) == 2, f"ERROR: {pair} does not have 2 elements"
         s3_uri, local_file = pair
-        assert isinstance(local_file, Path), f"ERROR: {local_file} is not a Path"
-        assert local_file.parent.is_dir(), f"ERROR: {local_file.parent} is not an extant directory"
         assert isinstance(s3_uri, str), f"ERROR: {s3_uri} is not a string"
         assert could_be_an_s3_file_uri(s3_uri), f"ERROR: {s3_uri} is not an S3 URI"
+        
+        assert isinstance(local_file, Path), f"ERROR: {local_file} is not a Path"
+        assert local_file.parent.is_dir(), f"ERROR: {local_file.parent} is not an extant directory"
 
     if verbose:
         print("Download these s3 locations to these local files:")

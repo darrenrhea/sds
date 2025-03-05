@@ -5,11 +5,13 @@ aws s3api list-objects-v2 --bucket awecomai-shared --prefix sha256/af6e2c6e133dc
 
 import json
 import subprocess
+from typing import List
+
 
 def list_all_s3_keys_in_this_bucket_with_this_prefix(
     bucket: str,
     prefix: str,
-) -> dict:
+) -> List[str]:
     """
     List the objects in the bucket with the given prefix.
     It is already "recursive", i.e. slashes are no different than any other character.
