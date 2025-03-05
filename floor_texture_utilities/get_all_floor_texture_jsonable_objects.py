@@ -34,7 +34,7 @@ def get_all_floor_texture_jsonable_objects(
 
     """
     # this needs to be stored in a database, a repo, or the file system somewhere:
-    database_file_path = Path("~/r/floor_texture_data/floor_texture_data.json5").expanduser()
+    database_file_path = Path("/shared/r/floor_texture_data/floor_texture_data.json5").expanduser()
     if not database_file_path.exists():
         raise FileNotFoundError(f"The database file {database_file_path} does not exist.")
     
