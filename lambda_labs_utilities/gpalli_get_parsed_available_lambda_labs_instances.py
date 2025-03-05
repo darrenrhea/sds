@@ -37,7 +37,7 @@ def gpalli_get_parsed_available_lambda_labs_instances():
             )
             
             instance_type["gpu_memory_gb"] = gpu_memory_gb
-            instance_type["name"] = informal_name
+            instance_type["instance_type_id"] = informal_name
             parsed.append(desc)
         return parsed
 

@@ -4,8 +4,6 @@ from gpalli_get_parsed_available_lambda_labs_instances import (
 from color_print_json import (
      color_print_json
 )
-import os
-import requests
 
 
 def lalli_list_available_lambda_labs_instances_cli_tool():

@@ -4,9 +4,10 @@ from color_print_json import (
 import os
 import requests
 
-def llli_list_lambda_labs_instances_cli_tool():
+def lrlli_list_running_lambda_labs_instances_cli_tool():
     """
-    As a warmup to starting instances at Lambda Labs, we will first list all the instances.
+    As a warmup to starting instances at Lambda Labs,
+    we will first list all the running instances.
     """
     api_key = os.environ.get("lambda_labs_api_key")
     url = "https://cloud.lambdalabs.com/api/v1/instances"
