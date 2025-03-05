@@ -56,7 +56,7 @@ def get_cutout_descriptors_from_directories(
             if "jersey_id" in cutout_metadata:
                 jersey_id = cutout_metadata["jersey_id"]
                 print(f"Jersey id: {jersey_id}")
-                jersey_json_path = Path("~/r/jersey_ids/").expanduser() / f"{jersey_id}.json5"
+                jersey_json_path = Path("/shared/r/jersey_ids/").expanduser() / f"{jersey_id}.json5"
                 jersey_info = bj.load(jersey_json_path)
                 color_print_json(jersey_info)
                 kind = jersey_info["kind"]

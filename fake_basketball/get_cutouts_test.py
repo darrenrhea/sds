@@ -9,7 +9,7 @@ from get_cutouts import (
 import numpy as np
 
 
-def test_get_cutouts():
+def test_get_cutouts_1():
     """
     Returns a flattened list or cutouts,
     each with a cutout_rgba_np_u8, a kind
@@ -17,10 +17,13 @@ def test_get_cutouts():
     or complaining that someone cut out that player badly.
     """
     cutouts = get_cutouts(
+        sport="basketball",
+        league="nba",
         cutout_dirs=[
-            Path("~/r/nba_misc_cutouts_approved/balls").expanduser(),
-            Path("~/r/nba_misc_cutouts_approved/objects").expanduser(),
-            Path("~/r/dallas_mavericks_cutouts_approved/association").expanduser(),
+            Path("/shared/r/nba_misc_cutouts_approved/referees").expanduser(),
+            Path("/shared/r/nba_misc_cutouts_approved/balls").expanduser(),
+            Path("/shared/r/nba_misc_cutouts_approved/objects").expanduser(),
+            Path("/shared/r/dallas_mavericks_cutouts_approved/association").expanduser(),
         ]
     )
     for cutout in cutouts:
@@ -62,5 +65,5 @@ def test_get_cutouts():
         prii(cutout_rgba_np_u8)
 
 if __name__ == "__main__":
-    test_get_cutouts()
+    test_get_cutouts_1()
     print("get_cutouts_test.py has passed all tests")

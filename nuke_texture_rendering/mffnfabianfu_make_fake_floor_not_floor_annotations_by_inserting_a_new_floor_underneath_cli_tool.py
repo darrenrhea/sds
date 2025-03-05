@@ -149,42 +149,42 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     context_id = "nba_floor_not_floor_pasting"
 
     cutout_dirs_str = [
-        "~/r/nba_misc_cutouts_approved/coaches",
-        "~/r/nba_misc_cutouts_approved/coach_kidd",
-        "~/r/nba_misc_cutouts_approved/randos",
-        "~/r/nba_misc_cutouts_approved/referees",
-        "~/r/nba_misc_cutouts_approved/balls",
-        "~/r/nba_misc_cutouts_approved/objects",
-        "~/r/allstar2025_cutouts_approved/phx_lightblue",
-        "~/r/denver_nuggets_cutouts_approved/icon",
-        "~/r/denver_nuggets_cutouts_approved/statement",
-        "~/r/houston_cutouts_approved/icon",
+        "/shared/r/nba_misc_cutouts_approved/coaches",
+        "/shared/r/nba_misc_cutouts_approved/coach_kidd",
+        "/shared/r/nba_misc_cutouts_approved/randos",
+        "/shared/r/nba_misc_cutouts_approved/referees",
+        "/shared/r/nba_misc_cutouts_approved/balls",
+        "/shared/r/nba_misc_cutouts_approved/objects",
+        "/shared/r/allstar2025_cutouts_approved/phx_lightblue",
+        "/shared/r/denver_nuggets_cutouts_approved/icon",
+        "/shared/r/denver_nuggets_cutouts_approved/statement",
+        "/shared/r/houston_cutouts_approved/icon",
 
-        # "~/r/houston_cutouts_approved/statement",
+        # "/shared/r/houston_cutouts_approved/statement",
         
-        # "~/r/miami_heat_cutouts_approved/statement",
-        # "~/r/cleveland_cavaliers_cutouts_approved/statement",
+        # "/shared/r/miami_heat_cutouts_approved/statement",
+        # "/shared/r/cleveland_cavaliers_cutouts_approved/statement",
         
-        # "~/r/dallas_mavericks_cutouts_approved/association",
-        # "~/r/boston_celtics_cutouts_approved/statement",
+        # "/shared/r/dallas_mavericks_cutouts_approved/association",
+        # "/shared/r/boston_celtics_cutouts_approved/statement",
 
         # # June 12:
-        # "~/r/dallas_mavericks_cutouts_approved/statement",
-        # "~/r/boston_celtics_cutouts_approved/association",
+        # "/shared/r/dallas_mavericks_cutouts_approved/statement",
+        # "/shared/r/boston_celtics_cutouts_approved/association",
 
         # # June 17:
-        # "~/r/dallas_mavericks_cutouts_approved/association",
-        # "~/r/boston_celtics_cutouts_approved/icon",
+        # "/shared/r/dallas_mavericks_cutouts_approved/association",
+        # "/shared/r/boston_celtics_cutouts_approved/icon",
 
 
-        # "~/r/efs_cutouts_approved/white_with_blue_and_orange",
-        # "~/r/athens_cutouts_approved/white_with_green",  # seem quality
-        # "~/r/zalgiris_cutouts_approved/white_with_green",  # seem quality
-        # "~/r/munich_cutouts_approved/maroon_uniform_shoes",  # just one guy
-        # "~/r/munich_cutouts_approved/maroon_uniforms",  # color seems off
-        # "~/r/munich_cutouts_approved/balls",
-        # "~/r/munich_cutouts_approved/coaches_faithful",
-        # "~/r/munich_cutouts_approved/referees_faithful",
+        # "/shared/r/efs_cutouts_approved/white_with_blue_and_orange",
+        # "/shared/r/athens_cutouts_approved/white_with_green",  # seem quality
+        # "/shared/r/zalgiris_cutouts_approved/white_with_green",  # seem quality
+        # "/shared/r/munich_cutouts_approved/maroon_uniform_shoes",  # just one guy
+        # "/shared/r/munich_cutouts_approved/maroon_uniforms",  # color seems off
+        # "/shared/r/munich_cutouts_approved/balls",
+        # "/shared/r/munich_cutouts_approved/coaches_faithful",
+        # "/shared/r/munich_cutouts_approved/referees_faithful",
     ]
 
     cutout_dirs = [Path(x).expanduser() for x in cutout_dirs_str]

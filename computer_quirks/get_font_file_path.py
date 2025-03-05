@@ -12,6 +12,10 @@ def get_font_file_path() -> Path:
         font_file_path = Path("/awecom/misc/arial.ttf")
     elif name in ["jerry", "appa", "morty", "rick", "grogu"]:
         font_file_path = Path("/shared/fonts/arial.ttf")
+    elif name in ["dockercontainer"]:
+        font_file_path = Path(
+            "/shared/sha256/82/af/b3/5e/82afb35eda3a52edb10106bcc04af93646384421ded538d38792c1444d816022.ttf"
+        )
     else:
         raise Exception(f"computer_quirks doesn't know where the font file path is for the computer named {name}")
     assert font_file_path.is_file(), f"ERROR: {font_file_path=} is not an extant file"

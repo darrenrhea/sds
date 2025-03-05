@@ -1,3 +1,4 @@
+the_cwd_used_to_be="$(pwd)"
 pip install colorama
 python -c "import cv2 ; print('still working after colorama')"
 
@@ -68,3 +69,5 @@ python -c "import cv2 ; print('import cv2 still working after mmcv manual instal
 pip install awscli
 
 python -c "import cv2 ; print('still working after awscli')"
+
+cd "${the_cwd_used_to_be}"
