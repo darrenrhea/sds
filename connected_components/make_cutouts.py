@@ -4,9 +4,11 @@ from get_mask_path_from_original_path import (
 import argparse
 from pathlib import Path
 import textwrap
-from get_connected_components_of_mask import get_connected_components_of_mask
 
-def make_cutouts():
+
+def make_cutouts():  # TODO: cli_tool_ify
+
+    # TODO: See extract_cutouts_by_connected_components for a better way
         
     argp = argparse.ArgumentParser(
         description=textwrap.dedent(
