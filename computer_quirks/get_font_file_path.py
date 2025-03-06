@@ -1,3 +1,6 @@
+from get_file_path_of_sha256 import (
+     get_file_path_of_sha256
+)
 from what_computer_is_this import (
      what_computer_is_this
 )
@@ -13,8 +16,9 @@ def get_font_file_path() -> Path:
     elif name in ["jerry", "appa", "morty", "rick", "grogu"]:
         font_file_path = Path("/shared/fonts/arial.ttf")
     elif name in ["dockercontainer"]:
-        font_file_path = Path(
-            "/shared/sha256/82/af/b3/5e/82afb35eda3a52edb10106bcc04af93646384421ded538d38792c1444d816022.ttf"
+        font_file_path = get_file_path_of_sha256(
+            sha256="82afb35eda3a52edb10106bcc04af93646384421ded538d38792c1444d816022",
+            check=True,
         )
     else:
         raise Exception(f"computer_quirks doesn't know where the font file path is for the computer named {name}")

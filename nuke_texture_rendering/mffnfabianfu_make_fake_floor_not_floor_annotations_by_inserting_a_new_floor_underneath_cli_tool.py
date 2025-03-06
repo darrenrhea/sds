@@ -1,3 +1,15 @@
+from upload_file_path_to_s3_file_uri import (
+     upload_file_path_to_s3_file_uri
+)
+from print_green import (
+     print_green
+)
+from store_file_by_sha256_in_s3 import (
+     store_file_by_sha256_in_s3
+)
+from download_the_files_with_these_sha256s import (
+     download_the_files_with_these_sha256s
+)
 from make_rgba_hwc_np_u8_from_rgb_and_alpha import (
      make_rgba_hwc_np_u8_from_rgb_and_alpha
 )
@@ -144,6 +156,11 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     floor_id = opt.floor_id
     out_dir = Path(opt.out_dir)
 
+    records_dir_path = Path(
+        f"/shared/records"
+    )
+    records_dir_path.mkdir(exist_ok=True)
+
     # context_id = "dallas_mavericks"
     # context_id = "boston_celtics"
     context_id = "nba_floor_not_floor_pasting"
@@ -213,7 +230,8 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     )
     video_frame_annotations_metadata = bj.load(local_json_file_path)
    
-    # BEGIN checking that the video_frame_annotations_metadata is valid:
+    # BEGIN checking that the video_frame_annotations_metadata is valid, and also gather mentioned sha256s
+    mentioned_sha256s = set()
     assert isinstance(video_frame_annotations_metadata, list)
     for annotation in video_frame_annotations_metadata:
         print()
@@ -227,8 +245,18 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         for label_name in ["original", "camera_pose", "floor_not_floor"]:
             maybe_sha256 = annotation["label_name_to_sha256"][label_name]
             assert maybe_sha256 is None or is_sha256(maybe_sha256)
+            if maybe_sha256 is not None:
+                mentioned_sha256s.add(maybe_sha256)
+    mentioned_sha256s = list(mentioned_sha256s)
+    for s in mentioned_sha256s:
+        print(s)
     # ENDOF checking that the video_frame_annotations_metadata is valid:
     
+    download_the_files_with_these_sha256s(
+        sha256s_to_download=mentioned_sha256s,
+        max_workers=10,
+        verbose=True,
+    )
 
         
     # video_frame_annotations_metadata_sha256 = "99bc2c688a6bd35f08b873495d062604e0b954244e6bb20f5c5a76826ac53524"
@@ -259,162 +287,192 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
 
     out_dir.mkdir(exist_ok=True, parents=True)
     
+    num_laps = 8
     start_time = time.time()
     num_completed = 0
-    out_of = len(local_file_pathed_annotations)
-    for local_file_pathed_annotation in local_file_pathed_annotations:
-        work_item = make_python_internalized_video_frame_annotation(
-            local_file_pathed_annotation=local_file_pathed_annotation
-        )
-        clip_id = work_item["clip_id"]
-        frame_index = work_item["frame_index"]
-        original_rgb_np_u8 = work_item["original_rgb_np_u8"]
-        floor_not_floor_hw_np_u8 = work_item["floor_not_floor_hw_np_u8"]
-        camera_pose = work_item["camera_pose"]
-
-        assert camera_pose.f > 0, f"camera_pose.f is 0.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
-        assert camera_pose.loc[1] < 180.0, f"camera loc y is > 180.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
-
-        dct = get_a_floor_texture_with_random_shadows_and_lights(
-            floor_id=floor_id,
-        )
-        color_corrected_texture_rgba_np_linear_f32 = dct["color_corrected_texture_rgba_np_linear_f32"]
-        floor_placement_descriptor = dct["floor_placement_descriptor"]
-        del dct
-
-        textured_ad_placement_descriptors = []
-        floor_placement_descriptor.texture_rgba_np_f32 = color_corrected_texture_rgba_np_linear_f32
-        textured_ad_placement_descriptors.append(floor_placement_descriptor)
-        assert len(textured_ad_placement_descriptors) == 1
-        
-        # move to linear light:
-        original_rgb_np_linear_f32 = convert_u8_to_linear_f32(
-            original_rgb_np_u8
-        )
-        
-        assert floor_not_floor_hw_np_u8  is not None
-        assert isinstance(floor_not_floor_hw_np_u8 , np.ndarray)
-        
-       
-        inserted_with_color_correction_linear_f32 = insert_quads_into_camera_posed_image_behind_mask(
-            anti_aliasing_factor=2,
-            use_linear_light=True, # this should be true, because of all the averaging processes going on.
-            original_rgb_np_linear_f32=original_rgb_np_linear_f32,
-            camera_pose=camera_pose,
-            mask_hw_np_u8=floor_not_floor_hw_np_u8,
-            textured_ad_placement_descriptors=textured_ad_placement_descriptors,
-        )
-        assert inserted_with_color_correction_linear_f32.dtype == np.float32
-        assert inserted_with_color_correction_linear_f32.shape[2] == 3
-
-        if np.random.randint(0, 2) == 0:
-            blended_rgb_hwc_np_linear_f32 = blur_rgb_hwc_np_linear_f32(
-                rgb_hwc_np_linear_f32=inserted_with_color_correction_linear_f32,
-                sigma_x=0.5,
-                sigma_y=0.5,
+    out_of = len(local_file_pathed_annotations) * num_laps
+    for _ in range(num_laps):
+        for local_file_pathed_annotation in local_file_pathed_annotations:
+            work_item = make_python_internalized_video_frame_annotation(
+                local_file_pathed_annotation=local_file_pathed_annotation
             )
-        else:
-            blended_rgb_hwc_np_linear_f32 = inserted_with_color_correction_linear_f32
+            clip_id = work_item["clip_id"]
+            frame_index = work_item["frame_index"]
+            original_rgb_np_u8 = work_item["original_rgb_np_u8"]
+            floor_not_floor_hw_np_u8 = work_item["floor_not_floor_hw_np_u8"]
+            camera_pose = work_item["camera_pose"]
 
-        blended_rgb_hwc_np_linear_u8 = convert_linear_f32_to_u8(
-            blended_rgb_hwc_np_linear_f32
-        )
+            assert camera_pose.f > 0, f"camera_pose.f is 0.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
+            assert camera_pose.loc[1] < 180.0, f"camera loc y is > 180.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
 
-        rgba_hwc_np_u8 = make_rgba_hwc_np_u8_from_rgb_and_alpha(
-            rgb=blended_rgb_hwc_np_linear_u8,
-            alpha=floor_not_floor_hw_np_u8,
-        )
-
-        do_paste_cutouts = True
-        if do_paste_cutouts:
-            # choose how many of each kind somehow:
-            cutout_kind_to_num_cutouts_to_paste = dict(
-                player=np.random.randint(0, 12),
-                referee=np.random.randint(0, 3),
-                coach=np.random.randint(0, 3),
-                ball=np.random.randint(0, 10),
-                led_screen_occluding_object=np.random.randint(0, 2),
+            dct = get_a_floor_texture_with_random_shadows_and_lights(
+                floor_id=floor_id,
             )
-            league = "nba"
-            pasted_rgba_np_u8 = paste_multiple_cutouts_onto_one_camera_posed_segmentation_annotation(
-                league=league,
-                context_id=context_id,
-                cutouts_by_kind=cutouts_by_kind,
-                rgba_np_u8=rgba_hwc_np_u8,  # this is not violated by this procedure.
-                camera_pose=camera_pose,  # to get realistics locations and sizes we need to know the camera pose.
-                cutout_kind_to_transform=cutout_kind_to_transform, # what albumentations augmentation to use per kind of cutout
-                cutout_kind_to_num_cutouts_to_paste=cutout_kind_to_num_cutouts_to_paste
-            )
+            color_corrected_texture_rgba_np_linear_f32 = dct["color_corrected_texture_rgba_np_linear_f32"]
+            floor_placement_descriptor = dct["floor_placement_descriptor"]
+            del dct
 
-        else:
-            print("we are not pasting cutouts this time.")
-            pasted_rgba_np_u8 = rgba_hwc_np_u8
-
-        annotation_id = f"{clip_id}_{frame_index:06d}"
-        rid = np.random.randint(0, 1_000_000_000_000_000)
-        fake_annotation_id = f"{annotation_id}_fake{rid:015d}"
-
-        fake_original_path = out_dir / f"{fake_annotation_id}_original.jpg"
-        fake_mask_path = out_dir / f"{fake_annotation_id}_nonfloor.png"
-
-        record = dict(
-            clip_id=clip_id,
-            frame_index=frame_index,
-            fake_annotation_id=fake_annotation_id,
-            fake_original_path=fake_original_path,
-            fake_mask_path=fake_mask_path,
-        )
-
-       
-
-        write_rgb_hwc_np_u8_to_jpg(
-            rgb_hwc_np_u8=pasted_rgba_np_u8[:, :, 0:3],
-            out_abs_file_path=fake_original_path,
-            verbose=True
-        )
-
-        # write_grayscale_hw_np_u8_to_png(
-        #     grayscale_hw_np_u8=floor_not_floor_hw_np_u8 ,
-        #     out_abs_file_path=fake_mask_path,
-        #     verbose=False,
-        # )
-
-        write_rgba_hwc_np_u8_to_png(
-            rgba_hwc_np_u8=pasted_rgba_np_u8,
-            out_abs_file_path=fake_mask_path,
-            verbose=False
-        )
+            textured_ad_placement_descriptors = []
+            floor_placement_descriptor.texture_rgba_np_f32 = color_corrected_texture_rgba_np_linear_f32
+            textured_ad_placement_descriptors.append(floor_placement_descriptor)
+            assert len(textured_ad_placement_descriptors) == 1
             
-        # write_rgb_and_alpha_to_png(
-        #     rgb_hwc_np_u8=pasted_rgba_np_u8,
-        #     alpha_hw_np_u8=floor_not_floor_hw_np_u8,
-        #     out_abs_file_path=fake_mask_path,
-        #     verbose=False
-        # )
+            # move to linear light:
+            original_rgb_np_linear_f32 = convert_u8_to_linear_f32(
+                original_rgb_np_u8
+            )
+            
+            assert floor_not_floor_hw_np_u8  is not None
+            assert isinstance(floor_not_floor_hw_np_u8 , np.ndarray)
+            
+        
+            inserted_with_color_correction_linear_f32 = insert_quads_into_camera_posed_image_behind_mask(
+                anti_aliasing_factor=2,
+                use_linear_light=True, # this should be true, because of all the averaging processes going on.
+                original_rgb_np_linear_f32=original_rgb_np_linear_f32,
+                camera_pose=camera_pose,
+                mask_hw_np_u8=floor_not_floor_hw_np_u8,
+                textured_ad_placement_descriptors=textured_ad_placement_descriptors,
+            )
+            assert inserted_with_color_correction_linear_f32.dtype == np.float32
+            assert inserted_with_color_correction_linear_f32.shape[2] == 3
 
-        if print_in_iterm2:
-            # prii_linear_f32(
-            #     x=blended_rgb_hwc_np_linear_f32,
-            #     caption="this is the final color corrected result",
+            if np.random.randint(0, 2) == 0:
+                blended_rgb_hwc_np_linear_f32 = blur_rgb_hwc_np_linear_f32(
+                    rgb_hwc_np_linear_f32=inserted_with_color_correction_linear_f32,
+                    sigma_x=0.5,
+                    sigma_y=0.5,
+                )
+            else:
+                blended_rgb_hwc_np_linear_f32 = inserted_with_color_correction_linear_f32
+
+            blended_rgb_hwc_np_linear_u8 = convert_linear_f32_to_u8(
+                blended_rgb_hwc_np_linear_f32
+            )
+
+            rgba_hwc_np_u8 = make_rgba_hwc_np_u8_from_rgb_and_alpha(
+                rgb=blended_rgb_hwc_np_linear_u8,
+                alpha=floor_not_floor_hw_np_u8,
+            )
+
+            do_paste_cutouts = True
+            if do_paste_cutouts:
+                # choose how many of each kind somehow:
+                cutout_kind_to_num_cutouts_to_paste = dict(
+                    player=np.random.randint(0, 12),
+                    referee=np.random.randint(0, 3),
+                    coach=np.random.randint(0, 3),
+                    ball=np.random.randint(0, 10),
+                    led_screen_occluding_object=np.random.randint(0, 2),
+                )
+                league = "nba"
+                pasted_rgba_np_u8 = paste_multiple_cutouts_onto_one_camera_posed_segmentation_annotation(
+                    league=league,
+                    context_id=context_id,
+                    cutouts_by_kind=cutouts_by_kind,
+                    rgba_np_u8=rgba_hwc_np_u8,  # this is not violated by this procedure.
+                    camera_pose=camera_pose,  # to get realistics locations and sizes we need to know the camera pose.
+                    cutout_kind_to_transform=cutout_kind_to_transform, # what albumentations augmentation to use per kind of cutout
+                    cutout_kind_to_num_cutouts_to_paste=cutout_kind_to_num_cutouts_to_paste
+                )
+
+            else:
+                print("we are not pasting cutouts this time.")
+                pasted_rgba_np_u8 = rgba_hwc_np_u8
+
+            annotation_id = f"{clip_id}_{frame_index:06d}"
+            rid = np.random.randint(0, 1_000_000_000_000_000)
+            fake_annotation_id = f"{annotation_id}_fake{rid:015d}"
+
+            fake_original_path = out_dir / f"{fake_annotation_id}_original.jpg"
+            fake_mask_path = out_dir / f"{fake_annotation_id}_nonfloor.png"
+
+        
+
+        
+
+            write_rgb_hwc_np_u8_to_jpg(
+                rgb_hwc_np_u8=pasted_rgba_np_u8[:, :, 0:3],
+                out_abs_file_path=fake_original_path,
+                verbose=True
+            )
+
+            # write_grayscale_hw_np_u8_to_png(
+            #     grayscale_hw_np_u8=floor_not_floor_hw_np_u8 ,
+            #     out_abs_file_path=fake_mask_path,
+            #     verbose=False,
             # )
-            
-            prii(
-                x=pasted_rgba_np_u8[:, :, 0:3],
-                caption="this is the original frame:",
+
+            write_rgba_hwc_np_u8_to_png(
+                rgba_hwc_np_u8=pasted_rgba_np_u8,
+                out_abs_file_path=fake_mask_path,
+                verbose=False
+            )
+            # store products in s3
+            fake_original_sha256 = store_file_by_sha256_in_s3(
+                fake_original_path
             )
 
-            prii(
-                x=original_rgb_np_u8,
-                caption="this is the original frame:",
+            fake_mask_sha256 = store_file_by_sha256_in_s3(
+                fake_mask_path
             )
-        
-        num_completed += 1
-        duration = time.time() - start_time
-        print(f"So far, it has been {duration/60} minutes")
-        seconds_per_item = duration / num_completed
-        estimated_remaining = (out_of - num_completed) * seconds_per_item
-        print(f"completed {num_completed} / {out_of}")
-        print(f"Estimated time remaining: {estimated_remaining/60} minutes.")
+
+            record = dict(
+                clip_id=clip_id,
+                frame_index=frame_index,
+                fake_original_sha256=fake_original_sha256,
+                fake_mask_sha256=fake_mask_sha256,
+            )
+            
+            record_file_path = records_dir_path / f"{fake_annotation_id}.json"
+
+            bj.dump(
+                obj=record,
+                fp=record_file_path
+            )
+
+            print_green(f"pri {record_file_path}")
+            
+            record_s3_file_uri = f"s3://awecomai-temp/records/{fake_annotation_id}.json"
+            
+            upload_file_path_to_s3_file_uri(
+                file_path=record_file_path,
+                s3_file_uri=record_s3_file_uri,
+                expected_hexidecimal_sha256=None,
+                verbose=True,
+            )
+
+                
+            # write_rgb_and_alpha_to_png(
+            #     rgb_hwc_np_u8=pasted_rgba_np_u8,
+            #     alpha_hw_np_u8=floor_not_floor_hw_np_u8,
+            #     out_abs_file_path=fake_mask_path,
+            #     verbose=False
+            # )
+
+            if print_in_iterm2:
+                # prii_linear_f32(
+                #     x=blended_rgb_hwc_np_linear_f32,
+                #     caption="this is the final color corrected result",
+                # )
+                
+                prii(
+                    x=pasted_rgba_np_u8[:, :, 0:3],
+                    caption="this is the original frame:",
+                )
+
+                prii(
+                    x=original_rgb_np_u8,
+                    caption="this is the original frame:",
+                )
+            
+            num_completed += 1
+            duration = time.time() - start_time
+            print(f"So far, it has been {duration/60} minutes")
+            seconds_per_item = duration / num_completed
+            estimated_remaining = (out_of - num_completed) * seconds_per_item
+            print(f"completed {num_completed} / {out_of}")
+            print(f"Estimated time remaining: {estimated_remaining/60} minutes.")
 
 
 
