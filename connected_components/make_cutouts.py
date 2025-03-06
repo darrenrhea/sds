@@ -83,7 +83,7 @@ def make_cutouts():
             original_path=original_path,
         )
         print(index)
-        get_connected_components_of_mask(
+        save_connected_components_of_segmentation_annotation_to_disk(
             original_path=original_path,
             mask_path=mask_path,
             out_dir_path=out_dir_path,
