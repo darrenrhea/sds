@@ -1,3 +1,7 @@
+from print_green import (
+     print_green
+)
+from typing import Optional
 import numpy as np
 import PIL.Image
 from print_image_in_iterm2 import print_image_in_iterm2
@@ -6,6 +10,7 @@ from print_image_in_iterm2 import print_image_in_iterm2
 def prii_rgb_and_alpha(
     rgb_hwc_np_u8: np.ndarray,
     alpha_hw_np_u8: np.ndarray, 
+    caption: Optional[str] = None,
 ) -> None:
     """
     rgb_hwc_np_u8: numpy array of shape (height, width, 3) and dtype uint8
@@ -49,5 +54,6 @@ def prii_rgb_and_alpha(
     
     output_rgba_pil = PIL.Image.fromarray(output_rgba_np_u8)
     
+    print_green(caption)
     print_image_in_iterm2(image_pil=output_rgba_pil)
     

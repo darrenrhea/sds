@@ -11,13 +11,27 @@ def gbccmaeem_get_biggest_connected_component_mask_and_everything_else_mask(
     connected_components = connected_component_masks(
         binary_hw_np_u8=binary_hw_np_u8
     )
-    connected_components = sorted(
-        connected_components,
+
+    connected_components_that_touch_the_ceiling_and_a_wall = [
+        c
+        for c in connected_components
+        if (
+            c["ymin"] == 0
+            and ( 
+               c["xmin"] == 0
+               or
+               c["xmax"] == 1920
+            )
+        )
+    ]
+
+    connected_components_that_touch_the_ceiling_and_a_wall = sorted(
+        connected_components_that_touch_the_ceiling_and_a_wall,
         key=lambda c: (c["measure"], c["xmin"], c["ymin"],),
         reverse=True
     )
 
-    biggest_connected_component = connected_components[0]
+    biggest_connected_component = connected_components_that_touch_the_ceiling_and_a_wall[0]
     biggest_connected_component_mask = biggest_connected_component["mask"]
     
     everything_else_mask = np.logical_and(

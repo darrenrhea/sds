@@ -10,7 +10,8 @@ def get_clip_id_and_frame_index_from_file_name(
 
     k = file_name.find('_')
     assert k != -1, f"Invalid file_name: {file_name}"
-    
+
+    print(file_name)    
     clip_id = file_name[:k]
     
     frame_index = int(
@@ -18,6 +19,7 @@ def get_clip_id_and_frame_index_from_file_name(
     )
 
     valid_clip_ids = [
+        "nfl-59778-skycam",
         "bos-ind-2024-01-30-mxf",
         "bos-mia-2024-04-21-mxf",
         "cle-mem-2024-02-02-mxf",
@@ -26,6 +28,7 @@ def get_clip_id_and_frame_index_from_file_name(
         "dal-min-2023-12-14-mxf",
         "bos-dal-2024-06-06-srt",
         "dal-bos-2024-06-11-calibration",
+        ""
     ]
     assert clip_id in valid_clip_ids, f"Invalid clip_id: {clip_id}"
     prefix = f"{clip_id}_{frame_index:06d}"
