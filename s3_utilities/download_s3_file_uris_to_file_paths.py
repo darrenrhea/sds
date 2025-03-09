@@ -1,15 +1,10 @@
 import pprint
-import time
-from get_a_temp_dir_path import (
-     get_a_temp_dir_path
-)
 from could_be_an_s3_file_uri import (
      could_be_an_s3_file_uri
 )
 import boto3
 from pathlib import Path
 from typing import List, Tuple
-from boto3.s3.transfer import S3Transfer
 from urllib.parse import urlparse
 import concurrent.futures
 
@@ -63,7 +58,7 @@ def download_s3_file_uris_to_file_paths(
         pprint.pprint(src_s3_file_uri_dst_file_path_pairs)
 
     # Use ThreadPoolExecutor to download files concurrently.
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         # Submit all download tasks.
         future_to_file = {
             executor.submit(download_file, s3_uri, local_path): (s3_uri, local_path)
@@ -78,29 +73,3 @@ def download_s3_file_uris_to_file_paths(
             except Exception as exc:
                 print(f"Error downloading {s3_uri} to {local_path}: {exc}")
 
-
-if __name__ == "__main__":
-    num_files = 1000
-    
-    src_s3_file_uri_dst_file_path_pairs = []
-    temp_dir_path = get_a_temp_dir_path()
-    
-    for file_index in range(num_files):
-        p = (
-            f"s3://awecomai-temp/crap/file{file_index}.txt",
-            temp_dir_path / f"file{file_index}.txt",
-        )
-         
-        src_s3_file_uri_dst_file_path_pairs.append(p)
-
-    
-    start = time.time()
-    download_s3_file_uris_to_file_paths(
-       src_s3_file_uri_dst_file_path_pairs=\
-       src_s3_file_uri_dst_file_path_pairs,
-       
-       max_workers=100
-    )
-    stop = time.time()
-    print(f"Elapsed time: {stop - start} seconds to download {num_files} Megabytes")
-    print(f"ls {temp_dir_path}") 

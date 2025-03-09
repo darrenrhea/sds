@@ -508,6 +508,7 @@ def get_clip_id_to_info():
             "footage_s3": "s3://awecomai-test-videos/nba/Mathieu/MUN_ASVEL_CALIB_VID.ts",
         },
         "lon-lei-2024-03-03-mov-yadif": {
+            "youtube_url": "https://www.youtube.com/watch?v=rWN7lkHG4OU",
             "home_team": "LON",
             "away_team": "LEI",
             "date": "2024-03-03",
@@ -517,6 +518,7 @@ def get_clip_id_to_info():
             "footage_s3": "s3://awecomai-test-videos/epl/lon-lei-2024-03-03-mov-yadif.ts",
         },
         "london20240208": {
+            "youtube_url": "https://www.youtube.com/watch?v=id1t__HSUGs",
             "home_team": "LON",
             "away_team": "SHE",
             "date": "2024-02-08",
@@ -527,4 +529,19 @@ def get_clip_id_to_info():
         },
     }
 
+    for clip_id, record in clip_id_to_info.items():
+        assert "league" in record, f"{clip_id=} needs a league"
+        assert "court" in record, f"{clip_id=} needs a court"
+        assert "game_id" in record, f"{clip_id=} needs a game_id"
+        assert "home_team" in record, f"{clip_id=} needs a home_team"
+        assert "away_team" in record, f"{clip_id=} needs a away_team"
+        assert "date" in record, f"{clip_id=} needs a date"
+        assert "youtube_url" in record, f"{clip_id=} needs a youtube_url"
+
+        # assert "quality" in record, f"{clip_id=} needs a quality"
     return clip_id_to_info
+
+
+if __name__ == "__main__":
+    clip_id_to_info = get_clip_id_to_info()
+    

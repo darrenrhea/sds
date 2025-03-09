@@ -1,11 +1,11 @@
+from sjaios_save_jsonable_as_its_own_sha256 import (
+     sjaios_save_jsonable_as_its_own_sha256
+)
 from store_file_by_sha256 import (
      store_file_by_sha256
 )
 from sha256_of_file import (
      sha256_of_file
-)
-from color_print_json import (
-     color_print_json
 )
 import better_json as bj
 from get_clip_id_to_info import (
@@ -21,6 +21,8 @@ from print_green import (
      print_green
 )
 from pathlib import Path
+
+save_file_assets = False
 
 mother_dir_str = [
     "/shared/all_training_data/floor_not_floor",  # 1541
@@ -81,22 +83,24 @@ for mask_path in all_nonfloor_paths:
     court = info["court"]
     original_sha256 = sha256_of_file(original_path)
     mask_sha256 = sha256_of_file(mask_path)
-    store_file_by_sha256(
-        file_path=mask_path,
-        verbose=True,
-    )
-    store_file_by_sha256(
-        file_path=original_path,
-        verbose=True,
-    )
+    if save_file_assets:
+        store_file_by_sha256(
+            file_path=mask_path,
+            verbose=True,
+        )
+        store_file_by_sha256(
+            file_path=original_path,
+            verbose=True,
+        )
 
     dct = {
         "clip_id": clip_id,
         "frame_index": frame_index,
-        "mask_sh256": mask_sha256,
+        "mask_sha256": mask_sha256,
         "original_sha256": original_sha256,
         "court_id": court,
         "game_id": game_id,
+        "info": info,
         # "mask_path": str(mask_path),
         # "original_path": str(original_path),
     }
@@ -108,5 +112,9 @@ out_file_path = Path("~/all_segmentation_annotations.json").expanduser()
 bj.dump(obj=annotations, fp=out_file_path)
 print_green(f"bat {out_file_path}")
 
+sha256 = sjaios_save_jsonable_as_its_own_sha256(
+    obj=annotations
+)
+print(f"{sha256=}")
 
     
