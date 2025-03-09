@@ -43,7 +43,7 @@ def toalli_turn_on_a_lambda_labs_instance_of_this_type(
         "instance_type_name": instance_type_id,
         "ssh_key_names":["aang"],
         "file_system_names":[],
-        "name":"My Instance",
+        "name": what_to_call_the_instance,
         # "image":{"id":"string"},
         "user_data":""
     }
@@ -67,11 +67,12 @@ if __name__ == "__main__":
         min_gpu_memory_per_gpu_in_gigabytes=24,
         desired_num_gpus_per_instance=1,
         max_price_per_hour_in_cents=150,
+        desired_instance_type_ids=["gpu_1x_a100_sxm4"],
     )
     if len(available_instance_types) == 0:
         print_red("No appropriate Lambda Labs instances available.")
         sys.exit(1)
-
+    
     best_instance_type = available_instance_types[0]
     best_instance_type_id = best_instance_type["instance_type"]["instance_type_id"]
     best_region_id = best_instance_type["best_region_id"]
@@ -81,4 +82,5 @@ if __name__ == "__main__":
     toalli_turn_on_a_lambda_labs_instance_of_this_type(
         instance_type_id=best_instance_type_id,
         region_id=best_region_id,
+        what_to_call_the_instance="l0"
     )

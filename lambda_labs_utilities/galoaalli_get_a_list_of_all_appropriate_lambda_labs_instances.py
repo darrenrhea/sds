@@ -10,6 +10,7 @@ def galoaalli_get_a_list_of_all_appropriate_lambda_labs_instances(
     min_gpu_memory_per_gpu_in_gigabytes=24,
     desired_num_gpus_per_instance=1,
     max_price_per_hour_in_cents=150,
+    desired_instance_type_ids=None,
 ) -> None:
     """
     We need to determine which, of all the available Lambda Labs instances,
@@ -50,6 +51,8 @@ def galoaalli_get_a_list_of_all_appropriate_lambda_labs_instances(
         if max_price_per_hour_in_cents is not None and price_cents_per_hour > max_price_per_hour_in_cents:
             good = False
         if instance_type_id in forbidden_instance_type_ids:
+            good = False
+        if desired_instance_type_ids is not None and instance_type_id not in desired_instance_type_ids:
             good = False
         
         if good: 
