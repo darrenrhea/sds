@@ -63,6 +63,8 @@ def toalli_turn_on_a_lambda_labs_instance_of_this_type(
 
 
 if __name__ == "__main__":
+    assert len(sys.argv) == 2, "You must provide a name for the instance, like l0"
+    what_to_call_the_instance = sys.argv[1]
     available_instance_types = galoaalli_get_a_list_of_all_appropriate_lambda_labs_instances(
         min_gpu_memory_per_gpu_in_gigabytes=24,
         desired_num_gpus_per_instance=1,
@@ -82,5 +84,5 @@ if __name__ == "__main__":
     toalli_turn_on_a_lambda_labs_instance_of_this_type(
         instance_type_id=best_instance_type_id,
         region_id=best_region_id,
-        what_to_call_the_instance="l0"
+        what_to_call_the_instance=what_to_call_the_instance,
     )
