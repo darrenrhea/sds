@@ -1,3 +1,4 @@
+import argparse
 import textwrap
 from colorama import Fore, Style
 from collections import OrderedDict
@@ -20,13 +21,24 @@ short_to_long = dict(
 )
 
 def make_setup_dot_py_for_this_dir(
-        checkout_dir: Path
+        checkout_dir: Path,
+        dry_run: bool = False
     ):
     """
-    Given a checkout of a repo with python files,
-    this makes a setup.py to install them all.
-    """
+    Given that you are inside a folder with python files,
+    some of which end in ``_cli_tool.py``,
+    this generates a setup.py to install all
+    the ones that end in ``_cli_tool.py`` as CLI executables
+    when someone does, say,
+    
+    .. code-block:: bash
 
+        cd folder_containing_setup_dot_py
+        pip install -e . --no-deps
+
+    It will also generate a README.md file if you don't have one,
+    and a .gitignore file if you don't have one.
+    """
     assert checkout_dir.is_dir(), "checkout_dir must be a directory"
     name = checkout_dir.name
 
@@ -118,9 +130,13 @@ def make_setup_dot_py_for_this_dir(
     setup_dot_py_path = checkout_dir / "setup.py"
 
     if setup_dot_py_path.exists():
-        print(f"{Fore.GREEN}You already have a setup.py, so we make generated_setup.py for you to compare to.{Style.RESET_ALL}")
-        generated_setup_dot_py_path = checkout_dir / "generated_setup.py"
-        alternative_suggested = True
+        if dry_run:
+            generated_setup_dot_py_path = checkout_dir / "generated_setup.py"
+            alternative_suggested = True
+        else:
+            generated_setup_dot_py_path = checkout_dir / "setup.py"
+            alternative_suggested = False
+
     else:
         print(f"{Fore.GREEN}You don't have a setup.py, so we make you setup.py file:{Style.RESET_ALL}")
         generated_setup_dot_py_path = checkout_dir / "setup.py"
@@ -170,12 +186,18 @@ __pycache__/
 
         print(f"{Fore.MAGENTA}\nAnd if those changes seem reasonable, do:{Style.RESET_ALL}")
         print(f"{Fore.YELLOW}\n    mv generated_setup.py setup.py{Style.RESET_ALL}")
-    else:
-        print_syntax_highlighted_python(result)
 
 def msdp_make_setup_dot_py_cli_tool():
+    argp = argparse.ArgumentParser()
+    argp.add_argument("-n", "--dry_run", action="store_true")
+    args = argp.parse_args()
+    dry_run = args.dry_run
     checkout_dir = Path.cwd()
-    make_setup_dot_py_for_this_dir(checkout_dir)
+
+    make_setup_dot_py_for_this_dir(
+        checkout_dir=checkout_dir,
+        dry_run=dry_run
+    )
 
 
 if __name__ == "__main__":
