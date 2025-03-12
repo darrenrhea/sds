@@ -25,6 +25,7 @@ from collections import defaultdict
 def get_cutouts(
     sport: str,
     league: str,
+    jersey_dir: Path,
     cutout_dirs: List[Path],
     diminish_for_debugging: bool = False,
     just_this_kind: str = None
@@ -52,7 +53,8 @@ def get_cutouts(
     cutouts = []
  
     all_cutout_descriptors = get_cutout_descriptors_from_directories(
-        cutout_dirs=cutout_dirs
+        cutout_dirs=cutout_dirs,
+        jersey_dir=jersey_dir,
     )
     kind_to_cutout_descriptors = dict()
     kind_to_num = dict()

@@ -12,6 +12,7 @@ def get_valid_floor_ids():
         "24-25_HOU_CITY",
         "24-25_HOU_CORE",
         "24-25_HOU_STMT",
+        "24-25_BAL_DAKAR",
     ]
     
     return valid_floor_ids

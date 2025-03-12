@@ -1,3 +1,4 @@
+from pathlib import Path
 from get_all_floor_texture_jsonable_objects import (
      get_all_floor_texture_jsonable_objects
 )
@@ -6,6 +7,7 @@ import numpy as np
 
 def get_a_random_floor_texture_jsonable_object_for_this_context(
     floor_id: str,
+    asset_repos_dir: Path,
 ) -> dict:
     """
     This simply gets one of the hopefully many floor texture jsonable objects that is available for this floor_id.
@@ -27,7 +29,9 @@ def get_a_random_floor_texture_jsonable_object_for_this_context(
 
     """
     assert isinstance(floor_id, str)
-    floor_texture_jsonable_objects = get_all_floor_texture_jsonable_objects()
+    floor_texture_jsonable_objects = get_all_floor_texture_jsonable_objects(
+        asset_repos_dir=asset_repos_dir,
+    )
     
     possibilities = [
         x for x in floor_texture_jsonable_objects

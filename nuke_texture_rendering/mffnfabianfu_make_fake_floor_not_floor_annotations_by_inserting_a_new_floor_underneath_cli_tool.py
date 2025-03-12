@@ -1,3 +1,9 @@
+from open_as_rgba_hwc_np_u8 import (
+     open_as_rgba_hwc_np_u8
+)
+from feathered_paste_for_images_of_the_same_size import (
+     feathered_paste_for_images_of_the_same_size
+)
 from upload_file_path_to_s3_file_uri import (
      upload_file_path_to_s3_file_uri
 )
@@ -91,6 +97,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
             --floor_id 24-25_ALL_STAR \\
             --video_frame_annotations 37deb6dd165db2a0b1d1ea42ecffa1f1161656526ebc7b1fb0410f37718649b2 \\
             --out_dir ~/a/crap \\
+            --records_out_dir ~/records \\
             --print_in_iterm2
     
             or you can use a local .json5 file like:
@@ -142,7 +149,22 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     )
     argp.add_argument(
         "--out_dir",
-        help="The directory where you want to save the fake annotations.",
+        help="The directory where you want to save the fake annotations images",
+        required=True,
+    )
+    argp.add_argument(
+        "--records_out_dir",
+        help="The directory where you want to save the records of each fake annotations",
+        required=True,
+    )
+    argp.add_argument(
+        "--records_s3_dir_uri",
+        help="s3 directory where you want to save the records of each fake annotations",
+        required=False,
+    )
+    argp.add_argument(
+        "--asset_repos_dir",
+        help="The directory into which you clone a bunch of asset repos.",
         required=True,
     )
     argp.add_argument(
@@ -150,32 +172,46 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         help="print the images in iterm2.",
         action="store_true",
     )
+
+    
     opt = argp.parse_args()
     video_frame_annotations_json_file_or_sha256 = opt.video_frame_annotations
     print_in_iterm2 = opt.print_in_iterm2
     floor_id = opt.floor_id
     out_dir = Path(opt.out_dir)
-
     records_dir_path = Path(
-        f"/shared/records"
+        opt.records_out_dir
     )
     records_dir_path.mkdir(exist_ok=True)
+    asset_repos_dir = Path(
+        opt.asset_repos_dir
+    )
+    assert asset_repos_dir.exists()
+    jersey_dir = asset_repos_dir / "jersey_ids"
 
+    records_s3_dir_uri = opt.records_s3_dir_uri
+    if records_s3_dir_uri is not None:
+        assert records_s3_dir_uri.startswith("s3://")
+        assert records_s3_dir_uri.endswith("/")
     # context_id = "dallas_mavericks"
     # context_id = "boston_celtics"
     context_id = "nba_floor_not_floor_pasting"
 
+
+
+    
     cutout_dirs_str = [
-        "/shared/r/nba_misc_cutouts_approved/coaches",
-        "/shared/r/nba_misc_cutouts_approved/coach_kidd",
-        "/shared/r/nba_misc_cutouts_approved/randos",
-        "/shared/r/nba_misc_cutouts_approved/referees",
-        "/shared/r/nba_misc_cutouts_approved/balls",
-        "/shared/r/nba_misc_cutouts_approved/objects",
-        "/shared/r/allstar2025_cutouts_approved/phx_lightblue",
-        "/shared/r/denver_nuggets_cutouts_approved/icon",
-        "/shared/r/denver_nuggets_cutouts_approved/statement",
-        "/shared/r/houston_cutouts_approved/icon",
+    
+        "nba_misc_cutouts_approved/coaches",
+        "nba_misc_cutouts_approved/coach_kidd",
+        "nba_misc_cutouts_approved/randos",
+        "nba_misc_cutouts_approved/referees",
+        "nba_misc_cutouts_approved/balls",
+        "nba_misc_cutouts_approved/objects",
+        "allstar2025_cutouts_approved/phx_lightblue",
+        "denver_nuggets_cutouts_approved/icon",
+        "denver_nuggets_cutouts_approved/statement",
+        "houston_cutouts_approved/icon",
 
         # "/shared/r/houston_cutouts_approved/statement",
         
@@ -204,19 +240,26 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         # "/shared/r/munich_cutouts_approved/referees_faithful",
     ]
 
-    cutout_dirs = [Path(x).expanduser() for x in cutout_dirs_str]
+    cutout_dirs = [
+        asset_repos_dir / x for x in cutout_dirs_str
+    ]
+    for x in cutout_dirs:
+        print(x)
+        assert x.is_dir(), f"{x} does not exist"
+
     diminish_cutouts_for_debugging = False
     sport = "basketball"
     league = "nba"
     cutouts = get_cutouts(
         sport=sport,
         league=league,
+        jersey_dir=jersey_dir,
         cutout_dirs=cutout_dirs,
         diminish_for_debugging=diminish_cutouts_for_debugging
     )
     cutouts_by_kind = group_cutouts_by_kind(
         sport=sport,
-        cutouts=cutouts
+        cutouts=cutouts,
     ) 
 
     valid_floor_ids = get_valid_floor_ids()
@@ -234,7 +277,6 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     mentioned_sha256s = set()
     assert isinstance(video_frame_annotations_metadata, list)
     for annotation in video_frame_annotations_metadata:
-        print()
         assert isinstance(annotation, dict)
         assert "clip_id" in annotation
         assert isinstance(annotation["clip_id"], str)
@@ -248,8 +290,6 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
             if maybe_sha256 is not None:
                 mentioned_sha256s.add(maybe_sha256)
     mentioned_sha256s = list(mentioned_sha256s)
-    for s in mentioned_sha256s:
-        print(s)
     # ENDOF checking that the video_frame_annotations_metadata is valid:
     
     download_the_files_with_these_sha256s(
@@ -287,7 +327,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
 
     out_dir.mkdir(exist_ok=True, parents=True)
     
-    num_laps = 8
+    num_laps = 2
     start_time = time.time()
     num_completed = 0
     out_of = len(local_file_pathed_annotations) * num_laps
@@ -307,6 +347,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
 
             dct = get_a_floor_texture_with_random_shadows_and_lights(
                 floor_id=floor_id,
+                asset_repos_dir=asset_repos_dir,
             )
             color_corrected_texture_rgba_np_linear_f32 = dct["color_corrected_texture_rgba_np_linear_f32"]
             floor_placement_descriptor = dct["floor_placement_descriptor"]
@@ -387,12 +428,27 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
             fake_original_path = out_dir / f"{fake_annotation_id}_original.jpg"
             fake_mask_path = out_dir / f"{fake_annotation_id}_nonfloor.png"
 
-        
+            scorebug_image_file_path = asset_repos_dir / "bal_cutouts_approved/scorebugs/bal2024_egypt_250000_01.png"
+            scorebug_rgba = open_as_rgba_hwc_np_u8(scorebug_image_file_path)
+            prii(scorebug_rgba)
 
-        
+            with_scorebug_rgb = feathered_paste_for_images_of_the_same_size(
+                bottom_layer_color_np_uint8=pasted_rgba_np_u8[:, :, 0:3],
+                top_layer_rgba_np_uint8=scorebug_rgba,
+            )
+
+            with_scorebug_rgba_np_u8 = np.zeros(
+                (pasted_rgba_np_u8.shape[0], pasted_rgba_np_u8.shape[1], 4),
+                dtype=np.uint8
+            )
+            with_scorebug_rgba_np_u8[:, :, 0:3] = with_scorebug_rgb
+            with_scorebug_rgba_np_u8[:, :, 3] = np.maximum(
+                scorebug_rgba[:, :, 3],
+                pasted_rgba_np_u8[:, :, 3],
+            )
 
             write_rgb_hwc_np_u8_to_jpg(
-                rgb_hwc_np_u8=pasted_rgba_np_u8[:, :, 0:3],
+                rgb_hwc_np_u8=with_scorebug_rgba_np_u8[:, :, 0:3],
                 out_abs_file_path=fake_original_path,
                 verbose=True
             )
@@ -404,43 +460,46 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
             # )
 
             write_rgba_hwc_np_u8_to_png(
-                rgba_hwc_np_u8=pasted_rgba_np_u8,
+                rgba_hwc_np_u8=with_scorebug_rgba_np_u8,
                 out_abs_file_path=fake_mask_path,
                 verbose=False
             )
-            # store products in s3
-            fake_original_sha256 = store_file_by_sha256_in_s3(
-                fake_original_path
-            )
-
-            fake_mask_sha256 = store_file_by_sha256_in_s3(
-                fake_mask_path
-            )
-
-            record = dict(
-                clip_id=clip_id,
-                frame_index=frame_index,
-                fake_original_sha256=fake_original_sha256,
-                fake_mask_sha256=fake_mask_sha256,
-            )
             
-            record_file_path = records_dir_path / f"{fake_annotation_id}.json"
+            # many different computers can be generating and uploading to s3 at the same time:
+            if records_s3_dir_uri is not None:
+                # store products in s3
+                fake_original_sha256 = store_file_by_sha256_in_s3(
+                    fake_original_path
+                )
 
-            bj.dump(
-                obj=record,
-                fp=record_file_path
-            )
+                fake_mask_sha256 = store_file_by_sha256_in_s3(
+                    fake_mask_path
+                )
 
-            print_green(f"pri {record_file_path}")
-            
-            record_s3_file_uri = f"s3://awecomai-temp/records/{fake_annotation_id}.json"
-            
-            upload_file_path_to_s3_file_uri(
-                file_path=record_file_path,
-                s3_file_uri=record_s3_file_uri,
-                expected_hexidecimal_sha256=None,
-                verbose=True,
-            )
+                record = dict(
+                    clip_id=clip_id,
+                    frame_index=frame_index,
+                    fake_original_sha256=fake_original_sha256,
+                    fake_mask_sha256=fake_mask_sha256,
+                )
+                
+                record_file_path = records_dir_path / f"{fake_annotation_id}.json"
+
+                bj.dump(
+                    obj=record,
+                    fp=record_file_path
+                )
+
+                print_green(f"pri {record_file_path}")
+                
+                record_s3_file_uri = f"{records_s3_dir_uri} / {fake_annotation_id}.json"
+                
+                upload_file_path_to_s3_file_uri(
+                    file_path=record_file_path,
+                    s3_file_uri=record_s3_file_uri,
+                    expected_hexidecimal_sha256=None,
+                    verbose=True,
+                )
 
                 
             # write_rgb_and_alpha_to_png(
@@ -457,8 +516,13 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
                 # )
                 
                 prii(
-                    x=pasted_rgba_np_u8[:, :, 0:3],
-                    caption="this is the original frame:",
+                    x=fake_original_path,
+                    caption="this is the synthetic / fake original:",
+                )
+
+                prii(
+                    x=fake_mask_path,
+                    caption="this is the synthetic / fake mask:",
                 )
 
                 prii(

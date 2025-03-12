@@ -13,7 +13,13 @@ def feathered_paste_for_images_of_the_same_size(
     assert (
         bottom_layer_color_np_uint8.shape[0] == top_layer_rgba_np_uint8.shape[0]
     ), f"{bottom_layer_color_np_uint8.shape=}, yet {top_layer_rgba_np_uint8.shape=}"
-    assert bottom_layer_color_np_uint8.shape[1] == top_layer_rgba_np_uint8.shape[1]
+    assert (
+        bottom_layer_color_np_uint8.shape[1] == top_layer_rgba_np_uint8.shape[1]
+    ), f"{bottom_layer_color_np_uint8.shape=}, yet {top_layer_rgba_np_uint8.shape=}"
+    
+    assert (
+        top_layer_rgba_np_uint8.shape[2] == 4
+    ), f"{top_layer_rgba_np_uint8.shape=} but must have 4 channels"
 
     # just the color channel of the ad, playercutout, whatever
     top_opacity_np_uint8 = top_layer_rgba_np_uint8[:, :, 3]

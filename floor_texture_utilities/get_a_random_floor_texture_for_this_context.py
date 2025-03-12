@@ -1,3 +1,4 @@
+from pathlib import Path
 from get_valid_floor_ids import (
      get_valid_floor_ids
 )
@@ -17,6 +18,7 @@ from AdPlacementDescriptor import (
 
 def get_a_random_floor_texture_for_this_context(
     floor_id: str,
+    asset_repos_dir: Path,
 ):
     """
     This is one of the most convenient ways to get a floor texture for a given floor_id.
@@ -40,7 +42,8 @@ def get_a_random_floor_texture_for_this_context(
     assert floor_id in valid_floor_ids, f"{floor_id=} is not in {valid_floor_ids=}"
     
     floor_texture_jsonable_object = get_a_random_floor_texture_jsonable_object_for_this_context(
-        floor_id=floor_id
+        floor_id=floor_id,
+        asset_repos_dir=asset_repos_dir,
     )
 
     color_corrected_with_margin = get_color_corrected_floor_texture_with_margin_added(

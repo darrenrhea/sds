@@ -11,8 +11,9 @@ import better_json as bj
 
 @lru_cache(maxsize=1, typed=False)
 def get_all_floor_texture_jsonable_objects(
+    asset_repos_dir: Path,
     slow_check: bool = False,
-    only_approved: bool = True
+    only_approved: bool = True,
 ) -> List[Dict[str, Any]]:
     """
     A list/set of jsonable records that describe each floor texture should be stored somewhere,
@@ -34,7 +35,7 @@ def get_all_floor_texture_jsonable_objects(
 
     """
     # this needs to be stored in a database, a repo, or the file system somewhere:
-    database_file_path = Path("/shared/r/floor_texture_data/floor_texture_data.json5").expanduser()
+    database_file_path = asset_repos_dir / "floor_texture_data/floor_texture_data.json5"
     if not database_file_path.exists():
         raise FileNotFoundError(f"The database file {database_file_path} does not exist.")
     
