@@ -30,6 +30,10 @@ def upload_file_path_to_s3_file_uri(
 
     An error occurred (EntityTooLarge) when calling the PutObject operation: Your proposed upload exceeds the maximum allowed size.
     """
+
+    assert (
+        " " not in s3_file_uri
+    ), f"{s3_file_uri} has a space in it."
     print(
         textwrap.dedent(
             f"""\

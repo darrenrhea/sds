@@ -492,13 +492,13 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
 
                 print_green(f"pri {record_file_path}")
                 
-                record_s3_file_uri = f"{records_s3_dir_uri} / {fake_annotation_id}.json"
+                record_s3_file_uri = f"{records_s3_dir_uri}{fake_annotation_id}.json"
                 
                 upload_file_path_to_s3_file_uri(
                     file_path=record_file_path,
                     s3_file_uri=record_s3_file_uri,
                     expected_hexidecimal_sha256=None,
-                    verbose=True,
+                    verbose=False,
                 )
 
                 
