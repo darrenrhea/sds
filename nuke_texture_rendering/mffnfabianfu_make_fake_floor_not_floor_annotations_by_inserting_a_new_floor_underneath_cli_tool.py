@@ -1,3 +1,6 @@
+from get_random_scorebug_rgba_np_u8 import (
+     get_random_scorebug_rgba_np_u8
+)
 from open_as_rgba_hwc_np_u8 import (
      open_as_rgba_hwc_np_u8
 )
@@ -428,10 +431,9 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
             fake_original_path = out_dir / f"{fake_annotation_id}_original.jpg"
             fake_mask_path = out_dir / f"{fake_annotation_id}_nonfloor.png"
 
-            scorebug_image_file_path = asset_repos_dir / "bal_cutouts_approved/scorebugs/bal2024_egypt_250000_01.png"
-            scorebug_rgba = open_as_rgba_hwc_np_u8(scorebug_image_file_path)
-            prii(scorebug_rgba)
-
+            scorebug_rgba = get_random_scorebug_rgba_np_u8(
+                asset_repos_dir=asset_repos_dir,
+            )
             with_scorebug_rgb = feathered_paste_for_images_of_the_same_size(
                 bottom_layer_color_np_uint8=pasted_rgba_np_u8[:, :, 0:3],
                 top_layer_rgba_np_uint8=scorebug_rgba,
