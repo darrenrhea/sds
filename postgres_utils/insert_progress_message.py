@@ -28,11 +28,7 @@ def insert_progress_message(
     progress_message_jsonable["run_id"] = run_id_str
     json_data = json.dumps(progress_message_jsonable)
 
-
-    conn = get_psycopg2_connection(
-        database_server_name="zeus",
-        database_name="experiment_tracking",
-    )
+    conn = get_psycopg2_connection()
 
     try:
         with conn:
