@@ -5,6 +5,7 @@ setup(
     version="0.1.0",
     py_modules=[
         "get_cuda_devices",
+        "get_torch_backend",
     ],
     license="MIT",
     long_description=open('README.md').read(),

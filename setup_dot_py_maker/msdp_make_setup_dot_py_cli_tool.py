@@ -43,7 +43,6 @@ def make_setup_dot_py_for_this_dir(
     name = checkout_dir.name
 
     all_python_files = list(checkout_dir.glob("**/*.py"))
-    print(f"all_python_files: {all_python_files}")
 
     module_names = sorted([f.stem for f in all_python_files])
 
@@ -196,9 +195,7 @@ def msdp_make_setup_dot_py_cli_tool():
 
     make_setup_dot_py_for_this_dir(
         checkout_dir=checkout_dir,
-        dry_run=dry_run
+        dry_run=dry_run,
     )
 
 
-if __name__ == "__main__":
-    msdp_make_setup_dot_py_cli_tool()
