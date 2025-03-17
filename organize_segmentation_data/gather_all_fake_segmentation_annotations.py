@@ -1,3 +1,6 @@
+from print_red import (
+     print_red
+)
 from sjaios_save_jsonable_as_its_own_sha256 import (
      sjaios_save_jsonable_as_its_own_sha256
 )
@@ -8,9 +11,10 @@ import better_json as bj
 from pathlib import Path
 
 
-s3_folder = "s3://awecomai-temp/records/"
+# s3_folder = "s3://awecomai-temp/records/"
+s3_folder = "s3://awecomai-temp/fake_bal/"
 
-temp_dir_path = Path("~/crappycrap").expanduser()  # get_a_temp_dir_path()
+temp_dir_path = Path("~/bal_records").expanduser()  # get_a_temp_dir_path()
 temp_dir_path.mkdir(parents=True, exist_ok=True)
 
 src_s3_file_uri_dst_file_path_pairs = (
@@ -26,7 +30,12 @@ print(f"ls {temp_dir_path}")
 
 lst = []
 for s3_file_uri, local_file_path in src_s3_file_uri_dst_file_path_pairs:
-    obj = bj.load(local_file_path)
+    try:
+        obj = bj.load(local_file_path)
+    except Exception as e:
+        print_red(f"Error loading {local_file_path}, whatever.")
+        continue
+
     expected_keys = [
         "clip_id",
         "frame_index",

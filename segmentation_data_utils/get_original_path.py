@@ -18,6 +18,9 @@ def get_original_path(
         "hou-lac-2024-11-15-sdi": "/hd2",
         "nfl-59773-skycam-ddv3": "/hd2",
         "nfl-59778-skycam": "/hd2",
+        "bal2024_egypt": "/hd2",
+        "bal2024_senegal": "/hd2",
+        "bal2024_southafrica": "/hd2",
     }
     if clip_id in clip_id_to_folder:
         shared_dir  = Path(clip_id_to_folder[clip_id])
