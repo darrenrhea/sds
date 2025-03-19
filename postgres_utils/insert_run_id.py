@@ -21,10 +21,7 @@ def insert_run_id(
     
     run_id_str = str(run_id_uuid)
 
-    conn = get_psycopg2_connection(
-        database_server_name="zeus",
-        database_name="experiment_tracking",
-    )
+    conn = get_psycopg2_connection()
 
     try:
         with conn:
