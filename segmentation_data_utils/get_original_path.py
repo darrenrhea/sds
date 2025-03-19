@@ -21,6 +21,7 @@ def get_original_path(
         "bal2024_egypt": "/hd2",
         "bal2024_senegal": "/hd2",
         "bal2024_southafrica": "/hd2",
+        "bal2024_rwanda": "/hd2",
     }
     if clip_id in clip_id_to_folder:
         shared_dir  = Path(clip_id_to_folder[clip_id])
