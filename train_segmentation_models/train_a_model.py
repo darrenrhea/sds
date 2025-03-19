@@ -1,3 +1,4 @@
+import uuid
 from form_checkpoint_prefix import (
      form_checkpoint_prefix
 )
@@ -8,6 +9,7 @@ from pathlib import Path
 
 
 def train_a_model(
+    run_id_uuid: uuid.UUID,
     datapoint_path_tuples: List[Tuple[Path, Path, Optional[Path]]],
     other: str,
     resume_checkpoint_path: Optional[str],
@@ -47,7 +49,7 @@ def train_a_model(
     workers_per_gpu = 8
     frame_height = 1088
     frame_width = 1920
-    batch_size = 3
+    batch_size = 8
     do_mixed_precision = True
     do_padding = True
     train_patches_per_image = 1
@@ -57,6 +59,7 @@ def train_a_model(
 
 
     train(
+        run_id_uuid=run_id_uuid,
         model_architecture_id=model_architecture_family_id,
         augmentation_strategy_id=augmentation_strategy_id,
         checkpoint_prefix=checkpoint_prefix,

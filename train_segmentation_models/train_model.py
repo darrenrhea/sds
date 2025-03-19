@@ -1,3 +1,7 @@
+from insert_progress_message import (
+     insert_progress_message
+)
+import uuid
 from typing import Dict
 from calculate_model_outputs import calculate_model_outputs
 from calculate_loss_function import calculate_loss_function
@@ -15,6 +19,7 @@ from torch.utils.data import DataLoader
 from save_checkpoint import (
      save_checkpoint
 )
+import pprint
 
 
 from colorama import Fore, Style
@@ -25,6 +30,7 @@ torch.backends.cudnn.benchmark = True
 
 
 def train_model(
+    run_id_uuid: uuid.UUID,
     device,
     model_architecture_id: str,
     loss_function_family_id: str,
@@ -56,6 +62,7 @@ def train_model(
     num_epochs
     See train.py
     """
+    time_training_began = time.time()
     assert (
         isinstance(model, torch.nn.Module)
     ), f"Why is the type of model {type(model)}, not torch.nn.Module?"
@@ -72,117 +79,153 @@ def train_model(
         loss_parameters=loss_parameters
     )
 
-    best_model_wts = copy.deepcopy(model.state_dict())
-    best_loss = np.inf
-
+    num_samples_trained = 0
     for epoch in range(1, num_epochs + 1):
         print('Epoch {}/{}'.format(epoch, num_epochs))
         print('-' * 10)
 
-        since = time.time()
+        
 
-        # each epoch has a training and validation phase
-        for phase in ['train', 'val']:
-            if phase == 'train':
-                #for param_group in optimizer.param_groups:
-                #    print("LR", param_group['lr'])
+        # BEGIN training an epoch:
+        metrics = defaultdict(float)
+        epoch_samples = 0
+        model.train()
+        for batch_of_channel_stacks in tqdm(dataloaders["train"]):
+            inputs = batch_of_channel_stacks[:, :3, :, :]
+            labels = batch_of_channel_stacks[:, 3:4, :, :]
+            importance_weights = batch_of_channel_stacks[:, 4:5, :, :]
+            assert labels.ndim == 4, "even if there has to be a trivial channel dimension, the labels should be 4D, not 3D"
+            assert importance_weights.size() == labels.size(), "the importance weights should be the same size as the labels"
+            inputs = inputs.cuda()
+            labels = labels.cuda()
+            importance_weights = importance_weights.cuda()
 
-                model.train()
-            else:
-                model.eval()
 
+            # zero the parameter gradients
+            optimizer.zero_grad()
+
+            with torch.set_grad_enabled(True):
+                with WITH_AMP():
+                    dict_of_output_tensors = calculate_model_outputs(
+                        model=model,
+                        model_architecture_id=model_architecture_id,
+                        inputs=inputs,
+                        train=True
+                    )
+                    
+                    # this call mutates the metrics:
+                    loss = calculate_loss_function(
+                        loss_function_family_id=loss_function_family_id,
+                        loss_parameters=loss_parameters,
+                        dict_of_output_tensors=dict_of_output_tensors,
+                        labels=labels,
+                        importance_weights=importance_weights,
+                        metrics=metrics
+                    )
+
+                    # loss.backward()
+                    scaler.scale(loss).backward()
+                    #optimizer.step()
+                    scaler.step(optimizer)
+                    scaler.update()
+                    
+
+            # statistics
+            epoch_samples += inputs.size(0)
+        
+        scheduler.step()
+        
+        print_metrics(metrics, epoch_samples, phase="train")
+        print(f"train {epoch_samples=}")
+        num_samples_trained += epoch_samples
+        # ENDOF training an epoch.
+
+
+        # we should not validate every epoch because it takes time:
+        if epoch % test_model_interval == 0 or epoch == num_epochs or epoch == 1:
+            do_validation = True
+        else:
+            print(f"{Fore.RED}I am skipping the validation phase because {epoch=}{Style.RESET_ALL}")
+            do_validation = False
+        
+        if do_validation:
+            # BEGIN validation:
             metrics = defaultdict(float)
             epoch_samples = 0
+            model.eval()
+            for batch_of_channel_stacks in tqdm(dataloaders['val']):
+                inputs = batch_of_channel_stacks[:, :3, :, :]
+                labels = batch_of_channel_stacks[:, 3:4, :, :]
+                importance_weights = batch_of_channel_stacks[:, 4:5, :, :]
+                assert labels.ndim == 4, "even if there has to be a trivial channel dimension, the labels should be 4D, not 3D"
+                assert importance_weights.size() == labels.size(), "the importance weights should be the same size as the labels"
+                inputs = inputs.cuda()
+                labels = labels.cuda()
+                importance_weights = importance_weights.cuda()
 
-            # we should not validate every epoch because it takes time:
-            if not (epoch % test_model_interval == 0 or epoch == num_epochs) and phase == 'val':
-                print(f"{Fore.RED}I am skipping validation because {epoch=}{Style.RESET_ALL}")
-                continue
-            if phase == 'train':
-                for batch_of_channel_stacks in tqdm(dataloaders[phase]):
-                    inputs = batch_of_channel_stacks[:, :3, :, :]
-                    labels = batch_of_channel_stacks[:, 3:4, :, :]
-                    importance_weights = batch_of_channel_stacks[:, 4:5, :, :]
-                    assert labels.ndim == 4, "even if there has to be a trivial channel dimension, the labels should be 4D, not 3D"
-                    assert importance_weights.size() == labels.size(), "the importance weights should be the same size as the labels"
-                    inputs = inputs.cuda()
-                    labels = labels.cuda()
-                    importance_weights = importance_weights.cuda()
+                with torch.set_grad_enabled(False):
+                    with WITH_AMP():
+                        dict_of_output_tensors = calculate_model_outputs(
+                            model=model,
+                            model_architecture_id=model_architecture_id,
+                            inputs=inputs,
+                            train=True
+                        )
+                        
+                        # this call mutates the metrics:
+                        loss = calculate_loss_function(
+                            loss_function_family_id=loss_function_family_id,
+                            loss_parameters=loss_parameters,
+                            dict_of_output_tensors=dict_of_output_tensors,
+                            labels=labels,
+                            importance_weights=importance_weights,
+                            metrics=metrics
+                        )
+
+                # statistics
+                epoch_samples += inputs.size(0)
+
+            print_metrics(metrics, epoch_samples, phase="val")
+            l1_loss = metrics["mse"] / epoch_samples
+            final_metrics = dict(
+                l1_loss=l1_loss,
+            )
+            pprint.pprint(final_metrics)
+            time_elapsed = time.time() - time_training_began
+            print('{:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
 
 
-                    # zero the parameter gradients
-                    optimizer.zero_grad()
+            progress_message_jsonable = dict(
+                seconds_elapsed=time_elapsed,
+                num_samples_trained=num_samples_trained,
+                metrics=final_metrics,
+            )
+            insert_progress_message(
+                run_id_uuid=run_id_uuid,
+                progress_message_jsonable=progress_message_jsonable,
+            )
+            # ENDOF validation.
 
-                    # forward
-                    # track history if only in train
-                    with torch.set_grad_enabled(phase == 'train'):
-                        with WITH_AMP():
-                            dict_of_output_tensors = calculate_model_outputs(
-                                model=model,
-                                model_architecture_id=model_architecture_id,
-                                inputs=inputs,
-                                train=True
-                            )
-                            
-                            # this call mutates the metrics:
-                            loss = calculate_loss_function(
-                                loss_function_family_id=loss_function_family_id,
-                                loss_parameters=loss_parameters,
-                                dict_of_output_tensors=dict_of_output_tensors,
-                                labels=labels,
-                                importance_weights=importance_weights,
-                                metrics=metrics
-                            )
-
-                            # backward + optimize only if in training phase
-                            if phase == 'train':
-                                # loss.backward()
-                                scaler.scale(loss).backward()
-                                #optimizer.step()
-                                scaler.step(optimizer)
-                                scaler.update()
-                            
-
-                    # statistics
-                    epoch_samples += inputs.size(0)
-
-                print_metrics(metrics, epoch_samples, phase)
-                epoch_loss = metrics['loss'] / epoch_samples
-                tqdm.write(f'epoch loss {epoch_loss:g}')
-
-            # deep copy the model
-            if phase == 'val':
-                checkpoint_extra = {
-                    'model_architecture_id': model,
-                    'frame_width': frame_width,
-                    'frame_height': frame_height,
-                    'patch_width': patch_width,
-                    'patch_height': patch_height,
-                }
-                # TODO: wire thru save checkpoint frequency
-                if epoch % test_model_interval == 0 or epoch == num_epochs:   # save periodically and also one last time.
-                    out_path = checkpoints_dir / f"{checkpoint_prefix}_epoch{epoch:06d}.pt"
-                    save_checkpoint(
-                        model=model,
-                        optimizer=optimizer,
-                        epoch=epoch,
-                        out_path=out_path,
-                        scheduler=scheduler,
-                        extra = checkpoint_extra)
-                    tqdm.write(f'saved checkpoint {out_path}')
+        
+            checkpoint_extra = {
+                'model_architecture_id': model,
+                'frame_width': frame_width,
+                'frame_height': frame_height,
+                'patch_width': patch_width,
+                'patch_height': patch_height,
+            }
+            # TODO: wire thru save checkpoint frequency            
+            
+            out_path = checkpoints_dir / f"{checkpoint_prefix}_epoch{epoch:06d}.pt"
+            
+            save_checkpoint(
+                model=model,
+                optimizer=optimizer,
+                epoch=epoch,
+                out_path=out_path,
+                scheduler=scheduler,
+                extra = checkpoint_extra)
+            tqdm.write(f'saved checkpoint {out_path}')
 
 
 
-                # prepare next training epoch
-                scheduler.step()
-
-              
-
-        time_elapsed = time.time() - since
-        print('{:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
-
-    print('best val loss: {:g}'.format(best_loss))
-
-    # load best model weights
-    model.load_state_dict(best_model_wts)
-    return model

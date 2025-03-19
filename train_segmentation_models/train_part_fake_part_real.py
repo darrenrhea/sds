@@ -1,3 +1,6 @@
+from insert_run_id import (
+     insert_run_id
+)
 from pathlib import Path
 from train_a_model import (
      train_a_model
@@ -16,6 +19,9 @@ from download_the_files_with_these_sha256s import (
 from ltjfthts_load_the_jsonlike_file_that_has_this_sha256 import (
      ltjfthts_load_the_jsonlike_file_that_has_this_sha256
 )
+from print_green import (
+     print_green
+)
 
 
 def train_part_fake_part_real():
@@ -27,14 +33,30 @@ def train_part_fake_part_real():
         "6d7074c40a5aa53286f14e8127d2822f9e5ccb68bee112fa6e43f10f4c6a8485"  # this is 1541 real annotations, 1425 of which are nba
     )
     
+    # python organize_segmentation_data/gather_all_fake_segmentation_annotations.py
     fake_data_sha256 = (
-        # "d46eb4099a655c3d3d4c9a98682cdef93e0042e8e433093d6971aa4f11135d1b"
-        "4a04e0dc13f03d9cb6956060044740f98710c8c1d9c19ec8dde8da27939b1e44" # BAL, albeit only partially generated
+        # "d46eb4099a655c3d3d4c9a98682cdef93e0042e8e433093d6971aa4f11135d1b"  # allstars 5408 of them
+        "4a04e0dc13f03d9cb6956060044740f98710c8c1d9c19ec8dde8da27939b1e44" # BAL, albeit only partially generated, 877
+        "4d05435f93db1d0bfaf431c8df27edc61d88b9c21a1819f61d4af9fa64c3d8db", # fully generated BAL, 2704 
     )
 
-    resume_checkpoint_path = Path(
-        "/shared/checkpoints/u3fasternets-floor-10911frames-1920x1088-citydec27_epoch000001.pt"
+    run_description_jsonable = dict(
+        real_data_sha256=real_data_sha256,
+        fake_data_sha256=fake_data_sha256,
     )
+
+    run_id_uuid = insert_run_id(
+        run_description_jsonable=run_description_jsonable
+    )
+    
+    print_green(
+        f"run_id = {str(run_id_uuid)}"
+    )
+
+    resume_checkpoint_path = None
+    resume_checkpoint_path = get_file_path_of_sha256("32b6b27bc294dee980b62df7dd7950f975781e3c78e6223af4b1f8ea41cbb309")
+    # i.e. u3fasternets-floor-10911frames-1920x1088-citydec27_epoch000001.pt"
+    
 
     if resume_checkpoint_path is not None:
         assert resume_checkpoint_path.is_file(), f"{resume_checkpoint_path} is not an extant file"
@@ -124,13 +146,12 @@ def train_part_fake_part_real():
             (original_path, mask_path, None)
         )
 
-    
-
     # print(f"{datapoint_path_tuples=}")
     num_training_points = len(datapoint_path_tuples)
     print_yellow(f"Between fake and real, that is {num_training_points=}")
 
     train_a_model(
+        run_id_uuid=run_id_uuid,
         datapoint_path_tuples=datapoint_path_tuples,
         other=f"fake{how_many_fake_datapoints}real{num_real_datapoints}",
         resume_checkpoint_path=resume_checkpoint_path,

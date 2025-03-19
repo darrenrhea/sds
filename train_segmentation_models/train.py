@@ -1,3 +1,4 @@
+import uuid
 from get_normalization_and_chw_transform import (
      get_normalization_and_chw_transform
 )
@@ -38,6 +39,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def train(
+    run_id_uuid: uuid.UUID,
     model_architecture_id: str,
     augmentation_strategy_id: str,
     checkpoint_prefix: str,
@@ -291,6 +293,7 @@ train(
             scheduler.load_state_dict(checkpoint['lr_scheduler'])
 
     model = train_model(
+        run_id_uuid = run_id_uuid,
         device = device,
         model_architecture_id = model_architecture_id,
         loss_function_family_id = loss_function_family_id,
