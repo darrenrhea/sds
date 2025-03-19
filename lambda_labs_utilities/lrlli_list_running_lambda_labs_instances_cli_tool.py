@@ -1,3 +1,4 @@
+import sys
 import textwrap
 from color_print_json import (
      color_print_json
