@@ -41,10 +41,11 @@ def lrlli_list_running_lambda_labs_instances_cli_tool():
     print("You might want to add the following to your ~/.ssh/config file:")
     for running_instance in running_instances:
         ip = running_instance["ip"]
+        name = running_instance.get("name", "unknownname")
         print(
             textwrap.dedent(
                 f"""
-                Host l0
+                Host {name}
                     forwardagent yes
                     user ubuntu
                     port 22

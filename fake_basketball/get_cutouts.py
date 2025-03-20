@@ -21,6 +21,8 @@ from typing import (
 )
 from collections import defaultdict
 
+from prii import prii
+
 
 def get_cutouts(
     sport: str,
@@ -188,8 +190,37 @@ def get_cutouts(
 
 
 if __name__ == "__main__":
-    get_cutouts(
-        context_id="athens",
+     
+    asset_repos_dir = Path("~/r").expanduser()
+
+    jersey_dir = asset_repos_dir / "jersey_ids"
+
+    cutout_dirs_str = [
+        "nba_misc_cutouts_approved/coaches",
+        "nba_misc_cutouts_approved/coach_kidd",
+        "nba_misc_cutouts_approved/randos",
+        # "nba_misc_cutouts_approved/referees",  now that we are doing BAL we need yellow shirt referees
+        "bal_cutouts_approved/referees",
+        "nba_misc_cutouts_approved/balls",
+        "nba_misc_cutouts_approved/objects",
+        "allstar2025_cutouts_approved/phx_lightblue",
+        "denver_nuggets_cutouts_approved/icon",
+        "denver_nuggets_cutouts_approved/statement",
+        "houston_cutouts_approved/icon",
+    ]
+    cutout_dirs = [
+        asset_repos_dir / x
+        for x in cutout_dirs_str
+    ]
+
+    cutouts = get_cutouts(
+        sport="basketball",
+        league="nba",
+        jersey_dir=jersey_dir,
+        cutout_dirs=cutout_dirs,
         diminish_for_debugging=False,
-        just_this_kind=None
     )
+    np.random.shuffle(cutouts)
+
+    for cutout in cutouts:
+        prii(cutout.rgba_np_u8)

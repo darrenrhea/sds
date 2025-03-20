@@ -1,3 +1,4 @@
+import pprint
 import random
 import sys
 from color_print_json import color_print_json
@@ -227,6 +228,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         "denver_nuggets_cutouts_approved/icon",
         "denver_nuggets_cutouts_approved/statement",
         "houston_cutouts_approved/icon",
+        "houston_cutouts_approved/statement",
 
         # "/shared/r/houston_cutouts_approved/statement",
         
@@ -262,16 +264,19 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         print(x)
         assert x.is_dir(), f"{x} does not exist"
 
-    diminish_cutouts_for_debugging = False
+    diminish_cutouts_for_debugging = True
     sport = "basketball"
     league = "nba"
-    cutouts = get_cutouts(
-        sport=sport,
-        league=league,
-        jersey_dir=jersey_dir,
-        cutout_dirs=cutout_dirs,
-        diminish_for_debugging=diminish_cutouts_for_debugging
+    cutouts = (  # a list of PastableCutout objects
+        get_cutouts(
+            sport=sport,
+            league=league,
+            jersey_dir=jersey_dir,
+            cutout_dirs=cutout_dirs,
+            diminish_for_debugging=diminish_cutouts_for_debugging
+        )
     )
+
     cutouts_by_kind = group_cutouts_by_kind(
         sport=sport,
         cutouts=cutouts,
@@ -283,15 +288,11 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         floor_id in valid_floor_ids
     ), f"{floor_id=} is not valid. Valid values are {valid_floor_ids=}"
 
-    local_json_file_path = gfpfwmbasoafoafps_get_file_path_from_what_might_be_a_sha256_of_a_file_or_a_file_path_str(
-        s=video_frame_annotations_json_file_or_sha256
+  
+    video_frame_annotations_metadata = osofpsaj_open_sha256_or_file_path_str_as_json(
+        sha256_or_local_file_path_str=video_frame_annotations_json_file_or_sha256
     )
-    video_frame_annotations_metadata = bj.load(local_json_file_path)
-
-    local_json_file_path = gfpfwmbasoafoafps_get_file_path_from_what_might_be_a_sha256_of_a_file_or_a_file_path_str(
-        s=video_frame_annotations_json_file_or_sha256
-    )
-    
+  
     scorebug_config = osofpsaj_open_sha256_or_file_path_str_as_json(
         sha256_or_local_file_path_str=scorebug_config_json_file_or_sha256
     )
@@ -381,8 +382,13 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
             floor_not_floor_hw_np_u8 = work_item["floor_not_floor_hw_np_u8"]
             camera_pose = work_item["camera_pose"]
 
-            assert camera_pose.f > 0, f"camera_pose.f is 0.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
-            assert camera_pose.loc[1] < 180.0, f"camera loc y is > 180.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
+            assert (
+                camera_pose.f > 0
+            ), f"camera_pose.f is 0.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
+            
+            assert (
+                camera_pose.loc[1] < 180.0
+            ), f"camera loc y is > 180.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
 
             dct = get_a_floor_texture_with_random_shadows_and_lights(
                 floor_id=floor_id,
