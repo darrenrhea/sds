@@ -17,7 +17,6 @@ def train_a_model(
     num_epochs: Optional[int],
 ):
 
-    print(f"{datapoint_path_tuples=}")
     num_training_points = len(datapoint_path_tuples)
     print(f"{Fore.YELLOW}{num_training_points=}{Style.RESET_ALL}")
 
