@@ -5,6 +5,8 @@ import io
 import PIL.Image
 from typing import Optional
 
+from ptse import ptse
+
 
 def get_data_of_png_of_image_pil(
     image_pil: PIL.Image.Image,
@@ -131,7 +133,7 @@ def print_image_in_iterm2(
             
     assert isinstance(title, str)
     if show:
-        print("")
+        ptse("")
         print_data_image_in_iterm2(
             data=data,
             title=title

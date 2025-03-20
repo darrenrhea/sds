@@ -1,9 +1,9 @@
 import base64
 import os
-
+import sys
 
 def print_partial(msg):
-    print(msg, end='')
+    print(msg, end='', file=sys.stderr)
 
 # tmux requires unrecognized OSC sequences to be wrapped with DCS tmux;
 # <sequence> ST, and for all ESCs in <sequence> to be replaced with ESC ESC. It
@@ -47,4 +47,4 @@ def print_data_image_in_iterm2(
     print_partial(":")
     print_partial(b64_data)
     print_st(terminal)
-    print("")
+    print("", file=sys.stderr)
