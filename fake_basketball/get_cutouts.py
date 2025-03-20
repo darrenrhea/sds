@@ -191,7 +191,7 @@ def get_cutouts(
 
 if __name__ == "__main__":
      
-    asset_repos_dir = Path("~/r").expanduser()
+    asset_repos_dir = Path("/shared/r").expanduser()
 
     jersey_dir = asset_repos_dir / "jersey_ids"
 
