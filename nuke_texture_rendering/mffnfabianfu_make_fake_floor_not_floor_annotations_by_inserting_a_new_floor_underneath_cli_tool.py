@@ -221,7 +221,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         "nba_misc_cutouts_approved/coach_kidd",
         "nba_misc_cutouts_approved/randos",
         # "nba_misc_cutouts_approved/referees",  now that we are doing BAL we need yellow shirt referees
-        "bal_cutouts_approved/referees",
+        # "bal_cutouts_approved/referees",
         "nba_misc_cutouts_approved/balls",
         "nba_misc_cutouts_approved/objects",
         "allstar2025_cutouts_approved/phx_lightblue",
