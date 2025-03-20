@@ -67,7 +67,7 @@ def train_fake_hou_core_with_no_fixups():
     resume_checkpoint_sha256 = "1e8419e216b1f3ffe32b2c96c89b939a90d259081309f8c8199e659a007c0469"
 
     resume_checkpoint_path = get_file_path_of_sha256(
-        sha256=resume_checkpoint_sha256
+        sha256=resume_checkpoint_sha256,
         check=True
     )
 
