@@ -169,7 +169,12 @@ def dotflat_cli_tool():
     for key in approval_info.keys():
         assert key in ["approved", "rejected", "unknown"], f"ERROR: {approvals_file} has a key {key} that is not one of approved, rejected, or unknown!"
     
-    approved_strs = approval_info["approved"]
+    approved_strs_or_ints = approval_info["approved"]
+    approved_strs = [
+        str(x)
+        for x in approved_strs_or_ints
+    ]
+    # approved_strs = approval_info["approved"]
     rejected_strs = approval_info["rejected"]
     unknown_strs = []  # we regenerate runknown as what is not approved nor rejected.
     
