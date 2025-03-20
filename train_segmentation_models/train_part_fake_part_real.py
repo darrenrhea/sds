@@ -1,3 +1,6 @@
+from get_datapoint_path_tuples_for_bal import (
+     get_datapoint_path_tuples_for_bal
+)
 from insert_run_id import (
      insert_run_id
 )
@@ -36,8 +39,8 @@ def train_part_fake_part_real():
     # python organize_segmentation_data/gather_all_fake_segmentation_annotations.py
     fake_data_sha256 = (
         # "d46eb4099a655c3d3d4c9a98682cdef93e0042e8e433093d6971aa4f11135d1b"  # allstars 5408 of them
-        "4a04e0dc13f03d9cb6956060044740f98710c8c1d9c19ec8dde8da27939b1e44" # BAL, albeit only partially generated, 877
-        "4d05435f93db1d0bfaf431c8df27edc61d88b9c21a1819f61d4af9fa64c3d8db", # fully generated BAL, 2704 
+        # "4a04e0dc13f03d9cb6956060044740f98710c8c1d9c19ec8dde8da27939b1e44" # BAL, albeit only partially generated, 877
+        "4d05435f93db1d0bfaf431c8df27edc61d88b9c21a1819f61d4af9fa64c3d8db" # fully generated BAL, 2704 
     )
 
     run_description_jsonable = dict(
@@ -53,9 +56,12 @@ def train_part_fake_part_real():
         f"run_id = {str(run_id_uuid)}"
     )
 
-    resume_checkpoint_path = None
-    resume_checkpoint_path = get_file_path_of_sha256("32b6b27bc294dee980b62df7dd7950f975781e3c78e6223af4b1f8ea41cbb309")
+    # resume_checkpoint_path = None
+    # resume_checkpoint_path = get_file_path_of_sha256("32b6b27bc294dee980b62df7dd7950f975781e3c78e6223af4b1f8ea41cbb309")
     # i.e. u3fasternets-floor-10911frames-1920x1088-citydec27_epoch000001.pt"
+    # resume_checkpoint_path = Path("/shared/checkpoints/u3fasternets-floor-2302frames-1920x1088-fake877real1425_epoch000559.pt")
+    # resume_checkpoint_path = Path("/shared/checkpoints/u3fasternets-floor-7914frames-1920x1088-fake2704real1425_epoch000006.pt")
+    resume_checkpoint_path = Path("/shared/checkpoints/u3fasternets-floor-9114frames-1920x1088-fake2704real1425_epoch000076.pt")
     
 
     if resume_checkpoint_path is not None:
@@ -112,7 +118,7 @@ def train_part_fake_part_real():
     print_yellow(f"Using {how_many_fake_datapoints=} (MAX possible is {len(fake_data)})")
     fake_data = fake_data[:how_many_fake_datapoints]
     
-    datapoint_path_tuples = []
+    fake_datapoint_path_tuples = []
     for x in fake_data:
         fake_mask_sha256 = x["fake_mask_sha256"]
         fake_original_sha256 = x["fake_original_sha256"]
@@ -126,9 +132,11 @@ def train_part_fake_part_real():
             check=False,
         )
         assert original_path is not None
-        datapoint_path_tuples.append(
+        fake_datapoint_path_tuples.append(
             (original_path, mask_path, None)
         )
+
+    analogous_datapoint_path_tuples = []
     for x in appropriate_real_data:
         mask_sha256 = x["mask_sha256"]
         original_sha256 = x["original_sha256"]
@@ -142,9 +150,27 @@ def train_part_fake_part_real():
             check=False,
         )
         assert original_path is not None
-        datapoint_path_tuples.append(
+        analogous_datapoint_path_tuples.append(
             (original_path, mask_path, None)
         )
+
+    fixups = get_datapoint_path_tuples_for_bal()
+    upmultiplied_analogous_datapoint_path_tuples = analogous_datapoint_path_tuples * 2
+    upmultiplied_fixups = []
+    for _ in range(40):
+        upmultiplied_fixups += fixups
+    
+    print(f"{len(fake_datapoint_path_tuples)=}")
+    print(f"{len(upmultiplied_analogous_datapoint_path_tuples)=}")
+    print(f"{len(upmultiplied_fixups)=}")
+
+    datapoint_path_tuples = (
+        fake_datapoint_path_tuples
+        +
+        upmultiplied_analogous_datapoint_path_tuples
+        +
+        upmultiplied_fixups
+    )
 
     # print(f"{datapoint_path_tuples=}")
     num_training_points = len(datapoint_path_tuples)
@@ -158,6 +184,7 @@ def train_part_fake_part_real():
         drop_a_model_this_often=1,
         num_epochs=100000,
     )
+
 
 if __name__ == "__main__":
     train_part_fake_part_real()
