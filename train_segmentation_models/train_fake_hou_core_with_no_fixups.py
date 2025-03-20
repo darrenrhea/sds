@@ -31,6 +31,8 @@ from ltjfthts_load_the_jsonlike_file_that_has_this_sha256 import (
 from print_green import (
      print_green
 )
+import numpy as np
+import math
 
 
 
@@ -160,10 +162,10 @@ def train_fake_hou_core_with_no_fixups():
         )
 
    
-    multiplier = np.ceil(desired_num_analogous / len(analogous_datapoint_path_tuples))
+    multiplier = math.ceil(desired_num_analogous / len(analogous_datapoint_path_tuples))
     upmultiplied_analogous_datapoint_path_tuples = analogous_datapoint_path_tuples * multiplier
     upmultiplied_analogous_datapoint_path_tuples = upmultiplied_analogous_datapoint_path_tuples[:desired_num_analogous]
-    
+    how_many_analogous_datapoints = len(upmultiplied_analogous_datapoint_path_tuples)
     print(f"{len(fake_datapoint_path_tuples)=}")
     print(f"{len(upmultiplied_analogous_datapoint_path_tuples)=}")
 
