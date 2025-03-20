@@ -264,7 +264,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         print(x)
         assert x.is_dir(), f"{x} does not exist"
 
-    diminish_cutouts_for_debugging = True
+    diminish_cutouts_for_debugging = False
     sport = "basketball"
     league = "nba"
     cutouts = (  # a list of PastableCutout objects
