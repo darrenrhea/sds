@@ -20,5 +20,6 @@ def color_print_json(jsonable):
         lexer=lexers.JsonLexer(),
         formatter=formatters.TerminalFormatter()
     )
+    # we print to stderr:
     ptse(colorful_json)
 

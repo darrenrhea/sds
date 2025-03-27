@@ -53,7 +53,7 @@ def datfitsfitf_download_all_the_files_in_this_s3_folder_into_this_folder(
     )
     stop = time.time()
     num_files = len(s3_file_uris)
-    print(f"Elapsed time: {stop - start} seconds to download {num_files} megabytes using {max_workers=}")
+    print(f"Elapsed time: {stop - start} seconds to download {num_files} files using {max_workers=}")
     print(f"ls {dst_dir_path}")
 
     return src_s3_file_uri_dst_file_path_pairs

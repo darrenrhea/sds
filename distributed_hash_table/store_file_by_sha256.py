@@ -137,7 +137,7 @@ def store_file_by_sha256(
     else:
         print_yellow("We need to upload it to s3 because it is not there yet.")
 
-        # TODO: upload it in such a manner that s3 puts the sha256 on the metadata of s3:
+        # TODO: upload it in such a manner that s3 puts the sha256 on the metadata of s3 via upload_file_path_to_s3_file_uri:
         subprocess.run(
             args=[
                 "aws",
@@ -145,7 +145,8 @@ def store_file_by_sha256(
                 "cp",
                 str(storage_location),
                 "s3://awecomai-shared/sha256/"
-            ]
+            ],
+            capture_output=True,  # you have to watch out, because if you don't capture the output, it will pollute into the caller's stdout
         )
 
     print_green(

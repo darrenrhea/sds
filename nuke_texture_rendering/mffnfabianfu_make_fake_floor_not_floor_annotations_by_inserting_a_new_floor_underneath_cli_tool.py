@@ -1,3 +1,7 @@
+import pprint
+import random
+import sys
+from color_print_json import color_print_json
 from get_random_scorebug_rgba_np_u8 import (
      get_random_scorebug_rgba_np_u8
 )
@@ -7,6 +11,8 @@ from open_as_rgba_hwc_np_u8 import (
 from feathered_paste_for_images_of_the_same_size import (
      feathered_paste_for_images_of_the_same_size
 )
+from open_sha256s_as_rgba_hwc_np_u8s import open_sha256s_as_rgba_hwc_np_u8s
+from osofpsaj_open_sha256_or_file_path_str_as_json import osofpsaj_open_sha256_or_file_path_str_as_json
 from upload_file_path_to_s3_file_uri import (
      upload_file_path_to_s3_file_uri
 )
@@ -151,6 +157,11 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         required=True,
     )
     argp.add_argument(
+        "--scorebug_config",
+        help="Either a json5 file configuring the scorebugs or the sha256 thereof.",
+        required=True,
+    )
+    argp.add_argument(
         "--out_dir",
         help="The directory where you want to save the fake annotations images",
         required=True,
@@ -179,6 +190,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     
     opt = argp.parse_args()
     video_frame_annotations_json_file_or_sha256 = opt.video_frame_annotations
+    scorebug_config_json_file_or_sha256 = opt.scorebug_config
     print_in_iterm2 = opt.print_in_iterm2
     floor_id = opt.floor_id
     out_dir = Path(opt.out_dir)
@@ -208,14 +220,15 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         "nba_misc_cutouts_approved/coaches",
         "nba_misc_cutouts_approved/coach_kidd",
         "nba_misc_cutouts_approved/randos",
-        # "nba_misc_cutouts_approved/referees",  now that we are doing BAL we need yellow shirt referees
-        "bal_cutouts_approved/referees",
+        "nba_misc_cutouts_approved/referees",
+        # "bal_cutouts_approved/referees",
         "nba_misc_cutouts_approved/balls",
         "nba_misc_cutouts_approved/objects",
         "allstar2025_cutouts_approved/phx_lightblue",
         "denver_nuggets_cutouts_approved/icon",
         "denver_nuggets_cutouts_approved/statement",
         "houston_cutouts_approved/icon",
+        "houston_cutouts_approved/statement",
 
         # "/shared/r/houston_cutouts_approved/statement",
         
@@ -254,13 +267,16 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     diminish_cutouts_for_debugging = False
     sport = "basketball"
     league = "nba"
-    cutouts = get_cutouts(
-        sport=sport,
-        league=league,
-        jersey_dir=jersey_dir,
-        cutout_dirs=cutout_dirs,
-        diminish_for_debugging=diminish_cutouts_for_debugging
+    cutouts = (  # a list of PastableCutout objects
+        get_cutouts(
+            sport=sport,
+            league=league,
+            jersey_dir=jersey_dir,
+            cutout_dirs=cutout_dirs,
+            diminish_for_debugging=diminish_cutouts_for_debugging
+        )
     )
+
     cutouts_by_kind = group_cutouts_by_kind(
         sport=sport,
         cutouts=cutouts,
@@ -272,11 +288,17 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
         floor_id in valid_floor_ids
     ), f"{floor_id=} is not valid. Valid values are {valid_floor_ids=}"
 
-    local_json_file_path = gfpfwmbasoafoafps_get_file_path_from_what_might_be_a_sha256_of_a_file_or_a_file_path_str(
-        s=video_frame_annotations_json_file_or_sha256
+  
+    video_frame_annotations_metadata = osofpsaj_open_sha256_or_file_path_str_as_json(
+        sha256_or_local_file_path_str=video_frame_annotations_json_file_or_sha256
     )
-    video_frame_annotations_metadata = bj.load(local_json_file_path)
-   
+  
+    scorebug_config = osofpsaj_open_sha256_or_file_path_str_as_json(
+        sha256_or_local_file_path_str=scorebug_config_json_file_or_sha256
+    )
+    print("We will protect these scorebugs:")
+    color_print_json(scorebug_config)
+    
     # BEGIN checking that the video_frame_annotations_metadata is valid, and also gather mentioned sha256s
     mentioned_sha256s = set()
     assert isinstance(video_frame_annotations_metadata, list)
@@ -296,13 +318,27 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     mentioned_sha256s = list(mentioned_sha256s)
     # ENDOF checking that the video_frame_annotations_metadata is valid:
     
+    scorebug_sha256s = []
+    for scorebug in scorebug_config["scorebugs"]:
+        scorebug_sha256s.append(scorebug["scorebug_sha256"])
+        
+    mentioned_sha256s.extend(scorebug_sha256s)
+    
+    # unique-ify:
+    mentioned_sha256s = list(set(mentioned_sha256s))
+    
+    # download the files:
     download_the_files_with_these_sha256s(
         sha256s_to_download=mentioned_sha256s,
         max_workers=10,
         verbose=True,
     )
 
-        
+    scorebug_rgbas = open_sha256s_as_rgba_hwc_np_u8s(
+        sha256s=scorebug_sha256s
+    )
+    for x in scorebug_rgbas:
+        prii(x)
     # video_frame_annotations_metadata_sha256 = "99bc2c688a6bd35f08b873495d062604e0b954244e6bb20f5c5a76826ac53524"
 
     cutout_kind_to_transform = dict(
@@ -346,8 +382,13 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
             floor_not_floor_hw_np_u8 = work_item["floor_not_floor_hw_np_u8"]
             camera_pose = work_item["camera_pose"]
 
-            assert camera_pose.f > 0, f"camera_pose.f is 0.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
-            assert camera_pose.loc[1] < 180.0, f"camera loc y is > 180.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
+            assert (
+                camera_pose.f > 0
+            ), f"camera_pose.f is 0.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
+            
+            assert (
+                camera_pose.loc[1] < 180.0
+            ), f"camera loc y is > 180.0 for {clip_id=} {frame_index=} i.e. file {work_item['camera_pose_json_file_path']}"
 
             dct = get_a_floor_texture_with_random_shadows_and_lights(
                 floor_id=floor_id,
@@ -432,9 +473,8 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
             fake_original_path = out_dir / f"{fake_annotation_id}_original.jpg"
             fake_mask_path = out_dir / f"{fake_annotation_id}_nonfloor.png"
 
-            scorebug_rgba = get_random_scorebug_rgba_np_u8(
-                asset_repos_dir=asset_repos_dir,
-            )
+            scorebug_rgba = random.choice(scorebug_rgbas)
+
             with_scorebug_rgb = feathered_paste_for_images_of_the_same_size(
                 bottom_layer_color_np_uint8=pasted_rgba_np_u8[:, :, 0:3],
                 top_layer_rgba_np_uint8=scorebug_rgba,

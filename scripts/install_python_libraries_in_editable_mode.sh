@@ -34,6 +34,7 @@ led_alignment
 nuke_lens_distortion
 nuke_texture_rendering
 onnx_stuff
+postgres_utils
 primitive_logging
 print_image_in_iterm2
 rodrigues_utils
