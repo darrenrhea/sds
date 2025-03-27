@@ -1,36 +1,22 @@
-import sys
+from pathlib import Path
 import textwrap
-from color_print_json import (
-     color_print_json
+from list_lambda_labs_instances import (
+     list_lambda_labs_instances
 )
-import os
-import requests
+import better_json as bj
+from overwrite_the_dot_ssh_slash_config_file import (
+     overwrite_the_dot_ssh_slash_config_file
+)
+
+
 
 def lrlli_list_running_lambda_labs_instances_cli_tool():
     """
-    As a warmup to starting instances at Lambda Labs,
-    we will first list all the running instances.
+    List all the instances at Lambda Labs.
+    If they are running, add them to the ~/.ssh/config file.
     """
-    api_key = os.environ.get("lambda_labs_api_key")
-    url = "https://cloud.lambdalabs.com/api/v1/instances"
-    headers = {
-        "accept": "application/json"
-    }
-
-    # Perform the GET request with basic authentication (password left blank)
-    response = requests.get(url, headers=headers, auth=(api_key, ""))
-
-    # Check the response status and print the output
-    if response.ok:
-        print("Request was successful!")
-        obj = response.json()
-        color_print_json(obj)
-    else:
-        print("Error:", response.status_code)
-        print(response.text)
-        sys.exit(1)
     
-    data = obj["data"]
+    data = list_lambda_labs_instances()
     
     running_instances = [
         instance
@@ -38,7 +24,8 @@ def lrlli_list_running_lambda_labs_instances_cli_tool():
         if instance["status"] in ["active", "running"]
     ]
 
-    print("You might want to add the following to your ~/.ssh/config file:")
+    print("We are adding the following to your ~/.ssh/config file:")
+    entries = []
     for running_instance in running_instances:
         ip = running_instance["ip"]
         name = running_instance.get("name", "unknownname")
@@ -54,4 +41,19 @@ def lrlli_list_running_lambda_labs_instances_cli_tool():
                 """
             )
         )
+        entry = {
+            "host": name,
+            "forwardagent": "yes",
+            "user": "ubuntu",
+            "port": "22",
+            "hostname": ip,
+            "identityfile": "~/.ssh/id_rsa",
+            "StrictHostKeyChecking": "no",
+        }
+        entries.append(entry)
+    
+    generated_file_path = Path("~/.ssh/dynamic_ssh_config.json5").expanduser()
+    bj.dump(obj=entries, fp=generated_file_path)
+    overwrite_the_dot_ssh_slash_config_file()
+    
       

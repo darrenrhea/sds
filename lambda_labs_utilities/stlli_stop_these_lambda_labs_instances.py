@@ -12,6 +12,9 @@ from gllak_get_lambda_labs_api_key import (
      gllak_get_lambda_labs_api_key
 )
 import requests
+from translate_lambda_labs_names_to_instance_ids import (
+     translate_lambda_labs_names_to_instance_ids
+)
 
 
 def stlli_stop_these_lambda_labs_instances(
@@ -29,7 +32,6 @@ def stlli_stop_these_lambda_labs_instances(
         "Accept": "application/json",
     }
 
-    # if you leave out the image, it will choose the default image
     json_to_post = {
         "instance_ids": instance_ids,
     }
@@ -41,7 +43,9 @@ def stlli_stop_these_lambda_labs_instances(
     )
     if response.ok:
         print_yellow("Stopping theses Lambda Labs instances:")
-        color_print_json(response.json())
+        color_print_json(
+            response.json()
+        )
     else:
         print_red("Error terminating Lambda Labs instances:")
         print(f"{response.status_code=}")
@@ -49,9 +53,19 @@ def stlli_stop_these_lambda_labs_instances(
 
 
 if __name__ == "__main__":
-    instance_ids = [
-        "8cdec69999b343caadfb625a23430b64",
-    ]
+    instance_ids = []
+    name_to_instance_id = translate_lambda_labs_names_to_instance_ids()
+    
+    names = ["l0", "l1"]
+
+    for name in names:
+        instance_id = name_to_instance_id.get(name)
+        if instance_id is None:
+            print_red(f"Could not resolve the instance named {name} to an instance_id")
+            continue
+        instance_ids.append(instance_id)
+    
+
     stlli_stop_these_lambda_labs_instances(
         instance_ids=instance_ids,
     )
