@@ -1,3 +1,6 @@
+from get_file_path_of_sha256 import (
+     get_file_path_of_sha256
+)
 from get_datapoint_path_tuples_for_bal import (
      get_datapoint_path_tuples_for_bal
 )
@@ -61,7 +64,8 @@ def train_part_fake_part_real():
     # i.e. u3fasternets-floor-10911frames-1920x1088-citydec27_epoch000001.pt"
     # resume_checkpoint_path = Path("/shared/checkpoints/u3fasternets-floor-2302frames-1920x1088-fake877real1425_epoch000559.pt")
     # resume_checkpoint_path = Path("/shared/checkpoints/u3fasternets-floor-7914frames-1920x1088-fake2704real1425_epoch000006.pt")
-    resume_checkpoint_path = Path("/shared/checkpoints/u3fasternets-floor-9114frames-1920x1088-fake2704real1425_epoch000076.pt")
+    # resume_checkpoint_path = Path("/shared/checkpoints/u3fasternets-floor-9114frames-1920x1088-fake2704real1425_epoch000076.pt")
+    resume_checkpoint_path = get_file_path_of_sha256("75d81b99f5052f352b087f17ed0b38207da85aee8bd71cd8b2e0ec7dc1af885e")
     
 
     if resume_checkpoint_path is not None:
