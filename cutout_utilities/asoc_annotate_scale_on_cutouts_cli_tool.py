@@ -20,7 +20,7 @@ def asoc_annotate_scale_on_cutouts_cli_tool():
         description="annotate the scale of a bunch of cutouts of the same kind, team, league, and uniform colors",
         usage=textwrap.dedent(
             """\
-            python annotate_scale_on_cutouts.py ~/r/boston_cutouts_approved/green boston-celtics_green_1
+            python annotate_scale_on_cutouts.py nba ~/r/boston_cutouts_approved/green boston-celtics_green_1
             """
         )
     )

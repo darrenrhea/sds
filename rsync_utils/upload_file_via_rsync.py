@@ -1,3 +1,4 @@
+from print_green import print_green
 from remote_directory_exists import (
      remote_directory_exists
 )
@@ -52,7 +53,7 @@ def upload_file_via_rsync(
         assert isinstance(arg, str), f"{arg} of type {type(arg)} is not a string"
     
     if verbose:
-        print(" ".join(args))
+        print_green(" ".join(args))
 
     subprocess.run(
         args=args,
