@@ -76,8 +76,13 @@ scorebugs = [
 
 print_green("ff -r /Users/darrenrhea/a/scorebugs/from_video/")
 
+jsonable = dict(
+    description="BAL scorebugs derived from RGBA mxf videos",
+    scorebugs=scorebugs,
+)
+
 scorebugs_derived_from_videos_sha256 = sjaios_save_jsonable_as_its_own_sha256(
-    obj=scorebugs,
+    obj=jsonable,
     indent=4,
     sort_keys=False
 )

@@ -216,45 +216,30 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
 
     
     cutout_dirs_str = [
-    
-        "nba_misc_cutouts_approved/coaches",
-        "nba_misc_cutouts_approved/coach_kidd",
-        "nba_misc_cutouts_approved/randos",
-        "nba_misc_cutouts_approved/referees",
-        # "bal_cutouts_approved/referees",
-        "nba_misc_cutouts_approved/balls",
-        "nba_misc_cutouts_approved/objects",
         "allstar2025_cutouts_approved/phx_lightblue",
+        "athens_cutouts_approved/white_with_green",  # seem quality
+        "bal_cutouts_approved/referees",
+        "boston_celtics_cutouts_approved/association",
+        "boston_celtics_cutouts_approved/statement",
+        "cleveland_cavaliers_cutouts_approved/statement",
+        "dallas_mavericks_cutouts_approved/association",
+        "dallas_mavericks_cutouts_approved/statement",
         "denver_nuggets_cutouts_approved/icon",
         "denver_nuggets_cutouts_approved/statement",
+        "efs_cutouts_approved/white_with_blue_and_orange",
         "houston_cutouts_approved/icon",
         "houston_cutouts_approved/statement",
-
-        # "/shared/r/houston_cutouts_approved/statement",
-        
-        # "/shared/r/miami_heat_cutouts_approved/statement",
-        # "/shared/r/cleveland_cavaliers_cutouts_approved/statement",
-        
-        # "/shared/r/dallas_mavericks_cutouts_approved/association",
-        # "/shared/r/boston_celtics_cutouts_approved/statement",
-
-        # # June 12:
-        # "/shared/r/dallas_mavericks_cutouts_approved/statement",
-        # "/shared/r/boston_celtics_cutouts_approved/association",
-
-        # # June 17:
-        # "/shared/r/dallas_mavericks_cutouts_approved/association",
-        # "/shared/r/boston_celtics_cutouts_approved/icon",
-
-
-        # "/shared/r/efs_cutouts_approved/white_with_blue_and_orange",
-        # "/shared/r/athens_cutouts_approved/white_with_green",  # seem quality
-        # "/shared/r/zalgiris_cutouts_approved/white_with_green",  # seem quality
-        # "/shared/r/munich_cutouts_approved/maroon_uniform_shoes",  # just one guy
-        # "/shared/r/munich_cutouts_approved/maroon_uniforms",  # color seems off
-        # "/shared/r/munich_cutouts_approved/balls",
-        # "/shared/r/munich_cutouts_approved/coaches_faithful",
-        # "/shared/r/munich_cutouts_approved/referees_faithful",
+        "miami_heat_cutouts_approved/statement",
+        "munich_cutouts_approved/balls",
+        "munich_cutouts_approved/coaches_faithful",
+        "munich_cutouts_approved/referees_faithful",
+        "nba_misc_cutouts_approved/balls",
+        "nba_misc_cutouts_approved/coach_kidd",
+        "nba_misc_cutouts_approved/coaches",
+        "nba_misc_cutouts_approved/objects",
+        "nba_misc_cutouts_approved/randos",
+        "nba_misc_cutouts_approved/referees",
+        "zalgiris_cutouts_approved/white_with_green",  # seem quality
     ]
 
     cutout_dirs = [
