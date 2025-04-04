@@ -337,10 +337,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     scorebug_rgbas = open_sha256s_as_rgba_hwc_np_u8s(
         sha256s=scorebug_sha256s
     )
-    for x in scorebug_rgbas:
-        prii(x)
-    # video_frame_annotations_metadata_sha256 = "99bc2c688a6bd35f08b873495d062604e0b954244e6bb20f5c5a76826ac53524"
-
+    
     cutout_kind_to_transform = dict(
         player=get_cutout_augmentation("player"),
         referee=get_cutout_augmentation("referee"),

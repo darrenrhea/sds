@@ -46,6 +46,9 @@ def get_camera_pose_from_clip_id_and_frame_index(
 
         # ATLvBOS_PGM_core_esp_11-16-2022_game_from162085_to604850_50m_out-track_24-11-19_19-40-03.ts
         "atl-bos-2022-11-16-ingest": ("ecddaf0e40b8743d37a99817a695eec5877a1f8111a3feceaaf674ac91f1a395", 0),
+
+        # mathieu tracked 20 minutes of senegal
+        "bal2024_senegal": ("7fb4dbf84bfd74d39f50f6a2a69a404253158c15e8c71746379ff2021b0ff837", 134265),
     }
     assert (
         clip_id in clip_id_to_track_sha256_and_offset
@@ -64,7 +67,10 @@ def get_camera_pose_from_clip_id_and_frame_index(
             jsonlines_path=jsonlines_path
         )
         # print("Finished loading the jsonlines file.")
-
+        if clip_id == "bal2024_senegal":
+            camera_poses = [
+                convert(x) for x in camera_poses
+            ]
 
         clip_id_to_camera_poses_and_index_offset[clip_id] = (camera_poses, index_offset)
     
