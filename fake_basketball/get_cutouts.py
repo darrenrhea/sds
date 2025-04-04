@@ -1,3 +1,6 @@
+from get_cutout_dirs_str_for_bal import (
+     get_cutout_dirs_str_for_bal
+)
 from get_cutout_descriptors_from_directories import (
      get_cutout_descriptors_from_directories
 )
@@ -195,18 +198,7 @@ if __name__ == "__main__":
 
     jersey_dir = asset_repos_dir / "jersey_ids"
 
-    cutout_dirs_str = [
-        "nba_misc_cutouts_approved/coaches",
-        "nba_misc_cutouts_approved/coach_kidd",
-        "nba_misc_cutouts_approved/randos",
-        "nba_misc_cutouts_approved/referees",
-        "nba_misc_cutouts_approved/balls",
-        "nba_misc_cutouts_approved/objects",
-        "allstar2025_cutouts_approved/phx_lightblue",
-        "denver_nuggets_cutouts_approved/icon",
-        "denver_nuggets_cutouts_approved/statement",
-        "houston_cutouts_approved/icon",
-    ]
+    cutout_dirs_str = get_cutout_dirs_str_for_bal()
     cutout_dirs = [
         asset_repos_dir / x
         for x in cutout_dirs_str
