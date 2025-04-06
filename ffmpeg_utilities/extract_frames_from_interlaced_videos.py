@@ -19,14 +19,17 @@ if __name__ == "__main__":
         # ("EB_23-24_R20_BAY-RMB.mxf", "munich2024-01-09-1080i-yadif"),
         # ("EB_23-24_R27_BAY-CZV.mxf", "bay-czv-2024-03-01"),
         # ("EB_23_24_R15_BAY-EFS.mxf", 'bay-efs-2023-12-20'),
-        ("EB_23_24_R16_ZAL-BAR.mxf", "zal-bar-2023-12-22-mxf"),
+        # ("EB_23_24_R16_ZAL-BAR.mxf", "zal-bar-2023-12-22-mxf"),
+        (
+            Path("/shared/videos/HyperDeck_0005.mov"),
+            "fus-aia-2025-04-05",
+        ),
     ]
 
     shared_dir = get_the_large_capacity_shared_directory()
 
-    for video, clip_id in pairs_of_video_path_and_clip_id:
+    for input_video_abs_file_path, clip_id in pairs_of_video_path_and_clip_id:
 
-        input_video_abs_file_path = Path("/Volumes/NBA/Euroleague") / video
         png_or_jpg = "jpg"
         pix_fmt = "yuvj422p"
         # this is fields-per-second, not frames-per-second.
@@ -34,10 +37,10 @@ if __name__ == "__main__":
         fps = 50.0  
         
         frame_indices = [
-            x for x in range(500, 600000, 500)
+            x for x in range(100, 999999, 100)
         ]
         
-        out_dir = shared_dir / "clips" / clip_id / "frames"
+        out_dir = Path("/shared/clips") / clip_id / "frames"
         out_dir.mkdir(parents=True, exist_ok=True)
 
         pairs_of_frame_index_and_abs_out_path = [
@@ -67,16 +70,16 @@ if __name__ == "__main__":
 
                 mkdir -p ~/a/clips/{clip_id}/frames
 
-                rsync -rP 'squanchy:~/a/clips/{clip_id}/frames/' ~/a/clips/{clip_id}/frames/
+                rsync -rP 'g1:/shared/clips/{clip_id}/frames/' ~/a/clips/{clip_id}/frames/
 
                 # Then open the folder and select some frames for cutouts:
                 open ~/a/clips/{clip_id}/frames/
 
                 Suggest that for LAM you do:
 
-                mkdir -p /media/drhea/muchspace/clips/{clip_id}/frames
+                mkdir -p /hd2/clips/{clip_id}/frames
 
-                rsync -rP 'squanchy:~/a/clips/{clip_id}/frames/' /media/drhea/muchspace/clips/{clip_id}/frames/
+                rsync -rP 'g1:/shared/clips/{clip_id}/frames/' /hd2/clips/{clip_id}/frames/
                 """
             )
     )
