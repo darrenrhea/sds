@@ -71,6 +71,8 @@ class SHA256ToS3FileURIResolver(object):
         self,
         sha256: str,
     ) -> Optional[str]:
+        """
+        """
         return self.map_from_sha256_to_s3_file_uri.get(sha256, None)
     
         
