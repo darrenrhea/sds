@@ -24,7 +24,7 @@ def train_a_model(
     patch_width = 1920
     patch_height = 1088
     model_architecture_family_id = "u3fasternets"
-    augmentation_strategy_id = "wednesday" # felix3" # imagemaskmotionblur
+    augmentation_strategy_id = "identity" # wednesday" # felix3" # imagemaskmotionblur
 
     checkpoint_prefix = form_checkpoint_prefix(
         other=other,

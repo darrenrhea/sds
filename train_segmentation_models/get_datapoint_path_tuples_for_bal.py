@@ -20,6 +20,9 @@ def get_datapoint_path_tuples_for_bal(
         mother_dir / "bal2024_southafrica_floor/.approved",
         mother_dir / "bal2024_senegal_floor/.approved",
         mother_dir / "bal2024_rwanda_floor/.approved",
+        mother_dir / "stadepart2_floor/.approved",
+        mother_dir / "fus-aia-2025-04-05_floor/.approved",
+        
     ]
 
     for dataset_folder in dataset_folders:
