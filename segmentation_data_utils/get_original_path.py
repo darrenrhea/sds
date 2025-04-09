@@ -17,16 +17,22 @@ def get_original_path(
         "hou-ind-2024-11-20-sdi": "/hd2",
         "hou-lac-2024-11-15-sdi": "/hd2",
         "nfl-59773-skycam-ddv3": "/hd2",
+        "allstar-2025-02-16-sdi": "/hd2",
         "nfl-59778-skycam": "/hd2",
         "bal2024_egypt": "/hd2",
         "bal2024_senegal": "/hd2",
         "bal2024_southafrica": "/hd2",
         "bal2024_rwanda": "/hd2",
+        "short-bal": "/hd2",
+        "stadepart2": "/hd2",
+        "fus-aia-2025-04-05": "/hd2",
+        "rabat": "/hd2",
+
     }
     if clip_id in clip_id_to_folder:
         shared_dir  = Path(clip_id_to_folder[clip_id])
     else:
-        print(f"IM HERE!!!{shared_dir=}")
+        print(f"IM HERE BECAUSE YOU DIDNT SPECIFY WHICH HARDDRIVE!!!{shared_dir=}")
         shared_dir = get_the_large_capacity_shared_directory()
 
     
