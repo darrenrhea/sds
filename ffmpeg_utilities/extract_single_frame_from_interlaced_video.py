@@ -1,3 +1,6 @@
+from get_nonbroken_ffmpeg_file_path import (
+     get_nonbroken_ffmpeg_file_path
+)
 import sys
 from get_a_temp_dir_path import (
      get_a_temp_dir_path
@@ -61,6 +64,9 @@ def extract_single_frame_from_interlaced_video(
     ), f"ERROR: {input_video_abs_file_path} must be absolute"
 
     assert frame_index_to_extract >= 4, f"ERROR: {frame_index_to_extract} must be >= 4 but you gave {frame_index_to_extract=}"
+
+    non_broken_ffmpeg_file_path = get_nonbroken_ffmpeg_file_path()
+
     earlier_frame = frame_index_to_extract // 2 * 2 - 2
     lead_time = frame_index_to_extract - earlier_frame
     
@@ -96,16 +102,8 @@ def extract_single_frame_from_interlaced_video(
     else:
         raise Exception()
 
-    if png_or_jpg == "jpg":
-        ifjpg = [
-            "-filter:v",
-            "scale=1920:-1:out_color_matrix=bt601:out_range=pc",
-        ]
-    else:
-        ifjpg = []
-
     args = [
-        "ffmpeg",
+        str(non_broken_ffmpeg_file_path),
         "-y",
         "-nostdin",
         "-accurate_seek",

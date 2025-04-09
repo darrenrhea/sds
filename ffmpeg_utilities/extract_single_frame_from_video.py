@@ -11,6 +11,9 @@ from crazy_fps_calculation import (
 import subprocess
 from pathlib import Path
 import argparse
+from print_yellow import print_yellow
+from print_green import print_green
+from print_red import print_red
 
 
 def extract_single_frame_from_video(
@@ -108,14 +111,6 @@ def extract_single_frame_from_video(
     else:
         raise Exception()
 
-    if png_or_jpg == "jpg":
-        ifjpg = [
-            "-filter:v",
-            "scale=1920:-1:out_color_matrix=bt601:out_range=pc",
-        ]
-    else:
-        ifjpg = []
-
     args = [
         str(non_broken_ffmpeg_file_path),
         "-y",
@@ -130,7 +125,8 @@ def extract_single_frame_from_video(
     if deinterlace:
         args += [
             "-vf",
-            "yadif=mode=1",
+            #"yadif=mode=1",
+            "bwdif=mode=1",  # bwdif is better than yadif
         ]
       
     
@@ -153,7 +149,7 @@ def extract_single_frame_from_video(
         str(out_frame_abs_file_path)
     ]
 
-    print(" \\\n".join(args))
+    print_green(" \\\n".join(args))
     subprocess.run(args=args)
     print(f"pri {out_frame_abs_file_path}")
 

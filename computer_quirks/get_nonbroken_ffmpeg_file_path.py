@@ -9,8 +9,9 @@ def get_nonbroken_ffmpeg_file_path() -> Path:
     if name in ["jerry", "appa", "morty", "lam"]:
         nonbroken_ffmpeg_file_path = Path("/usr/bin/ffmpeg")
     elif name in ["korra", "aang", "squanchy"]:
-        # versions of ffmpeg later than 4 do not extract jpegs correctly:
-        nonbroken_ffmpeg_file_path = Path("/opt/homebrew/opt/ffmpeg@4/bin/ffmpeg")
+        nonbroken_ffmpeg_file_path = Path("/opt/homebrew/bin/ffmpeg")
+    elif name in ["dockercontainer"]:
+        nonbroken_ffmpeg_file_path = Path("/shared/ffmpeg-7.0.2-amd64-static/ffmpeg")
     else:
         raise Exception(f"computer_quirks doesn't know where the non-broken ffmpeg executable file path is for the computer named {name}")
     assert(

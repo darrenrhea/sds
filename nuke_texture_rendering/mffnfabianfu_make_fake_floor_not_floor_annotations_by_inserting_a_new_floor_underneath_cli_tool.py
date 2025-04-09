@@ -1,3 +1,6 @@
+from get_cutout_dirs_str_for_bal import (
+     get_cutout_dirs_str_for_bal
+)
 import pprint
 import random
 import sys
@@ -215,47 +218,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
 
 
     
-    cutout_dirs_str = [
-    
-        "nba_misc_cutouts_approved/coaches",
-        "nba_misc_cutouts_approved/coach_kidd",
-        "nba_misc_cutouts_approved/randos",
-        "nba_misc_cutouts_approved/referees",
-        # "bal_cutouts_approved/referees",
-        "nba_misc_cutouts_approved/balls",
-        "nba_misc_cutouts_approved/objects",
-        "allstar2025_cutouts_approved/phx_lightblue",
-        "denver_nuggets_cutouts_approved/icon",
-        "denver_nuggets_cutouts_approved/statement",
-        "houston_cutouts_approved/icon",
-        "houston_cutouts_approved/statement",
-
-        # "/shared/r/houston_cutouts_approved/statement",
-        
-        # "/shared/r/miami_heat_cutouts_approved/statement",
-        # "/shared/r/cleveland_cavaliers_cutouts_approved/statement",
-        
-        # "/shared/r/dallas_mavericks_cutouts_approved/association",
-        # "/shared/r/boston_celtics_cutouts_approved/statement",
-
-        # # June 12:
-        # "/shared/r/dallas_mavericks_cutouts_approved/statement",
-        # "/shared/r/boston_celtics_cutouts_approved/association",
-
-        # # June 17:
-        # "/shared/r/dallas_mavericks_cutouts_approved/association",
-        # "/shared/r/boston_celtics_cutouts_approved/icon",
-
-
-        # "/shared/r/efs_cutouts_approved/white_with_blue_and_orange",
-        # "/shared/r/athens_cutouts_approved/white_with_green",  # seem quality
-        # "/shared/r/zalgiris_cutouts_approved/white_with_green",  # seem quality
-        # "/shared/r/munich_cutouts_approved/maroon_uniform_shoes",  # just one guy
-        # "/shared/r/munich_cutouts_approved/maroon_uniforms",  # color seems off
-        # "/shared/r/munich_cutouts_approved/balls",
-        # "/shared/r/munich_cutouts_approved/coaches_faithful",
-        # "/shared/r/munich_cutouts_approved/referees_faithful",
-    ]
+    cutout_dirs_str = get_cutout_dirs_str_for_bal()
 
     cutout_dirs = [
         asset_repos_dir / x for x in cutout_dirs_str
@@ -337,10 +300,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     scorebug_rgbas = open_sha256s_as_rgba_hwc_np_u8s(
         sha256s=scorebug_sha256s
     )
-    for x in scorebug_rgbas:
-        prii(x)
-    # video_frame_annotations_metadata_sha256 = "99bc2c688a6bd35f08b873495d062604e0b954244e6bb20f5c5a76826ac53524"
-
+    
     cutout_kind_to_transform = dict(
         player=get_cutout_augmentation("player"),
         referee=get_cutout_augmentation("referee"),
