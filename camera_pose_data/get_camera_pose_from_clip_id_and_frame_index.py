@@ -1,9 +1,11 @@
+import sys
 from get_file_path_of_sha256 import (
      get_file_path_of_sha256
 )
 import better_json as bj
 from CameraParameters import CameraParameters
 
+import pprint
 
 # this is memoization of loading the large jsonlines files:
 clip_id_to_camera_poses_and_index_offset = dict()
@@ -49,6 +51,7 @@ def get_camera_pose_from_clip_id_and_frame_index(
 
         # mathieu tracked 20 minutes of senegal
         "bal2024_senegal": ("7fb4dbf84bfd74d39f50f6a2a69a404253158c15e8c71746379ff2021b0ff837", 134265),
+        "rabat": ("312159b2488c13aa264d34113a06993ad9ed211d653c2380a225d892fefea252", 1070),
     }
     assert (
         clip_id in clip_id_to_track_sha256_and_offset
@@ -62,10 +65,14 @@ def get_camera_pose_from_clip_id_and_frame_index(
         jsonlines_path = get_file_path_of_sha256(
             sha256=track_sha256
         )
-        # print("Starting to load the jsonlines file.")
+        print(f"Starting to load the jsonlines file {jsonlines_path}")
         camera_poses = bj.load_jsonlines(
             jsonlines_path=jsonlines_path
         )
+        index = 1070
+        print(f"{index=}")
+        pprint.pprint(camera_poses[index])
+        # sys.exit(0)
         # print("Finished loading the jsonlines file.")
         if clip_id == "bal2024_senegal":
             camera_poses = [
@@ -80,14 +87,20 @@ def get_camera_pose_from_clip_id_and_frame_index(
     
     camera_pose = camera_poses[mathieu_frame_index]
     
-    camera_pose = CameraParameters(
-        rod=camera_pose["rod"],
-        loc=camera_pose["loc"],
-        f=camera_pose["f"],
-        ppi=0.0,
-        ppj=0.0,
-        k1=camera_pose["k1"],
-        k2=camera_pose["k2"],
+    pprint.pprint(
+        camera_pose
     )
+    if "rod" in camera_pose:
+        camera_pose = CameraParameters(
+            rod=camera_pose["rod"],
+            loc=camera_pose["loc"],
+            f=camera_pose["f"],
+            ppi=0.0,
+            ppj=0.0,
+            k1=camera_pose["k1"],
+            k2=camera_pose["k2"],
+        )
+    else:
+        camera_pose = None
 
     return camera_pose

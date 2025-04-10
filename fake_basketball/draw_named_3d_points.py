@@ -1,3 +1,4 @@
+from typing import Optional
 from nuke_lens_distortion import nuke_world_to_pixel_coordinates
 import numpy as np
 from Drawable2DImage import Drawable2DImage
@@ -6,13 +7,16 @@ from CameraParameters import CameraParameters
 
 def draw_named_3d_points(
     original_rgb_np_u8: np.ndarray,  # does not mutate this
-    camera_pose: CameraParameters,
+    camera_pose: Optional[CameraParameters],
     landmark_name_to_xyz: dict,
 ) -> np.ndarray:
     """
     You have a video frame and a camera pose. You have a bunch of 3D points in the world. You want to draw them on the image.
     """
-    assert isinstance(camera_pose, CameraParameters)
+    if camera_pose is None:
+        pass
+    else:
+        assert isinstance(camera_pose, CameraParameters)
     assert isinstance(original_rgb_np_u8, np.ndarray)
     assert original_rgb_np_u8.dtype == np.uint8
     assert original_rgb_np_u8.ndim == 3
@@ -33,37 +37,38 @@ def draw_named_3d_points(
         expand_by_factor=2
     )
 
-    pixel_points = dict()
-    for landmark_name, p_giwc in landmark_name_to_xyz.items():
-        p_giwc = landmark_name_to_xyz[landmark_name]
-    
-
-        x_pixel, y_pixel, is_visible = nuke_world_to_pixel_coordinates(
-            p_giwc=np.array(p_giwc),
-            camera_parameters=camera_pose,
-            photograph_width_in_pixels=photograph_width_in_pixels,
-            photograph_height_in_pixels=photograph_height_in_pixels
-        )
+    if camera_pose is not None:
+        pixel_points = dict()
+        for landmark_name, p_giwc in landmark_name_to_xyz.items():
+            p_giwc = landmark_name_to_xyz[landmark_name]
         
-        if is_visible:
-            # print(f"    {landmark_name} visible at {x_pixel}, {y_pixel}")
-            pixel_points[landmark_name] = dict(
-                i=int(y_pixel),
-                j=int(x_pixel),
+
+            x_pixel, y_pixel, is_visible = nuke_world_to_pixel_coordinates(
+                p_giwc=np.array(p_giwc),
+                camera_parameters=camera_pose,
+                photograph_width_in_pixels=photograph_width_in_pixels,
+                photograph_height_in_pixels=photograph_height_in_pixels
             )
-        else:
-            pass
-            # print(f"    {landmark_name} is not visible.")
+            
+            if is_visible:
+                # print(f"    {landmark_name} visible at {x_pixel}, {y_pixel}")
+                pixel_points[landmark_name] = dict(
+                    i=int(y_pixel),
+                    j=int(x_pixel),
+                )
+            else:
+                pass
+                # print(f"    {landmark_name} is not visible.")
 
-   
-
-    for landmark_name, dct in pixel_points.items():
-        drawable_image.draw_plus_at_2d_point(
-            x_pixel=dct["j"],
-            y_pixel=dct["i"],
-            rgb=(0, 255, 0),
-            size=10,
-            text=landmark_name
-        )
     
+
+        for landmark_name, dct in pixel_points.items():
+            drawable_image.draw_plus_at_2d_point(
+                x_pixel=dct["j"],
+                y_pixel=dct["i"],
+                rgb=(0, 255, 0),
+                size=10,
+                text=landmark_name
+            )
+        
     return np.array(drawable_image.image_pil)

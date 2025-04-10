@@ -43,7 +43,7 @@ def gather_scorebugs_cli_tool():
     
     if context == "bal_scorebugs":
         folders = [
-            asset_repos_dir / "bal_cutouts_approved/scorebugs",
+            asset_repos_dir / "bal_cutouts_approved/correct_scorebugs",
         ]
     elif context == "hou_scorebugs":
         folders = [
