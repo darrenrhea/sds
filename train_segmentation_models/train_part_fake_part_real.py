@@ -62,7 +62,7 @@ def train_part_fake_part_real():
         f"run_id = {str(run_id_uuid)}"
     )
 
-    resume_checkpoint_path = None
+    # resume_checkpoint_path = None
     # resume_checkpoint_path = get_file_path_of_sha256("32b6b27bc294dee980b62df7dd7950f975781e3c78e6223af4b1f8ea41cbb309")
     # i.e. u3fasternets-floor-10911frames-1920x1088-citydec27_epoch000001.pt"
     # resume_checkpoint_path = Path("/shared/checkpoints/u3fasternets-floor-2302frames-1920x1088-fake877real1425_epoch000559.pt")
@@ -73,6 +73,8 @@ def train_part_fake_part_real():
     # resume_checkpoint_path = get_file_path_of_sha256("ef972d0788d5c62a6143c879d90c9bca213fe1e6600ed1d7e834e8aee6d65886")
     # resume_checkpoint_path = get_file_path_of_sha256("b7874b30cad5d41b8118adc886b13db30856d13c04218796b7a5a4042eea459c")
     # resume_checkpoint_path = get_file_path_of_sha256("623e0b85372cef0cef65aa44563997438a6275e7992833f489401e42ce99bb22")
+    resume_checkpoint_path = get_file_path_of_sha256("f886231abb7782051caf8e2793ea8518544eb86f6485efb9a04d3b2cf6ed15d2")
+    
     
     if resume_checkpoint_path is not None:
         assert resume_checkpoint_path.is_file(), f"{resume_checkpoint_path} is not an extant file"
@@ -171,7 +173,7 @@ def train_part_fake_part_real():
     fixups = get_datapoint_path_tuples_for_bal()
     upmultiplied_analogous_datapoint_path_tuples = analogous_datapoint_path_tuples * 2
     upmultiplied_fixups = []
-    for _ in range(30):
+    for _ in range(28):
         upmultiplied_fixups += fixups
     
     print(f"{len(fake_datapoint_path_tuples)=}")
@@ -192,7 +194,7 @@ def train_part_fake_part_real():
     train_a_model(
         run_id_uuid=run_id_uuid,
         datapoint_path_tuples=datapoint_path_tuples,
-        other=f"further",
+        other=f"chromatic",
         resume_checkpoint_path=resume_checkpoint_path,
         drop_a_model_this_often=1,
         num_epochs=100000,

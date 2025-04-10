@@ -17,6 +17,7 @@ connected_components
 convex_hull_utilities
 cutout_utilities
 distributed_hash_table
+dotflat
 Drawable2DImage
 fake_basketball
 ffmpeg_utilities
