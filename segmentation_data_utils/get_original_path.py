@@ -27,6 +27,8 @@ def get_original_path(
         "stadepart2": "/hd2",
         "fus-aia-2025-04-05": "/hd2",
         "rabat": "/hd2",
+        "bal_rabat_20250410_aug": "/hd2",
+        "bal_game2_bigzoom": "/hd2",
 
     }
     if clip_id in clip_id_to_folder:
