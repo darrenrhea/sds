@@ -6,7 +6,10 @@ import textwrap
 
 def how_many_spaces_could_be_considered_as_indentation(s: str) -> float:
     """
-    Blank like like " \n" or "   \n" may be considered as infinite indentation.
+    textwrap.dedent
+    will remove blank-ish lines at the beginning or end of the string.
+    We don't want that.
+    Blank lines like " \n" or "   \n" may be considered as infinite indentation.
     """
     count = 0
     no_nonwhitespace_was_found = True
@@ -24,6 +27,11 @@ def how_many_spaces_could_be_considered_as_indentation(s: str) -> float:
 
 
 def dedent_lines(s: str):
+    """
+    textwrap.dedent
+    will remove blank-ish lines at the beginning or end of the string.
+    We don't want that.
+    """
     lines = s.split("\n")
     min_indentation = float(np.inf)
     for index, line in enumerate(lines):
