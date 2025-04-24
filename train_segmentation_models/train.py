@@ -32,14 +32,11 @@ import ssl
 # from visualize_dataset import visualize_dataset
 from typing import Tuple
 
-import torchvision.models as models
-
 torch.backends.cudnn.benchmark = True
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def train(
-    run_id_uuid: uuid.UUID,
     model_architecture_id: str,
     augmentation_strategy_id: str,
     checkpoint_prefix: str,
@@ -60,6 +57,7 @@ def train(
     train_patches_per_image: int,
     resume_checkpoint_path: Optional[Path],
     test_model_interval: int,
+    run_id_uuid: Optional[uuid.UUID],  # where to persist loss, metrics, etc.
     resume_optimization: bool = False,  # be careful, you might not know what this is
 ):
     """

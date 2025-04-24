@@ -200,10 +200,11 @@ def train_model(
                 num_samples_trained=num_samples_trained,
                 metrics=final_metrics,
             )
-            insert_progress_message(
-                run_id_uuid=run_id_uuid,
-                progress_message_jsonable=progress_message_jsonable,
-            )
+            if run_id_uuid is not None:
+                insert_progress_message(
+                    run_id_uuid=run_id_uuid,
+                    progress_message_jsonable=progress_message_jsonable,
+                )
             # ENDOF validation.
 
         

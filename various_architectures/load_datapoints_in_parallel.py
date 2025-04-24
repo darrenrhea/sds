@@ -16,7 +16,7 @@ def load_datapoints_in_parallel(
     preprocessor_params: dict = None
 ) -> List[np.ndarray]:
     """
-    Given a datapoint_path_tuples
+    Given datapoint_path_tuples
     load all the frames and target_masks and weight_masks in parallel
     and return them as 3 Python lists of numpy arrays.
     TODO: generalize this to multiple target_masks, multiple weight_masks,
