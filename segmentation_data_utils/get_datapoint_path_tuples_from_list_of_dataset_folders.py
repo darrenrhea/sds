@@ -9,7 +9,7 @@ def convert_original_path_to_target_mask_path(original_path: Path):
     assert original_path.is_absolute()
     assert original_path.name.endswith('.jpg')
 
-    target_mask_path = original_path.parent / (original_path.name.replace('.jpg', '_nonfloor.png'))
+    target_mask_path = original_path.parent / (original_path.name.replace('_original.jpg', '_nonfloor.png'))
     assert target_mask_path.is_file(), f"ERROR: {target_mask_path} does not exist despite that {original_path} does"
     return target_mask_path
 
@@ -26,7 +26,6 @@ def convert_original_path_to_weight_mask_path(original_path: Path):
 
 def get_datapoint_path_tuples_from_list_of_dataset_folders(
     list_of_dataset_folders: List[Path],
-    dataset_kind: str,
 ) -> List[
         Tuple[
             Path,  # absolute original_path,
@@ -71,7 +70,6 @@ def get_datapoint_path_tuples_from_list_of_dataset_folders(
         assert isinstance(d, Path)
         assert d.is_dir(), "ERROR: {d} is not an extant directory"
 
-    assert dataset_kind in ['nonfloor', 'nonwood']
     all_path_tuples = []
 
     print("Gathering all training points from these directories:")
@@ -80,7 +78,7 @@ def get_datapoint_path_tuples_from_list_of_dataset_folders(
 
     for folder in list_of_dataset_folders:
         print(f'loading files from {folder}')
-        original_paths = [p for p in Path(folder).rglob(f'*.jpg')]
+        original_paths = [p for p in Path(folder).rglob("*_original.jpg")]
         target_mask_paths = [convert_original_path_to_target_mask_path(p) for p in original_paths]
         maybe_weight_mask_paths = [convert_original_path_to_weight_mask_path(p) for p in original_paths]
         weight_mask_paths = [p if p.is_file() else None for p in maybe_weight_mask_paths]
