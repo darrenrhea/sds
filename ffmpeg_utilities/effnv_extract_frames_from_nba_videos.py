@@ -52,12 +52,84 @@ if __name__ == "__main__":
         #     "/shared/s3/awecomai-original-videos/bos-dal-2024-06-06-unaugmented_srt_fullgame.mp4",
         #     "bos-dal-2024-06-06-srt",
         # ),
+        # dict(
+        #     video="/Volumes/NBA/2023-2024_Season_Videos/Originals/HOUvLAL_LAR_city_ssn_01_05_2024.mxf",
+        #     clip_id="HOUvLAL_LAR_city_ssn_01_05_2024",
+        #     start=140000,
+        #     end=330000,
+        #     step=1000,
+        # ),
+        # dict(
+        #     video="/Volumes/NBA/2023-2024_Season_Videos/Originals/HOUvBOS_LAR_city_ssn_01_03_2024.mxf",
+        #     clip_id="HOUvBOS_LAR_city_ssn_01_03_2024",
+        #     start=140000,
+        #     end=330000,
+        #     step=1000,
+        # ),
+        # dict(
+        #     video="/Volumes/NBA/2023-2024_Season_Videos/Originals/HOUvBOS_HNT_city_ssn_01_03_2024.mxf",
+        #     clip_id="HOUvBOS_HNT_city_ssn_01_03_2024",
+        #     start=140000,
+        #     end=330000,
+        #     step=1000,
+        # ),
+        # dict(
+        #     video="/Volumes/NBA/2023-2024_Season_Videos/Originals/HOUvLAL_HNT_city_ssn_01_05_2024.mxf",
+        #     clip_id="HOUvLAL_HNT_city_ssn_01_05_2024",
+        #     start=140000,
+        #     end=330000,
+        #     step=1000,
+        # ),
+        # dict(
+        #     video="/Volumes/NBA/2023-2024_Season_Videos/Originals/HOUvLAL_RAR_city_ssn_01_05_2024.mxf",
+        #     clip_id="HOUvLAL_RAR_city_ssn_01_05_2024",
+        #     start=140000,
+        #     end=330000,
+        #     step=1000,
+        # ),
+        # dict(
+        #     video="/Volumes/NBA/2023-2024_Season_Videos/Originals/HOUvBOS_RAR_city_ssn_01_03_2024.mxf",
+        #     clip_id="HOUvBOS_RAR_city_ssn_01_03_2024",
+        #     start=140000,
+        #     end=330000,
+        #     step=1000,
+        # ),
+        # dict(
+        #     video="/Volumes/NBA/2023-2024_Season_Videos/Originals/HOUvLAC_LAR_core_ssn_11-13-2024.mxf",
+        #     clip_id="HOUvLAC_LAR_core_ssn_11-13-2024",
+        #     start=140000,
+        #     end=330000,
+        #     step=1000,
+        # ),
+        # dict(
+        #     video="/Volumes/NBA/2023-2024_Season_Videos/Originals/HOUvLAC_RAR_core_ssn_11-13-2024.mxf",
+        #     clip_id="HOUvLAC_RAR_core_ssn_11-13-2024",
+        #     start=140000,
+        #     end=330000,
+        #     step=1000,
+        # ),
+        # dict(
+        #     video="/Volumes/NBA/2023-2024_Season_Videos/Originals/HOUvLAC_HNT_core_ssn_11-13-2024.mxf",
+        #     clip_id="HOUvLAC_HNT_core_ssn_11-13-2024",
+        #     start=140000,
+        #     end=330000,
+        #     step=1000,
+        # ),
+
+        # dict(
+        #     video="/Volumes/NBA/2023-2024_Season_Videos/Incoming/GSWvLAC_PGM_core_nbc_10-27-2024.mxf",
+        #     clip_id="GSWvLAC_PGM_core_nbc_10-27-2024",
+        #     start=0,
+        #     end=900000,
+        #     step=1000,
+        # ),
+
         dict(
-            video="/Volumes/NBA/2023-2024_Season_Videos/Originals/HOUvLAL_LAR_city_ssn_01_05_2024.mxf",
-            clip_id="HOUvLAL_LAR_city_ssn_01_05_2024",
-            start=146000,
-            end=148000,
-            step=100,
+            video="/Volumes/NBA/2023-2024_Season_Videos/Incoming/GSWvLAC_PGM_core_nbc_10-27-2024.mxf",
+            clip_id="GSWvDEN_PGM_core_esp_03-17-2025",
+            start=0,
+            end=900000,
+            step=1000,
         ),
 
     ]
@@ -99,10 +171,10 @@ if __name__ == "__main__":
         step = dct["step"]
         input_video_abs_file_path = Path(video_path_str)
         assert input_video_abs_file_path.exists()
-        # png_or_jpg = "jpg"
-        # pix_fmt = "yuvj422p"
-        png_or_jpg = "png"
-        pix_fmt = "rgb48be"
+        png_or_jpg = "jpg"
+        pix_fmt = "yuvj422p"
+        # png_or_jpg = "png"
+        # pix_fmt = "rgb48be"
         # this is fields-per-second, not frames-per-second.
         # So if it's "25 frames per second interlaced", value should be 50 fields per second.
         fps = 59.94  
@@ -136,7 +208,10 @@ if __name__ == "__main__":
                 print(f"ERROR: {out_frame_abs_file_path} does not exist, quitting because this usually means you have run off the end of the video")
                 break
     
-    for video, clip_id in pairs_of_video_path_str_and_clip_id:
+    for dct in pairs_of_video_path_str_and_clip_id:
+        video_path_str = dct["video"]
+        clip_id = dct["clip_id"]
+
         print(
             textwrap.dedent(
                 f"""\
@@ -151,9 +226,9 @@ if __name__ == "__main__":
 
                 Suggest that for lam you do:
 
-                mkdir -p /media/drhea/muchspace/clips/{clip_id}/frames
+                mkdir -p /hd2/clips/{clip_id}/frames
 
-                rsync -rP 'squanchy:~/a/clips/{clip_id}/frames/' /media/drhea/muchspace/clips/{clip_id}/frames/
+                rsync -rP 'squanchy:~/a/clips/{clip_id}/frames/' /hd2/clips/{clip_id}/frames/
                 """
             )
     )
