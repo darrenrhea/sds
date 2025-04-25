@@ -60,7 +60,7 @@ def make_plain_video(
         "-frames",
         str(num_frames),
         "-vf",
-        f"drawtext=fontfile={font_file_path}: text='%{{frame_num}}': start_number={first_frame_index}: x=w-tw: y=3*lh: fontcolor=yellow: fontsize=50: box=1: boxcolor=black: boxborderw=5",
+        f"drawtext=fontfile={font_file_path}: text='%{{frame_num}}': start_number={first_frame_index}: x=0: y=3*lh: fontcolor=red: fontsize=50: box=1: boxcolor=black: boxborderw=5",
         "-vcodec",
         "libx264",
         "-pix_fmt",
