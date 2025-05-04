@@ -22,7 +22,7 @@ def isf_infer_specific_frames_cli_tool():
             export c=bay-zal-2024-03-15-mxf-yadif
             export m=u11
 
-            python isf_infer_specific_frames_cli_tool.py \\
+            isf_infer_specific_frames \\
             --final_model_id $m \\
             --clip_id $c \\
             --original_suffix _original.jpg \\
@@ -32,7 +32,7 @@ def isf_infer_specific_frames_cli_tool():
 
             Or for less verbose:
 
-            python isf_infer_specific_frames_cli_tool.py \\
+            isf_infer_specific_frames \\
             --final_model_id $m \\
             --clip_id $c \\
             --original_suffix _original.jpg \\

@@ -32,7 +32,7 @@ def get_list_of_input_and_output_file_paths_from_jsonable(
     """
     assert isinstance(model_id_suffix, str), "model_id_suffix should be a string"
     assert isinstance(out_dir, Path), "out_dir should be a Path"
-    assert out_dir.is_dir(), f"{out_dir} is not an extant directory"
+    assert out_dir.is_dir(), f"{out_dir} is not an extant directory dhfheleee"
 
 
     if isinstance(jsonable, list):

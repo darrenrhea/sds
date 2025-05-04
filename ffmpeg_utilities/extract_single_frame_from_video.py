@@ -24,6 +24,7 @@ def extract_single_frame_from_video(
     pix_fmt: str,
     png_or_jpg: str,
     out_frame_abs_file_path: Path,
+    verbose: bool,
 ):
     """
     Given a frame_index to extract (canonical, starting at 0 with first frame)
@@ -32,7 +33,9 @@ def extract_single_frame_from_video(
     """
 
     non_broken_ffmpeg_file_path = get_nonbroken_ffmpeg_file_path()
-    
+    # non_broken_ffmpeg_file_path = Path(
+    #     "~/ffmpeg-7.0.1-amd64-static/ffmpeg"
+    # ).expanduser()
     if deinterlace:
         return extract_single_frame_from_interlaced_video(
             input_video_abs_file_path=input_video_abs_file_path,
@@ -148,55 +151,10 @@ def extract_single_frame_from_video(
         "error",
         str(out_frame_abs_file_path)
     ]
+    if verbose:
+        print_green("ffmpeg command:")
+        print_green(" \\\n".join(args))
+        print_yellow(f"pri {out_frame_abs_file_path}")
 
-    print_green(" \\\n".join(args))
     subprocess.run(args=args)
-    print(f"pri {out_frame_abs_file_path}")
 
-
-def main():
-
-    argparser = argparse.ArgumentParser(
-        "Extract a single frame from a video given its frame index:\n"
-        "extract_single_frame_from_video <video_file_path> <frame_index_to_extract> <out_frame_abs_file_path>"
-
-    )
-
-    argparser.add_argument(
-        "input_video_abs_file_path", type=Path
-    )
-    argparser.add_argument(
-        "frame_index_to_extract", type=int
-    )
-    argparser.add_argument(
-        "out_frame_abs_file_path", type=Path
-    )
-    args = argparser.parse_args()
-    print(args)
-
-    input_video_abs_file_path = Path(
-        args.input_video_abs_file_path
-    ).expanduser()
-    assert input_video_abs_file_path.exists(), f"ERROR: {input_video_abs_file_path} does not exist!"
-    
-    frame_index_to_extract = args.frame_index_to_extract
-    assert frame_index_to_extract >= 0, f"ERROR: {frame_index_to_extract} must be >= 0"
-
-    out_frame_abs_file_path = Path(
-        args.out_frame_abs_file_path
-    ).expanduser()
-
-    assert input_video_abs_file_path.suffix == ".mp4", f"ERROR: {input_video_abs_file_path} must have .mp4 suffix"
-
-    assert out_frame_abs_file_path.resolve().parent.exists(), f"ERROR: {out_frame_abs_file_path.resolve().parent} does not exist!"
-    
-    print(f"""
-        from {input_video_abs_file_path}
-        extract frame {frame_index_to_extract}
-        to {out_frame_abs_file_path}
-    """)
-    extract_single_frame_from_video(
-        input_video_abs_file_path=input_video_abs_file_path,
-        frame_index_to_extract=frame_index_to_extract,
-        out_frame_abs_file_path=out_frame_abs_file_path
-    )

@@ -66,7 +66,8 @@ def infer_arbitrary_frames_from_a_clip(
     )
 
 
-    shared_dir = get_the_large_capacity_shared_directory()
+    # shared_dir = get_the_large_capacity_shared_directory()
+    shared_dir = "/shared"
     output_dir = shared_dir / "inferences"
 
     infer_from_id(

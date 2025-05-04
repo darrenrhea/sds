@@ -1,3 +1,9 @@
+from print_red import (
+     print_red
+)
+from print_green import (
+     print_green
+)
 import subprocess
 from pathlib import Path
 
@@ -7,7 +13,9 @@ def extract_a_segment_of_frames_from_video(
     first_frame: int,
     last_frame: int,
     out_dir_abs_path: Path,
-    clip_id: str
+    clip_id: str,
+    verbose: bool,
+    fps: float,
 ):
     """
     Given the absolute path to a 59.94 fps video,
@@ -20,7 +28,7 @@ def extract_a_segment_of_frames_from_video(
     Path(out_dir_abs_path).expanduser().mkdir(parents=True, exist_ok=True)
     assert out_dir_abs_path.is_dir()
     assert out_dir_abs_path.is_absolute()
-    seek_start = max(first_frame - 0.25, 0) / 60000 * 1001
+    seek_start = max(first_frame - 0.25, 0) / fps # 60000 * 1001
 
     args = [
         "ffmpeg",
@@ -34,24 +42,37 @@ def extract_a_segment_of_frames_from_video(
         "-f",
         "image2",
         "-pix_fmt",
-        "yuvj420p",
+        "yuvj422p",
         "-vsync",
         "0",
         "-q:v",
-        "2",
+        "1",
         "-qmin",
-        "2",
+        "1",
         "-qmax",
-        "2",
+        "1",
         "-frames:v",
         str(frame_count),
         "-start_number",
-        "0",
+        f"{first_frame}",
         str(out_dir_abs_path / f"{clip_id}_%06d.jpg")
     ]
-    print(" \\\n".join(args))
-    subprocess.run(args=args)
-   
+    if verbose:
+        print_green(" \\\n".join(args))
+    subprocess.run(
+        args=args,
+        capture_output=True,
+    )
+    file_paths = [
+        out_dir_abs_path / f"{clip_id}_{i:06d}.jpg"
+        for i in range(first_frame, last_frame + 1)
+    ]
+    extant_file_paths = [
+        file_path
+        for file_path in file_paths
+        if file_path.is_file()
+    ]
+    return extant_file_paths
 
 
 if __name__ == "__main__":

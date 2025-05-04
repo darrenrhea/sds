@@ -32,11 +32,13 @@ def get_original_path(
         "bal_rabat_20250412_2": "/hd2",
         "bal_rabat_20250412_3": "/hd2",
         "bal_rabat_20250412_4": "/hd2",
+        "hou-gsw-2024-11-02-sdi": "/hd2",
+        "GSWvNOP_PGM_core_tnt_10-20-2024": "/shared"
     }
     if clip_id in clip_id_to_folder:
         shared_dir  = Path(clip_id_to_folder[clip_id])
     else:
-        shared_dir = Path("/hd2")
+        shared_dir = Path("/shared")
         # no one blows out to /shared anymore
         # shared_dir = get_the_large_capacity_shared_directory()
 
