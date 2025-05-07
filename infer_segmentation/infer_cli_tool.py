@@ -154,7 +154,7 @@ def infer_cli_tool():
     last_frame_index = opt.end
     step = opt.step
     out_suffix = opt.out_suffix
-    clip_mother_dir = "/shared/clips"  # Path(opt.clip_mother_dir).resolve()
+    clip_mother_dir = Path(opt.clip_mother_dir).resolve()
     
     if out_suffix is None:
         out_suffix = f"_{final_model_id}"
@@ -166,6 +166,7 @@ def infer_cli_tool():
         print_in_terminal=print_in_terminal,
         final_model_id=final_model_id,
         clip_id=clip_id,
+        clip_mother_dir=clip_mother_dir,
         original_suffix=original_suffix,
         frame_ranges=[
            [first_frame_index, last_frame_index, step],

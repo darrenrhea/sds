@@ -11,6 +11,7 @@ from typing import List, Tuple, Union, Optional
 
 def make_frame_ranges_file(
     clip_id: str,
+    clip_mother_dir: Path,
     original_suffix: str,
     frame_ranges: List[
         Union[
@@ -32,12 +33,13 @@ def make_frame_ranges_file(
     frame_ranges_file_path = get_a_temp_file_path(
         suffix=".json5"
     )
+    input_dir = clip_mother_dir / clip_id / "frames"
 
     if list_of_input_and_output_file_paths is None:
-        shared_dir = Path("/hd2") # get_the_large_capacity_shared_directory()
+        shared_dir = Path("/shared") # get_the_large_capacity_shared_directory()
         obj = {
             "original_suffix": original_suffix,
-            "input_dir": f"{shared_dir}/clips/{clip_id}/frames",
+            "input_dir": f"{input_dir}",
             "clip_id": clip_id,
             "frame_ranges": frame_ranges
         }
