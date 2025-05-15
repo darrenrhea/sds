@@ -101,13 +101,15 @@ class WarpDataset(Dataset):
         #     fullsize_image_np_u8=fullsize_image_np_u8,
         #     is_over_js=self.is_over_js
         # )
-
         channel_stack_patch = cutout_a_nonempty_patch_from_fullsize(
             patch_width=self.patch_width,
             patch_height=self.patch_height,
             fullsize_image_np_u8=fullsize_image_np_u8,
             onscreen_channel_index=4,
         )
+        assert channel_stack_patch.shape[0] == patch_height
+        assert channel_stack_patch.shape[1] == patch_width
+        assert channel_stack_patch.shape[2] == 5
         frame_patch = channel_stack_patch[:, :, 0:3]
         mask_patch = channel_stack_patch[:, :, 3]
         weight_patch = channel_stack_patch[:, :, 4]
@@ -115,11 +117,13 @@ class WarpDataset(Dataset):
         # augment should provide further augmentations other than homography warping and scaling and rotating.
         # You may want to visualize the result to make sure you
         # aren't destroying the normal appearance of the image.
-         
+       
         transformed = self.augment(image=frame_patch, mask=mask_patch, importance_mask=weight_patch)
+        
         aug_frame_patch = transformed['image']
         aug_target_mask_patch = transformed['mask']
         aug_weight_mask_patch = transformed['importance_mask']  # for now has to be called importance_mask
+       
 
         visualize_augmentations = False
         if visualize_augmentations and self.visualization_counter < 100:
@@ -154,8 +158,8 @@ class WarpDataset(Dataset):
         assert target_mask_patch_torch_f32_cpu.device == torch.device('cpu')
         assert target_mask_patch_torch_f32_cpu.ndim == 3, "For uniformity, we want to have a channel index in all cases, even if there is only one channel"
         assert target_mask_patch_torch_f32_cpu.shape[0] == self.num_mask_channels
-        assert target_mask_patch_torch_f32_cpu.shape[1] == patch_height
-        assert target_mask_patch_torch_f32_cpu.shape[2] == patch_width
+        assert target_mask_patch_torch_f32_cpu.shape[1] == patch_height, f"target_mask_patch_torch_f32_cpu.shape == {target_mask_patch_torch_f32_cpu.shape} but {patch_height=}"
+        assert target_mask_patch_torch_f32_cpu.shape[2] == patch_width, f"target_mask_patch_torch_f32_cpu.shape == {target_mask_patch_torch_f32_cpu.shape} but {patch_width=}"
 
         assert weight_mask_patch_torch_f32_cpu.dtype == torch.float32
         assert weight_mask_patch_torch_f32_cpu.device == torch.device('cpu')

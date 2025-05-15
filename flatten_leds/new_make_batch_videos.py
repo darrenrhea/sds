@@ -1,3 +1,6 @@
+from get_mother_dir_of_frames_dir_from_clip_id import (
+     get_mother_dir_of_frames_dir_from_clip_id
+)
 import argparse
 import os
 from instruct_how_to_download_file_to_laptop import (
@@ -50,6 +53,7 @@ def new_make_batch_videos():
     show_n_tell_clips_path.mkdir(exist_ok=True)
 
     fps = 59.94
+    # fps = 29.97
     out_video_file_paths = []
     for triplet in triplets:
         print(f"Making video for {triplet=}")
@@ -58,7 +62,10 @@ def new_make_batch_videos():
         last_frame_index = triplet[2]
 
         original_suffix = "_original.jpg"
-        frames_dir = shared_dir / "clips" / clip_id / "frames"
+        mother_dir_of_frames_dir = get_mother_dir_of_frames_dir_from_clip_id(
+            clip_id=clip_id
+        )
+        frames_dir = mother_dir_of_frames_dir / "clips" / clip_id / "frames"
         masks_dir = shared_dir / "inferences"
 
         what_is_normal_color = "foreground"

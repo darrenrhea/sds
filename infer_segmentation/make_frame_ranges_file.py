@@ -1,9 +1,6 @@
 from get_a_temp_file_path import (
      get_a_temp_file_path
 )
-from get_the_large_capacity_shared_directory import (
-     get_the_large_capacity_shared_directory
-)
 import better_json as bj
 from pathlib import Path
 from typing import List, Tuple, Union, Optional
@@ -11,7 +8,7 @@ from typing import List, Tuple, Union, Optional
 
 def make_frame_ranges_file(
     clip_id: str,
-    clip_mother_dir: Path,
+    clip_mother_dir: Optional[Path],
     original_suffix: str,
     frame_ranges: List[
         Union[
@@ -33,10 +30,11 @@ def make_frame_ranges_file(
     frame_ranges_file_path = get_a_temp_file_path(
         suffix=".json5"
     )
-    input_dir = clip_mother_dir / clip_id / "frames"
+    
 
     if list_of_input_and_output_file_paths is None:
-        shared_dir = Path("/shared") # get_the_large_capacity_shared_directory()
+        assert clip_mother_dir.is_dir(), f"{clip_mother_dir} should be an extant directory"
+        input_dir = clip_mother_dir / clip_id / "frames"
         obj = {
             "original_suffix": original_suffix,
             "input_dir": f"{input_dir}",

@@ -1,0 +1,4 @@
+.DS_Store
+my_image_tools.egg-info/
+__pycache__/
+gifs/
