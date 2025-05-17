@@ -19,11 +19,12 @@ def isf_infer_specific_frames_cli_tool():
         usage=textwrap.dedent(
             """\
             
-            export c=bay-zal-2024-03-15-mxf-yadif
-            export m=u11
+            export c=nfl-59778-skycam
+            export m=buccaneerswallrev1epoch150jacked
 
             isf_infer_specific_frames \\
             --final_model_id $m \\
+            --mother_dir /hd2 \\
             --clip_id $c \\
             --original_suffix _original.jpg \\
             ~/r/frame_attributes/${c}_led.json5 \\
@@ -34,6 +35,7 @@ def isf_infer_specific_frames_cli_tool():
 
             isf_infer_specific_frames \\
             --final_model_id $m \\
+            --mother_dir /hd2 \\
             --clip_id $c \\
             --original_suffix _original.jpg \\
             ~/r/frame_attributes/${c}.json5 \\
@@ -61,6 +63,13 @@ def isf_infer_specific_frames_cli_tool():
         required=True,
         help="The original suffix, like .jpg or _original.jpg or _original.png or .png"
     )
+
+    argp.add_argument(
+        "--mother_dir",
+        type=str,
+        required=True,
+        help="like /hd2 or /shared"
+    )
     
     argp.add_argument(
         "frames_file",
@@ -87,8 +96,8 @@ def isf_infer_specific_frames_cli_tool():
     clip_id = opt.clip_id
     original_suffix = opt.original_suffix
     frames_file_path = Path(opt.frames_file).resolve()
-
-
+    mother_dir = Path(opt.mother_dir).resolve()
+    clip_mother_dir = mother_dir / "clips"
 
     assert original_suffix in [".jpg", "_original.jpg", "_original.png", ".png", "_original_clahe.jpg"]
 
@@ -107,7 +116,8 @@ def isf_infer_specific_frames_cli_tool():
         original_suffix=original_suffix,
         frame_ranges=frame_indices,
         rgba_out_dir=rgba_out_dir,
-        model_id_or_other_suffix="_nonfloor"
+        model_id_or_other_suffix="_nonfloor",
+        clip_mother_dir=clip_mother_dir,
     )
 
 
