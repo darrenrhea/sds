@@ -10,6 +10,7 @@ setup(
         "get_list_of_input_and_output_file_paths_from_json_file_path",
         "get_list_of_input_and_output_file_paths_from_jsonable",
         "get_list_of_input_and_output_file_paths_from_old_style",
+        "ifrij_infer_frame_ranges_in_json5",
         "infer_all_the_patches",
         "infer_arbitrary_frames",
         "infer_arbitrary_frames_from_a_clip",
