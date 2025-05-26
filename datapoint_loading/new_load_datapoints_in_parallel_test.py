@@ -16,7 +16,6 @@ def new_test_load_datapoints_in_parallel_1():
 
     dataset_folders = [
         Path("~/r/bal_game2_bigzoom_floor_10bit").expanduser(),
-        # Path("~/r/bal_game2_bigzoom_floor/.approved").expanduser(),
     ]
 
     datapoint_path_tuples = get_datapoint_path_tuples_from_list_of_dataset_folders(

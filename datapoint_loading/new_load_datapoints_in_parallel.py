@@ -82,7 +82,7 @@ def new_load_datapoints_in_parallel(
                     params=preprocessor_params
                 )
 
-            # the index i is to sort them later
+            # the index i is used to sort them later
             return i, channel_stack
         
         except Exception as e:

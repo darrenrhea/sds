@@ -1,0 +1,13 @@
+// list any file assets needs for testing here:
+[
+    {
+        sha256: "5f32b1382067703a4ca4d1f0c0a507f2a97ea2e821afb1ed4e9ff62ba1c9f5c9",
+        purposes: [
+            "a PNG file known to have bit depth 16, 3 channels, and no alpha channel",
+        ],
+        tags: [
+            "is_png",
+            "16_bit",
+        ],
+    },
+]
