@@ -26,6 +26,7 @@ def infer_arbitrary_frames(
     
     frame_ranges_file_path = make_frame_ranges_file(
         list_of_input_and_output_file_paths=list_of_input_and_output_file_paths,
+        clip_mother_dir=None,
         clip_id=None,
         original_suffix=None,
         frame_ranges=None,

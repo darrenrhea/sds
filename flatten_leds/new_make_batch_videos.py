@@ -52,8 +52,10 @@ def new_make_batch_videos():
     show_n_tell_clips_path = show_n_tell_path / f"{final_model_id}"
     show_n_tell_clips_path.mkdir(exist_ok=True)
 
-    fps = 59.94
-    # fps = 29.97
+    # fps = get_frame_rate_from_clip_id(
+    #     clip_id=triplet[0]
+    # )
+    fps = 50.0
     out_video_file_paths = []
     for triplet in triplets:
         print(f"Making video for {triplet=}")
