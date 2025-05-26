@@ -21,7 +21,6 @@ setup(
         "fasternet",
         "get_model_state_dict",
         "load_checkpoint",
-        "load_datapoints_in_parallel",
         "load_frame",
         "load_model1",
         "load_model2",
