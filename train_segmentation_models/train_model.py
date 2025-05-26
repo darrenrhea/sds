@@ -9,9 +9,7 @@ from loss_info import valid_loss_function_family_ids, validate_loss_parameters
 from print_metrics import print_metrics
 from model_architecture_info import valid_model_architecture_ids
 import time
-import copy
 from tqdm import tqdm
-import numpy as np
 from collections import defaultdict
 from pathlib import Path
 import torch

@@ -1,25 +1,6 @@
 from cutout_a_nonempty_patch_from_fullsize import (
      cutout_a_nonempty_patch_from_fullsize
 )
-"""
-This pulls homography warped patches.
-Returns pairs (x, y)
-where x is a torch.FloatTensor of shape 3 x patch_height x patch_width
-and y is a torch.FloatTensor of shape 1 x patch_height x patch_width
-
-batch_index x channel_index x h x  w
-
-For greatest generality, the target masks are assumed to range from 0 to 255 in value.
-If you want to do hard binary, code the masks as taking on values as 0 and 255.
-
-This should take in a Python list of numpy frames and masks,
-say that were loaded in parallel by load_images_and_masks_in_parallel.
-This should only be used for training, not for inference.
-It is going to cut patches at random, albeit in a guided way.
-It does not resize the frames or masks, as we need it to work
-when the training frames and masks have various sizes.
-It should not be overly self-aware of what it is being used for.
-"""
 import numpy as np
 from typing import List
 import torch
@@ -33,9 +14,8 @@ from print_image_in_iterm2 import print_image_in_iterm2
 torch.backends.cudnn.benchmark = True
 
 
-class WarpDataset(Dataset):
-    def __init__(
-        self,
+
+warp_dataset = WarpDataset(
         channel_stacks: List[np.ndarray], # each datapoint in the list is a stack of rgb and a target_mask and a weight_mask. Later we can stack more target_masks and weight_masks
         train_patches_per_image: int,  # how many patches to cut from each image.
         patch_width: int,  # width of each patch we cut out
@@ -44,7 +24,7 @@ class WarpDataset(Dataset):
         output_binarized_masks: bool,
         augment,
         num_mask_channels = 1,  # for regression problems, this should be 1. for classification problems, this should be the number of classes
-    ):
+    )
         assert augment is not None, f"augment function has type {type(augment)}"
         assert num_mask_channels in [1, 2], "Unless you are doing something exotic like 3 class classification or rgba, num_mask_channels should be 1 or 2"
 
