@@ -50,7 +50,7 @@ def jpsosa_just_paste_scorebugs_onto_segmentation_annotations_cli_tool():
     Just add random scorebugs to the images in the directory.
     """
     argp = argparse.ArgumentParser(
-        description="mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_underneath",
+        description="jpsosa_just_paste_scorebugs_onto_segmentation_annotations",
         usage=textwrap.dedent(
             """\
             
@@ -104,7 +104,7 @@ def jpsosa_just_paste_scorebugs_onto_segmentation_annotations_cli_tool():
     
 
     datapoint_path_tuples = get_datapoint_path_tuples_from_list_of_dataset_folders(
-        list_of_dataset_folders=in_dirs
+        dataset_folders=in_dirs
     )
     for original_file_path, mask_file_path, _ in datapoint_path_tuples:
         clip_id, frame_index = get_clip_id_and_frame_index_from_mask_file_name(
@@ -180,10 +180,10 @@ def jpsosa_just_paste_scorebugs_onto_segmentation_annotations_cli_tool():
             #     caption="this is the mask:",
             # )
 
-            rgba_hwc_np_u8 = make_rgba_hwc_np_u8_from_rgb_and_alpha(
-                rgb=original_rgb_np_u8,
-                alpha=mask_hw_np_u8,
-            )
+            # rgba_hwc_np_u8 = make_rgba_hwc_np_u8_from_rgb_and_alpha(
+            #     rgb=original_rgb_np_u8,
+            #     alpha=mask_hw_np_u8,
+            # )
             # prii(
             #     x=rgba_hwc_np_u8,
             #     caption="this is the original segmentation annotation:",

@@ -74,6 +74,7 @@ def test_extract_single_frame_from_video_jpg_version():
         deinterlace=deinterlace,
         pix_fmt=pix_fmt,
         png_or_jpg=png_or_jpg,
+        verbose=False,
     )
 
     prii(out_frame_abs_file_path)
