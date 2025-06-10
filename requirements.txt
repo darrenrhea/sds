@@ -12,6 +12,7 @@ ipdb
 ipywidgets
 jsonlines
 jstyleson
+levenshtein
 onnx
 opencv-contrib-python
 opencv-python

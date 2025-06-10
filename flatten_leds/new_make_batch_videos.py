@@ -55,7 +55,9 @@ def new_make_batch_videos():
     # fps = get_frame_rate_from_clip_id(
     #     clip_id=triplet[0]
     # )
-    fps = 50.0
+    # fps = 29.97
+    # fps = 50.00
+    fps = 25.0
     out_video_file_paths = []
     for triplet in triplets:
         print(f"Making video for {triplet=}")

@@ -1,3 +1,9 @@
+from closest_string_in_list import (
+     closest_string_in_list
+)
+from print_yellow import (
+     print_yellow
+)
 from pathlib import Path
 
 def get_mother_dir_of_frames_dir_from_clip_id(
@@ -23,6 +29,8 @@ def get_mother_dir_of_frames_dir_from_clip_id(
         "hou-gsw-2024-11-02-sdi": "/hd2",
         "hou-ind-2024-11-20-sdi": "/hd2",
         "hou-lac-2024-11-15-sdi": "/hd2",
+        "ind-tor-2022-11-11-mxf": "/mnt/nas/volume1/videos",
+        "ind-bos-2024-10-30-hack": "/mnt/nas/volume1/videos",
         "nfl-59773-skycam-ddv3": "/hd2",
         "nfl-59778-skycam": "/hd2",
         "rabat": "/hd2",
@@ -34,11 +42,16 @@ def get_mother_dir_of_frames_dir_from_clip_id(
     if clip_id in clip_id_to_folder:
         mother_dir_of_frames_dir  = Path(clip_id_to_folder[clip_id])
     else:
-        mother_dir_of_frames_dir = Path("/shared")
+        valid_strings = list(clip_id_to_folder.keys())
+        closest_string_in_list(
+            s=clip_id,
+            valid_strings=valid_strings,
+            crash_on_inexact=True,
+        )
         # no one blows out to /shared anymore
         # mother_dir_of_frames_dir = get_the_large_capacity_shared_directory()
 
-
+    print_yellow(f"For {clip_id}, using {mother_dir_of_frames_dir} as the shared directory")
     
     folder = mother_dir_of_frames_dir / "clips" / clip_id / "frames"
     assert folder.is_dir(), f"{folder} should be a directory"
