@@ -57,7 +57,8 @@ def new_make_batch_videos():
     # )
     # fps = 29.97
     # fps = 50.00
-    fps = 25.0
+    # fps = 25.0
+    fps = 59.94  # this is the default for the videos we are making
     out_video_file_paths = []
     for triplet in triplets:
         print(f"Making video for {triplet=}")

@@ -31,6 +31,8 @@ def get_mother_dir_of_frames_dir_from_clip_id(
         "hou-lac-2024-11-15-sdi": "/hd2",
         "ind-tor-2022-11-11-mxf": "/mnt/nas/volume1/videos",
         "ind-bos-2024-10-30-hack": "/mnt/nas/volume1/videos",
+        "ind-lal-2023-02-02-mxf": "/mnt/nas/volume1/videos",
+        "okc-ind-2025-06-05-youtube": "/mnt/nas/volume1/videos",
         "nfl-59773-skycam-ddv3": "/hd2",
         "nfl-59778-skycam": "/hd2",
         "rabat": "/hd2",
