@@ -54,10 +54,10 @@ def jprsosa_just_paste_rectangular_scorebugs_onto_segmentation_annotations_cli_t
 
             jprsosa_just_paste_rectangular_scorebugs_onto_segmentation_annotations \\
             --in_dir \\
-            ~/r/ind-bos-2024-10-30-hack_floor/.approved \\
-            ~/r/ind-lal-2023-02-02-mxf_floor/.approved \\
+            /shared/ind-bos-2024-10-30-hack_floor/.approved \\
+            /shared/ind-lal-2023-02-02-mxf_floor/.approved \\
             --scorebug_dir ~/scorebugs \\
-            --out_dir ~/withscorebugs \\
+            --out_dir /shared/withscorebugs \\
             --print_in_iterm2
 
             
@@ -138,7 +138,7 @@ def jprsosa_just_paste_rectangular_scorebugs_onto_segmentation_annotations_cli_t
     print(f"Writing to directory {out_dir=}")
     
     
-    num_laps = 1
+    num_laps = 10
     start_time = time.time()
     num_completed = 0
     out_of = len(datapoint_path_tuples) * num_laps
@@ -156,23 +156,23 @@ def jprsosa_just_paste_rectangular_scorebugs_onto_segmentation_annotations_cli_t
             )
 
 
-            prii(
-                x=original_rgb_np_u8,
-                caption="this is the original frame:",
-            )
-            prii(
-                x=mask_hw_np_u8,
-                caption="this is the mask:",
-            )
+            # prii(
+            #     x=original_rgb_np_u8,
+            #     caption="this is the original frame:",
+            # )
+            # prii(
+            #     x=mask_hw_np_u8,
+            #     caption="this is the mask:",
+            # )
 
-            rgba_hwc_np_u8 = make_rgba_hwc_np_u8_from_rgb_and_alpha(
-                rgb=original_rgb_np_u8,
-                alpha=mask_hw_np_u8,
-            )
-            prii(
-                x=rgba_hwc_np_u8,
-                caption="this is the original segmentation annotation:",
-            )
+            # rgba_hwc_np_u8 = make_rgba_hwc_np_u8_from_rgb_and_alpha(
+            #     rgb=original_rgb_np_u8,
+            #     alpha=mask_hw_np_u8,
+            # )
+            # prii(
+            #     x=rgba_hwc_np_u8,
+            #     caption="this is the original segmentation annotation:",
+            # )
 
          
 

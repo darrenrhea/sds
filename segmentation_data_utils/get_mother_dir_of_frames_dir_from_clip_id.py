@@ -29,17 +29,19 @@ def get_mother_dir_of_frames_dir_from_clip_id(
         "hou-gsw-2024-11-02-sdi": "/hd2",
         "hou-ind-2024-11-20-sdi": "/hd2",
         "hou-lac-2024-11-15-sdi": "/hd2",
-        "ind-tor-2022-11-11-mxf": "/mnt/nas/volume1/videos",
         "ind-bos-2024-10-30-hack": "/mnt/nas/volume1/videos",
         "ind-lal-2023-02-02-mxf": "/mnt/nas/volume1/videos",
-        "okc-ind-2025-06-05-youtube": "/mnt/nas/volume1/videos",
+        "ind-tor-2022-11-11-mxf": "/mnt/nas/volume1/videos",
         "nfl-59773-skycam-ddv3": "/hd2",
         "nfl-59778-skycam": "/hd2",
+        "nfl-59778-skycam2": "/media/drhea/corsair4tb",
+        "okc-ind-2025-06-05-youtube": "/mnt/nas/volume1/videos",
+        "okc-ind-2025-06-08-youtube": "/mnt/nas/volume1/videos",
+        "okc-phi-2022-12-31-mxf": "/mnt/nas/volume1/videos",
         "rabat": "/hd2",
         "rwanda-2025-05-17-sdi8": "/media/drhea/corsair4tb3",
         "short-bal": "/hd2",
         "stadepart2": "/hd2",
-        "nfl-59778-skycam2": "/media/drhea/corsair4tb",
     }
     if clip_id in clip_id_to_folder:
         mother_dir_of_frames_dir  = Path(clip_id_to_folder[clip_id])

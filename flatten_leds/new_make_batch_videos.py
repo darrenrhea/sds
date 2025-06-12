@@ -26,6 +26,12 @@ def new_make_batch_videos():
         "json_file_path",
         help="The json5 file describing which (clip_id, a, b) frame ranges to flatten"
     )
+    argp.add_argument(
+        "--fps",
+        type=float,
+        default=59.94,
+        help="how many frames per second to make the video at, default 59.94"
+    )
     
     args = argp.parse_args()
     json_file_path = Path(args.json_file_path).resolve()
@@ -55,10 +61,8 @@ def new_make_batch_videos():
     # fps = get_frame_rate_from_clip_id(
     #     clip_id=triplet[0]
     # )
-    # fps = 29.97
-    # fps = 50.00
-    # fps = 25.0
-    fps = 59.94  # this is the default for the videos we are making
+    fps = args.fps
+    assert fps in [25, 50, 59.94, 29.97], f"fps must be one of [25, 50, 59.94, 29.97] but was {fps}"
     out_video_file_paths = []
     for triplet in triplets:
         print(f"Making video for {triplet=}")
