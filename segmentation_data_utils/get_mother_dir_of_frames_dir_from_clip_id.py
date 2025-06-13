@@ -42,6 +42,9 @@ def get_mother_dir_of_frames_dir_from_clip_id(
         "rwanda-2025-05-17-sdi8": "/media/drhea/corsair4tb3",
         "short-bal": "/hd2",
         "stadepart2": "/hd2",
+        "ind-okc-2025-06-11-hack": "/shared",
+        "ind-okc-2025-06-11-hack_2": "/hd2",
+        "ind-okc-2025-06-11-hack_3": "/hd2"
     }
     if clip_id in clip_id_to_folder:
         mother_dir_of_frames_dir  = Path(clip_id_to_folder[clip_id])
