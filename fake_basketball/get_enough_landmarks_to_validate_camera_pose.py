@@ -12,6 +12,8 @@ from get_euroleague_geometry import (
 from get_led_corners import (
      get_led_corners
 )
+import better_json as bj
+from pathlib import Path
 
 
 def get_enough_landmarks_to_validate_camera_pose(
@@ -21,9 +23,14 @@ def get_enough_landmarks_to_validate_camera_pose(
     This function returns enough landmarks to validate a camera pose
     for a Dallas Mavericks NBA court.
     """
-    assert league in ["nba", "bal"]
-    
-    if league == "euroleague":
+    assert league in ["nba", "bal", "euroleague", "nfl"], f"Unknown league: {league}"
+    if league == "nfl":
+        json_path = Path("~/r/nfl_book/nfl_geometry.json5")
+        geometry = bj.load(json_path)
+        landmark_name_to_xyz = geometry["points"]
+        return landmark_name_to_xyz
+
+    elif league == "euroleague":
         geometry = get_euroleague_geometry()
     elif league == "nba":
         geometry = get_nba_geometry()
@@ -31,6 +38,7 @@ def get_enough_landmarks_to_validate_camera_pose(
         geometry = get_bal_geometry()
     else:
         raise ValueError(f"Unknown league: {league}")
+    
     landmark_name_to_xyz = geometry["points"]
    
     filtered_landmark_name_to_xyz = dict()

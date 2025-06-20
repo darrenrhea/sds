@@ -85,6 +85,7 @@ def get_video_frame_path_from_clip_id_and_frame_index(
         "allstar-2025-02-16-sdi": ("lam", "/hd2"),
         "bal2024_senegal": ("lam", "/hd2"),
         "rabat": ("lam", "/hd2"),
+        "nfl-59778-skycam": ("lam", "/hd2"),
     }
 
     if clip_id not in clip_id_to_machine_and_dir:
@@ -132,11 +133,15 @@ def get_video_frame_path_from_clip_id_and_frame_index(
 
 def demo():
     clip_ids = [
-        "was-uta-2024-11-12-2022-ingest",
+        "ind-okc-2025-06-11-hack",
     ]
+    clip_id = clip_ids[0]
+       
+        
     frame_indices = [
-        0,
+        3779,
     ]
+
     for frame_index in frame_indices:
         original_file_path = get_video_frame_path_from_clip_id_and_frame_index(
             clip_id=clip_id,

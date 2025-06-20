@@ -43,7 +43,13 @@ def nuke_world_to_pixel_coordinates(
     #     print(f"\n{x_normalized=}")
     #     print(f"{y_normalized=}")   
 
-    is_visible = abs(x_normalized) <= 1.1 and abs(y_normalized) <= photograph_height_in_pixels / photograph_width_in_pixels * 1.1
+    is_visible = (
+        abs(x_normalized) <= 1.1
+        and abs(y_normalized) <= photograph_height_in_pixels / photograph_width_in_pixels * 1.1
+    ) and (
+        p_gicc[2] > 0  # z must be positive
+    )
+    # is_visible = False
 
     if not is_visible:
         return -1, -1, is_visible

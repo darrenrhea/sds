@@ -50,6 +50,7 @@ def paste_multiple_cutouts_onto_one_camera_posed_segmentation_annotation(
     by pasting multiple cutouts onto the actual annotation.
     See paste_cutout_onto_segmentation_annotations.py
     """
+    breakpoint()
     assert isinstance(rgba_np_u8, np.ndarray), f"rgba_np_u8 is not a np.ndarray, but a {type(rgba_np_u8)}"
     assert rgba_np_u8.ndim == 3, f"ERROR: {rgba_np_u8.shape=}"
     assert rgba_np_u8.shape[2] == 4, f"ERROR: {rgba_np_u8.shape=}"

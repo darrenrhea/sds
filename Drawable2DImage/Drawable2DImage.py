@@ -1,3 +1,6 @@
+from prii import (
+     prii
+)
 from get_font_file_path import (
      get_font_file_path
 )
@@ -27,7 +30,7 @@ class Drawable2DImage(object):
     ):
         assert isinstance(rgba_np_uint8, np.ndarray)
         assert rgba_np_uint8.ndim == 3
-        assert rgba_np_uint8.shape[2] == 4, "Must have 4 channels hwc"
+        assert rgba_np_uint8.shape[2] in [3, 4], "Must have 3 or 4 channels and be hwc"
         self.original_photograph_height_in_pixels = rgba_np_uint8.shape[0]
         self.original_photograph_width_in_pixels = rgba_np_uint8.shape[1]
         assert expand_by_factor in range(
@@ -45,6 +48,11 @@ class Drawable2DImage(object):
         self.photograph_width_in_pixels = self.image_pil.width
         self.photograph_height_in_pixels = self.image_pil.height
         self.drawable = ImageDraw.Draw(self.image_pil)
+
+    def prii(self, caption=None):
+        rgb_pil = self.image_pil.convert('RGB')
+        prii(rgb_pil, caption=caption)
+
 
     def save(self, output_image_file_path, format=None):
         output_image_file_path = Path(output_image_file_path).expanduser()
@@ -221,4 +229,6 @@ class Drawable2DImage(object):
             self.drawable.text(
                 xy=(expanded_x_pixel + 15, expanded_y_pixel - 10), text=text, font=font, fill=rgb
             )
+
+        
 

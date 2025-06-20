@@ -1,3 +1,6 @@
+from print_red import (
+     print_red
+)
 from collections import OrderedDict
 import textwrap
 from download_file_via_rsync import (
@@ -69,6 +72,7 @@ def get_mask_path_from_clip_id_and_frame_index_and_model_id(
         "bos-dal-2024-06-06-srt": "lam",
         "bos-dal-2024-06-09-mxf": "lam",
         "dal-bos-2024-06-11-calibration": "lam",
+        "nfl-59778-skycam": "lam",
     }
 
     shared_dir = get_the_large_capacity_shared_directory()
@@ -78,6 +82,7 @@ def get_mask_path_from_clip_id_and_frame_index_and_model_id(
     local_original_file_path = local_frames_dir_path / original_name
     
     if clip_id not in clip_id_to_machine:
+        print_red(f"The clip_id {clip_id=} is not in the known clip_id_to_machine mapping.")
         assert (
             local_original_file_path.is_file()
         ), f"ERROR: {local_original_file_path=} is not a file, and we don't know where to get it from"

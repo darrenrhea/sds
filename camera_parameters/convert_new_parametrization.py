@@ -30,7 +30,7 @@ import numpy as np
 
 def angles_to_rotation_matrix(angles):
     """
-    yaw, pitch, roll angles in radians
+    yaw Y, pitch P, roll R angles in radians
     """
     CY = np.cos(angles[0])
     SY = np.sin(angles[0])
@@ -56,12 +56,13 @@ def rod_from_angles(angles_in_degrees):
     angles = np.radians(angles_in_degrees)
     angle_z, angle_y, angle_x = angles
     altR = angles_to_rotation_matrix(angles)
-    rotation = R.from_matrix(altR)
     print("altR:\n", altR)
+    rotation = R.from_matrix(altR)
 
-    # Create a rotation object (specify axes order, e.g., 'xyz')
-    # rotation = R.from_euler('zyx', [angle_z, angle_y, angle_x])
-
+    # Create a rotation object:
+    rotation_via_public_libraries = R.from_euler('zyx', [-angle_z, angle_y, angle_x], degrees=False)
+    rod_by_public_libraries = rotation_via_public_libraries.as_rotvec()
+    print(f"{rod_by_public_libraries}=")
     # Convert to rotation matrix
     rotation_matrix = rotation.as_matrix()
 
@@ -69,21 +70,39 @@ def rod_from_angles(angles_in_degrees):
     # Convert to Rodrigues vector
     rod = rotation.as_rotvec()
     print("Rodrigues Vector:\n", rod)
+    sys.exit(0)
     return [rod[0], rod[1], rod[2]]
 
 
+
 def convert_new_parametrization():
-    league = "nba"
-    clip_id = "rabat"
-    frame_index = [
-        1070,
-        20690
-    ][1]
-    # frame_index = int(np.random.randint(0, 90000))
+    example_name = "tampa"
+    # example_name = "rabat"
+
+    if example_name == "rabat":
+        league = "nba"
+        clip_id = "rabat"
+        track_sha256 = "312159b2488c13aa264d34113a06993ad9ed211d653c2380a225d892fefea252"
+        frame_index = [
+            1070,
+            20690
+        ][1]
+        # frame_index = int(np.random.randint(0, 90000))
+    elif example_name == "tampa":
+        league = "nfl"
+        clip_id = "nfl-59778-skycam"
+        track_sha256 = "687920201951289221331e41501ad56ad31bb85d7a759428c0fcb499cc2ff43f"
+        frame_index = [
+            4,
+            250,
+            550,
+            2550,
+            5550, # right side visible
+        ][0]
+    
     print(f"{frame_index=}")
     
-    track_sha256 = "312159b2488c13aa264d34113a06993ad9ed211d653c2380a225d892fefea252"
-    
+
     jsonlines_path = get_file_path_of_sha256(
         sha256=track_sha256
     )
@@ -102,13 +121,12 @@ def convert_new_parametrization():
     f = new_json["f"]
     k1 = new_json["k1"]
     k2 = new_json["k2"]
-    #k1=0
-    #k2=0 
+    
 
     loc = [
-        loc_in_meters[0] * 3.28084,
-        loc_in_meters[1] * 3.28084,
-        loc_in_meters[2] * 3.28084,
+        loc_in_meters[0], # * 3.28084,
+        loc_in_meters[1], # * 3.28084,
+        loc_in_meters[2], # * 3.28084,
     ]
 
     camera_pose = CameraParameters(

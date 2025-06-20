@@ -214,6 +214,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
     # context_id = "dallas_mavericks"
     # context_id = "boston_celtics"
     context_id = "nba_floor_not_floor_pasting"
+    
 
 
 
@@ -417,7 +418,7 @@ def mffnfabianfu_make_fake_floor_not_floor_annotations_by_inserting_a_new_floor_
                     context_id=context_id,
                     cutouts_by_kind=cutouts_by_kind,
                     rgba_np_u8=rgba_hwc_np_u8,  # this is not violated by this procedure.
-                    camera_pose=camera_pose,  # to get realistics locations and sizes we need to know the camera pose.
+                    camera_pose=camera_pose,  # to get realistic locations and sizes we need to know the camera pose.
                     cutout_kind_to_transform=cutout_kind_to_transform, # what albumentations augmentation to use per kind of cutout
                     cutout_kind_to_num_cutouts_to_paste=cutout_kind_to_num_cutouts_to_paste
                 )

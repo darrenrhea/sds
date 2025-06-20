@@ -18,6 +18,7 @@ setup(
             "gather_scorebugs = gather_scorebugs_cli_tool:gather_scorebugs_cli_tool",
             "jprsosa_just_paste_rectangular_scorebugs_onto_segmentation_annotations = jprsosa_just_paste_rectangular_scorebugs_onto_segmentation_annotations_cli_tool:jprsosa_just_paste_rectangular_scorebugs_onto_segmentation_annotations_cli_tool",
             "jpsosa_just_paste_scorebugs_onto_segmentation_annotations = jpsosa_just_paste_scorebugs_onto_segmentation_annotations_cli_tool:jpsosa_just_paste_scorebugs_onto_segmentation_annotations_cli_tool",
+            "pisposa_past_improperly_scaled_cutouts_onto_segmentation_annotations = pisposa_past_improperly_scaled_cutouts_onto_segmentation_annotations_cli_tool:pisposa_past_improperly_scaled_cutouts_onto_segmentation_annotations_cli_tool",
         ],
     },
 )
