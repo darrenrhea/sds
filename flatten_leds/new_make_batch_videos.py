@@ -53,6 +53,7 @@ def new_make_batch_videos():
         assert first_frame_index <= last_frame_index, f"{first_frame_index=} is not less than {last_frame_index=}"
 
     shared_dir = get_the_large_capacity_shared_directory()
+    shared_dir = "/hd2"
 
     show_n_tell_path = Path(shared_dir).expanduser() / "show_n_tell"
     show_n_tell_clips_path = show_n_tell_path / f"{final_model_id}"
@@ -78,6 +79,7 @@ def new_make_batch_videos():
         masks_dir = shared_dir / "inferences"
 
         what_is_normal_color = "foreground"
+        # what_is_normal_color = "background"
         fill_color = "green"
         
         out_video_file_path = shared_dir / "show_n_tell" / f"{clip_id}_from_{first_frame_index}_to_{last_frame_index}_{final_model_id}_{what_is_normal_color}_fill{fill_color}.mp4"

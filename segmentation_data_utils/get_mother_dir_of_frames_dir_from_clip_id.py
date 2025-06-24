@@ -44,7 +44,10 @@ def get_mother_dir_of_frames_dir_from_clip_id(
         "stadepart2": "/hd2",
         "ind-okc-2025-06-11-hack": "/shared",
         "ind-okc-2025-06-11-hack_2": "/hd2",
-        "ind-okc-2025-06-11-hack_3": "/hd2"
+        "ind-okc-2025-06-11-hack_3": "/hd2",
+        "okc-ind-2025-06-16-hack": "/shared",
+        "slgame1": "/shared",
+
     }
     if clip_id in clip_id_to_folder:
         mother_dir_of_frames_dir  = Path(clip_id_to_folder[clip_id])
@@ -58,8 +61,6 @@ def get_mother_dir_of_frames_dir_from_clip_id(
         # no one blows out to /shared anymore
         # mother_dir_of_frames_dir = get_the_large_capacity_shared_directory()
 
-    print_yellow(f"For {clip_id}, using {mother_dir_of_frames_dir} as the shared directory")
-    
     folder = mother_dir_of_frames_dir / "clips" / clip_id / "frames"
     assert folder.is_dir(), f"{folder} should be a directory"
 

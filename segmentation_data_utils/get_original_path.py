@@ -17,7 +17,7 @@ def get_original_path(
     shared_dir = get_mother_dir_of_frames_dir_from_clip_id(
         clip_id
     )
-    print_yellow(f"For {clip_id}, using {shared_dir} as the shared directory")
+    
     
     folder = shared_dir / "clips" / clip_id / "frames"
     original_path = folder / f"{clip_id}_{frame_index:06d}_original.png"
