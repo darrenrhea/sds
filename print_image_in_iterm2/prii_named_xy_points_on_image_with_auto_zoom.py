@@ -42,7 +42,7 @@ def prii_named_xy_points_on_image_with_auto_zoom(
     x_min = int(x_min)
     y_min = int(y_min)
 
-    print(f"{x_min=}, {x_max=}, {y_min=}, {y_max=}")
+    # print_yellow(f"{x_min=}, {x_max=}, {y_min=}, {y_max=} debug4748387437839752")
     sub_image = rgba_hwc_np_u8[y_min:y_max, x_min:x_max, :]
 
     drawable_image = Drawable2DImage(
