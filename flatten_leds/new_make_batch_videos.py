@@ -53,7 +53,7 @@ def new_make_batch_videos():
         assert first_frame_index <= last_frame_index, f"{first_frame_index=} is not less than {last_frame_index=}"
 
     shared_dir = get_the_large_capacity_shared_directory()
-    shared_dir = "/hd2"
+    # shared_dir = "/hd2"
 
     show_n_tell_path = Path(shared_dir).expanduser() / "show_n_tell"
     show_n_tell_clips_path = show_n_tell_path / f"{final_model_id}"

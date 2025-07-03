@@ -86,6 +86,7 @@ def get_video_frame_path_from_clip_id_and_frame_index(
         "bal2024_senegal": ("lam", "/hd2"),
         "rabat": ("lam", "/hd2"),
         "nfl-59778-skycam": ("lam", "/hd2"),
+        "okstfull": ("lam", "/home/drhea/awecom/data", ".jpg"),
     }
 
     if clip_id not in clip_id_to_machine_and_dir:
@@ -95,11 +96,20 @@ def get_video_frame_path_from_clip_id_and_frame_index(
         print("edit ~/r/video_frame_data_utils/get_video_frame_path_from_clip_id_and_frame_index.py")
         sys.exit(1)
 
-    original_name = f"{clip_id}_{frame_index:06d}_original.jpg"
+ 
 
     my_name = what_computer_is_this()
     
-    src_machine, dir_str = clip_id_to_machine_and_dir[clip_id]
+    v = clip_id_to_machine_and_dir[clip_id]
+    src_machine = v[0]
+    dir_str = v[1]
+
+    if len(v) >= 3:
+        suffix = v[2]
+    else:
+        suffix = "_original.jpg"
+    original_name = f"{clip_id}_{frame_index:06d}{suffix}"
+
 
     remote_shared_dir = Path(dir_str)
     remote_original_file_path = remote_shared_dir / "clips" / clip_id / "frames" / original_name

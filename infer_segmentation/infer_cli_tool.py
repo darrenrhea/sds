@@ -94,7 +94,7 @@ def infer_cli_tool():
         "--clip_mother_dir",
         type=str,
         required=False,
-        default="/hd2/clips",
+        default="/shared/clips",
         help="The mother directory whose subdirectories contain blown out video frames, often /shared/clips or /hd2/clips"
     )
     argp.add_argument(

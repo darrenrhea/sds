@@ -47,7 +47,7 @@ def get_mother_dir_of_frames_dir_from_clip_id(
         "ind-okc-2025-06-11-hack_3": "/hd2",
         "okc-ind-2025-06-16-hack": "/shared",
         "slgame1": "/shared",
-
+        "slday2game1": "/shared"
     }
     if clip_id in clip_id_to_folder:
         mother_dir_of_frames_dir  = Path(clip_id_to_folder[clip_id])
