@@ -1,3 +1,6 @@
+from print_green import (
+     print_green
+)
 import pprint
 from get_file_path_of_sha256 import (
      get_file_path_of_sha256
@@ -70,14 +73,17 @@ def rod_from_angles(angles_in_degrees):
     # Convert to Rodrigues vector
     rod = rotation.as_rotvec()
     print("Rodrigues Vector:\n", rod)
-    sys.exit(0)
     return [rod[0], rod[1], rod[2]]
 
 
 
-def convert_new_parametrization():
-    example_name = "tampa"
-    # example_name = "rabat"
+def convert_new_parametrization():   
+
+    # example_name = "tampa"
+    example_name = "rabat"
+
+    if clip_id in ["rabat"]:
+        unit_location_given_in = "meters"
 
     if example_name == "rabat":
         league = "nba"
@@ -122,12 +128,15 @@ def convert_new_parametrization():
     k1 = new_json["k1"]
     k2 = new_json["k2"]
     
+    if unit_location_given_in == "meters": 
+        loc = [
+            loc_in_meters[0] * 3.28084,
+            loc_in_meters[1] * 3.28084,
+            loc_in_meters[2] * 3.28084,
+        ]
+    else:
+        loc = loc_in_meters
 
-    loc = [
-        loc_in_meters[0], # * 3.28084,
-        loc_in_meters[1], # * 3.28084,
-        loc_in_meters[2], # * 3.28084,
-    ]
 
     camera_pose = CameraParameters(
         rod=rod,
@@ -159,6 +168,7 @@ def convert_new_parametrization():
         landmark_name_to_xyz=landmark_name_to_xyz
     )
     prii(drawn_on)
+    print_green("Finished drawing landmarks on the image.")
 
 if __name__ == "__main__":
     convert_new_parametrization()

@@ -125,7 +125,7 @@ def get_camera_posed_annotations_from_a_directory_filled_with_fakes(
     video_frame_annotations_metadata_sha256: str
 ):
     """
-    Get camera posed annotations in a directory.
+    Get camera posed annotations from a directory of fakes.
     """
 
     map_from_annotation_id_to_camera_pose = make_map_from_annotation_id_to_camera_pose(

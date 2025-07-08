@@ -1,4 +1,4 @@
-import pprint as pp
+import pprint
 from print_error import (
      print_error
 )
@@ -31,6 +31,8 @@ def full_relative_pathify_list(L, repo_dir):
 
 
 def dotflat_cli_tool():
+    print(f"{Fore.GREEN}Welcome to the .flat CLI tool!{Style.RESET_ALL}")
+    #sys.exit(0)
     if len(sys.argv) == 1:
         repo_dir = Path.cwd()
     else:
@@ -77,8 +79,13 @@ def dotflat_cli_tool():
         "seqouyah",
         "stephen",
         "thomas",
+        "luna",
         "lyla",
-        "dylan"
+        "dylan",
+        "felise",
+        "haley",
+        "hannah",
+        "paul",
     ]
     mask_paths = []
     original_to_mask = {}
@@ -252,6 +259,10 @@ def dotflat_cli_tool():
             src=mask_abs_path,
             dst=dot_approved
         )
+        if mask_rel_path not in mask_to_original:
+            print(f"ERROR: {mask_rel_path} not found in mask_to_original mapping! This should never happen!")
+            pprint.pprint(mask_to_original)
+            sys.exit(1)
         rel_original_path = mask_to_original[mask_rel_path]
         shutil.copy(
             src=rel_original_path,

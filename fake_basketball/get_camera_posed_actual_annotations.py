@@ -14,7 +14,7 @@ def get_camera_posed_actual_annotations(
 ) -> List[Dict[str, Path]]:
     """
     see segmentation_data_utils/get_local_file_pathed_annotations_test.py
-    for a different way.
+    for a different way that does not need the repos staged
     
     WARNING: these days we start with fake background images,
     not actual background images, see get_fake_background_images.py

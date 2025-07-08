@@ -342,12 +342,14 @@ def poosa_paste_objects_onto_segmentation_annotations():
     # ENDOF cutouts configuration.
 
     cutout_dirs = [Path(x).expanduser() for x in cutout_dirs_str]
-
+    asset_repos_dir = Path("~/r").expanduser()
+    jersey_dir = asset_repos_dir / "jersey_ids"
     cutouts = get_cutouts(
         cutout_dirs=cutout_dirs,
         diminish_for_debugging=diminish_cutouts_for_debugging,
         league=league,
         sport=sport,
+        jersey_dir=jersey_dir,
     )
     cutouts_by_kind = group_cutouts_by_kind(
         sport=sport,

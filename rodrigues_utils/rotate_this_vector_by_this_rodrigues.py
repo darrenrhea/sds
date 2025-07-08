@@ -1,9 +1,4 @@
-
-
 import numpy as np
-
-
-
 
 
 def rotate_this_vector_by_this_rodrigues(vec, rodrigues):
@@ -23,4 +18,3 @@ def rotate_this_vector_by_this_rodrigues(vec, rodrigues):
     term2 = (np.cross(u, vec)) * np.sin(angle)
     term3 = u * (u.dot(vec)) * (1 - np.cos(angle))
     return term1 + term2 + term3
-

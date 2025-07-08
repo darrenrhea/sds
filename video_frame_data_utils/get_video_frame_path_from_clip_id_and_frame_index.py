@@ -69,7 +69,7 @@ def get_video_frame_path_from_clip_id_and_frame_index(
         "slday4game1": ("lam", "/shared"),
         "slday5game1": ("lam", "/shared"),
         "slday6game1": ("lam", "/shared"),
-        "slday7game1": ("lam", "/shared"),
+        "slday7game1": ("lam", "/shared"),  # it was not staged?
         "slday8game1": ("lam", "/shared"),
         "slday9game1": ("lam", "/shared"),
         "slday10game1": ("lam", "/shared"),

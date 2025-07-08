@@ -51,7 +51,6 @@ def validate_one_camera_pose(
     landmark_name_to_xyz = get_enough_landmarks_to_validate_camera_pose(
         league=league
     )
-    print(camera_pose)
     drawn_on = draw_named_3d_points(
         original_rgb_np_u8=original_rgb_np_u8,
         camera_pose=camera_pose,

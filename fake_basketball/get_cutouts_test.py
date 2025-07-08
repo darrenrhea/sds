@@ -1,3 +1,6 @@
+from get_cutout_dirs_str_for_bal import (
+     get_cutout_dirs_str_for_bal
+)
 import pprint as pp
 from pathlib import Path
 from prii import (
@@ -64,6 +67,33 @@ def test_get_cutouts_1():
         print(f"{kind=}")
         prii(cutout_rgba_np_u8)
 
+
+
+
+def test_get_cutouts_2():
+    asset_repos_dir = Path("/shared/r").expanduser()
+
+    jersey_dir = asset_repos_dir / "jersey_ids"
+
+    cutout_dirs_str = get_cutout_dirs_str_for_bal()
+    cutout_dirs = [
+        asset_repos_dir / x
+        for x in cutout_dirs_str
+    ]
+
+    cutouts = get_cutouts(
+        sport="basketball",
+        league="nba",
+        jersey_dir=jersey_dir,
+        cutout_dirs=cutout_dirs,
+        diminish_for_debugging=False,
+    )
+    np.random.shuffle(cutouts)
+
+    for cutout in cutouts:
+        prii(cutout.rgba_np_u8)
+
 if __name__ == "__main__":
-    test_get_cutouts_1()
+    # test_get_cutouts_1()
+    test_get_cutouts_2()
     print("get_cutouts_test.py has passed all tests")

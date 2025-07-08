@@ -1,11 +1,13 @@
-import sys
+from typing import Optional
+from convert_new_parametrization import (
+     convert_new_parametrization
+)
 from get_file_path_of_sha256 import (
      get_file_path_of_sha256
 )
 import better_json as bj
 from CameraParameters import CameraParameters
 
-import pprint
 
 # this is memoization of loading the large jsonlines files:
 clip_id_to_camera_poses_and_index_offset = dict()
@@ -14,7 +16,7 @@ clip_id_to_camera_poses_and_index_offset = dict()
 def get_camera_pose_from_clip_id_and_frame_index(
     clip_id,
     frame_index
-):
+) -> Optional[CameraParameters]:
     """
     If you specify a clip_id and a frame_index, this function will return the camera pose at that frame.
     """
@@ -31,7 +33,9 @@ def get_camera_pose_from_clip_id_and_frame_index(
         "slday4game1": ("91750a91a9d7f8af6bcfb5785764e4b92eb89cb0b01c45471e1ad8c36af658d5", 0),
         "slday5game1": ("8ecd2cde593e98b536abdce358be9f2b6e9709f590ac332a9aacd2d4777df39d", 0),
         "slday6game1": ("8c2001da8488ab118b3c4c813c561f02350a5130e4687f4e23574ac138399db6", 0),
-        "slday7game1": ("b8dedf1158e942a80580843dcf58b720b4a06bbc3bec0979c1b3d227c1d84547", 0), # maybe d06313adb047b31105543aba162be23ce91a0679cb63cbb686f3e8d6796c100e
+        # "slday7game1": ("b8dedf1158e942a80580843dcf58b720b4a06bbc3bec0979c1b3d227c1d84547", 0),
+        # "slday7game1": ("d06313adb047b31105543aba162be23ce91a0679cb63cbb686f3e8d6796c100e", 0),
+        "slday7game1": ("80dd806d5b9968686fd2ab76ad74121012089559d3eaaefb36c60b8907da227b", 0),  # chaz tracked this 2024-10-19
         "slday8game1": ("1d02e8dcf506e76468a4bb8745be3d025cd48c56c58bf423dbc7620bcc8e3495", 0),  # chaz redid it.
         # "slday8game1": ("81d5fddcaa9969638276e3b0696d48edb6d9faf742901b7eff3127972f80a637", 0),  # chaz did this one
         "slday9game1": ("080911f9b3a002b3d15d6b7e8931474ed90e6118cde8a5eeadbbd0575f627394", 0),
@@ -69,14 +73,10 @@ def get_camera_pose_from_clip_id_and_frame_index(
         camera_poses = bj.load_jsonlines(
             jsonlines_path=jsonlines_path
         )
-        index = 1070
-        print(f"{index=}")
-        pprint.pprint(camera_poses[index])
-        # sys.exit(0)
-        # print("Finished loading the jsonlines file.")
+        
         if clip_id == "bal2024_senegal":
             camera_poses = [
-                convert(x) for x in camera_poses
+                convert_new_parametrization(x) for x in camera_poses
             ]
 
         clip_id_to_camera_poses_and_index_offset[clip_id] = (camera_poses, index_offset)
@@ -87,10 +87,9 @@ def get_camera_pose_from_clip_id_and_frame_index(
     
     camera_pose = camera_poses[mathieu_frame_index]
     
-    pprint.pprint(
-        camera_pose
-    )
     if "rod" in camera_pose:
+        if camera_pose["rod"] == [0.0, 0.0, 0.0]:
+            return None
         camera_pose = CameraParameters(
             rod=camera_pose["rod"],
             loc=camera_pose["loc"],

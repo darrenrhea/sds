@@ -191,27 +191,3 @@ def get_cutouts(
         assert kind_to_count["pitcher"] >= 1, "no pitchers found?"
     return cutouts
 
-
-if __name__ == "__main__":
-     
-    asset_repos_dir = Path("/shared/r").expanduser()
-
-    jersey_dir = asset_repos_dir / "jersey_ids"
-
-    cutout_dirs_str = get_cutout_dirs_str_for_bal()
-    cutout_dirs = [
-        asset_repos_dir / x
-        for x in cutout_dirs_str
-    ]
-
-    cutouts = get_cutouts(
-        sport="basketball",
-        league="nba",
-        jersey_dir=jersey_dir,
-        cutout_dirs=cutout_dirs,
-        diminish_for_debugging=False,
-    )
-    np.random.shuffle(cutouts)
-
-    for cutout in cutouts:
-        prii(cutout.rgba_np_u8)
