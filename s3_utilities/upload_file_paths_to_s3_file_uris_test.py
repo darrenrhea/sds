@@ -41,7 +41,7 @@ def test_upload_file_paths_to_s3_file_uris_1():
        max_workers=100
     )
     stop = time.time()
-    print(f"Elapsed time: {stop - start} seconds to upload {num_files} Megabytes")
+    print(f"Elapsed time: {stop - start} seconds to upload {num_files} files.")
 
 
 if __name__ == "__main__":
