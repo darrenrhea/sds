@@ -22,7 +22,8 @@ def make_evaluation_video(
     fps: float,
     what_is_normal_color: str,
     out_video_file_path: Path,
-    fill_color: str
+    fill_color: str,
+    draw_frame_numbers: bool,
 ):  
     """
     Suppose you already have video frames blown out into a directory called
@@ -102,8 +103,14 @@ def make_evaluation_video(
 
     last_mask_image = masks_dir / f"{clip_id}_{last_frame_index:06d}_{model_id}.png"
     assert last_mask_image.is_file(), f"ERROR: {last_mask_image=} is not an extant file!"
+    
+    crf_str = "22"
 
     if what_is_normal_color == "foreground":
+        if draw_frame_numbers:
+            complex_filter_str = f"[1][0]alphamerge[fg];[1]eq=contrast=-1.0:brightness=0.2[lowcont];[lowcont]colorchannelmixer={matrix_coefficients}[green];[green][fg]overlay[final];[final]drawtext=fontfile={font_file_path}: text='%{{frame_num}}': start_number={first_frame_index}: x=w-tw: y=3*lh: fontcolor=yellow: fontsize=50: box=1: boxcolor=black: boxborderw=5"
+        else:
+            complex_filter_str = f"[1][0]alphamerge[fg];[1]eq=contrast=-1.0:brightness=0.2[lowcont];[lowcont]colorchannelmixer={matrix_coefficients}[green];[green][fg]overlay"
         # https://superuser.com/questions/1330300/need-a-detail-explanation-for-ffmpeg-colorchannelmixer
         args = [
             str(ffmpeg),
@@ -124,13 +131,13 @@ def make_evaluation_video(
             "-frames",
             str(num_frames),
             "-filter_complex",
-            f"[1][0]alphamerge[fg];[1]eq=contrast=-1.0:brightness=0.2[lowcont];[lowcont]colorchannelmixer={matrix_coefficients}[green];[green][fg]overlay[final];[final]drawtext=fontfile={font_file_path}: text='%{{frame_num}}': start_number={first_frame_index}: x=w-tw: y=3*lh: fontcolor=yellow: fontsize=50: box=1: boxcolor=black: boxborderw=5",
+            complex_filter_str,
             "-vcodec",
             "libx264",
             "-pix_fmt",
             "yuv420p",
             "-crf",
-            "22",
+            crf_str,
             str(out_video_file_path),
         ]
 
@@ -139,6 +146,10 @@ def make_evaluation_video(
         print(Style.RESET_ALL)
     
     elif what_is_normal_color == "background":
+        if draw_frame_numbers:
+            complex_filter_str = f"[0]lut=c0=negval[flipped];[1][flipped]alphamerge[fg];[1]eq=contrast=-1.0:brightness=0.2[lowcont];[lowcont]colorchannelmixer={matrix_coefficients}[green];[green][fg]overlay[final];[final]drawtext=fontfile={font_file_path}: text='%{{frame_num}}': start_number={first_frame_index}: x=w-tw: y=lh: fontcolor=yellow: fontsize=50: box=1: boxcolor=black: boxborderw=5"
+        else:
+            complex_filter_str = f"[0]lut=c0=negval[flipped];[1][flipped]alphamerge[fg];[1]eq=contrast=-1.0:brightness=0.2[lowcont];[lowcont]colorchannelmixer={matrix_coefficients}[green];[green][fg]overlay"
 
         args = [
             str(ffmpeg),
@@ -159,14 +170,13 @@ def make_evaluation_video(
             "-frames",
             str(num_frames),
             "-filter_complex",
-            # TODO: do textwrap.dedent on the next line.
-            f"[0]lut=c0=negval[flipped];[1][flipped]alphamerge[fg];[1]eq=contrast=-1.0:brightness=0.2[lowcont];[lowcont]colorchannelmixer={matrix_coefficients}[green];[green][fg]overlay[final];[final]drawtext=fontfile={font_file_path}: text='%{{frame_num}}': start_number={first_frame_index}: x=w-tw: y=lh: fontcolor=yellow: fontsize=50: box=1: boxcolor=black: boxborderw=5",
+            complex_filter_str,
             "-vcodec",
             "libx264",
             "-pix_fmt",
             "yuv420p",  # why was there a j in there???
             "-crf",
-            "18",
+            crf_str,
             str(out_video_file_path),
         ]
 

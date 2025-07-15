@@ -41,6 +41,12 @@ def new_make_batch_videos():
     triplets = bj.load(json_file_path)
     assert isinstance(triplets, list), f"{triplets=} is not a list"
 
+    what_is_normal_color = "foreground"
+    # what_is_normal_color = "background"
+    # fill_color = "black"
+    fill_color = "green"
+    draw_frame_numbers = True
+
     for triplet in triplets:
         assert isinstance(triplet, list), f"{triplet=} is not a list"
         assert len(triplet) == 3, f"{triplet=} does not have 3 elements"
@@ -78,9 +84,7 @@ def new_make_batch_videos():
         frames_dir = mother_dir_of_frames_dir / "clips" / clip_id / "frames"
         masks_dir = shared_dir / "inferences"
 
-        what_is_normal_color = "foreground"
-        # what_is_normal_color = "background"
-        fill_color = "green"
+       
         
         out_video_file_path = shared_dir / "show_n_tell" / f"{clip_id}_from_{first_frame_index}_to_{last_frame_index}_{final_model_id}_{what_is_normal_color}_fill{fill_color}.mp4"
 
@@ -96,7 +100,8 @@ def new_make_batch_videos():
             fps=fps,
             what_is_normal_color=what_is_normal_color,
             fill_color=fill_color,
-            out_video_file_path=out_video_file_path
+            out_video_file_path=out_video_file_path,
+            draw_frame_numbers=draw_frame_numbers,
         )
 
         out_video_file_paths.append(out_video_file_path)

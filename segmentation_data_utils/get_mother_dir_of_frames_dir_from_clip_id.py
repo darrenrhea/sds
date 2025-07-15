@@ -55,6 +55,15 @@ def get_mother_dir_of_frames_dir_from_clip_id(
         "slday6game1": "/shared",
         "slday8game1": "/shared",
         "slday9game1": "/shared",
+        "slday10game1": "/shared",
+        "nfl_clip1": "/shared",
+        "sl_2025-07-10_calib": "/shared",
+        "sl_2025-07-10_game_1": "/shared",
+        "sl-nop-min-2025-07-10-sdi": "/shared",
+        "sl-nop-min-2025-07-10-sdi422": "/shared",
+        "sl-2025-07-10-sdi": "/shared",
+        "sl-2025-07-11-sdi": "/media/drhea/bob",
+
     }
     if clip_id in clip_id_to_folder:
         mother_dir_of_frames_dir  = Path(clip_id_to_folder[clip_id])
