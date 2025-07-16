@@ -13,7 +13,7 @@ from typing import List, Tuple
 
 def infer_arbitrary_frames(
     final_model_id: str,
-    list_of_input_and_output_file_paths:List[Tuple[Path, Path]]
+    list_of_input_and_output_file_paths: List[Tuple[Path, Path]]
 ):
     """
     Given a final_model_id

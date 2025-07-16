@@ -15,10 +15,12 @@ setup(
         "infer_arbitrary_frames",
         "infer_arbitrary_frames_from_a_clip",
         "infer_from_id",
+        "m94y_infer_clip_id_frame_index_pairs_under_this_model",
         "make_frame_ranges_file",
         "parallel_infer3",
         "parse_cli_args_for_inferers",
         "segment_thread",
+        "wj81_infer_clip_id_frame_index_pairs_under_these_models",
     ],
     license="MIT",
     long_description=open('README.md').read(),
@@ -29,6 +31,7 @@ setup(
         "console_scripts": [
             "infer = infer_cli_tool:infer_cli_tool",
             "isf_infer_specific_frames = isf_infer_specific_frames_cli_tool:isf_infer_specific_frames_cli_tool",
+            "jk59_infer_clip_id_frame_index_pairs_under_these_models = jk59_infer_clip_id_frame_index_pairs_under_these_models_cli_tool:jk59_infer_clip_id_frame_index_pairs_under_these_models_cli_tool",
         ],
     },
 )
