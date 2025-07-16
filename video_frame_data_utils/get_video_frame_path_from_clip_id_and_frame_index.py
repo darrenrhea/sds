@@ -87,13 +87,14 @@ def get_video_frame_path_from_clip_id_and_frame_index(
         "rabat": ("lam", "/hd2"),
         "nfl-59778-skycam": ("lam", "/hd2"),
         "okstfull": ("lam", "/home/drhea/awecom/data", ".jpg"),
+        "sl-2025-07-10-sdi": ("lam", "/shared"),
     }
 
     if clip_id not in clip_id_to_machine_and_dir:
         print(
             f"{Fore.YELLOW}WARNING:{clip_id=} not in {clip_id_to_machine_and_dir=}{Style.RESET_ALL}"
         )
-        print("edit ~/r/video_frame_data_utils/get_video_frame_path_from_clip_id_and_frame_index.py")
+        print("edit sds/video_frame_data_utils/get_video_frame_path_from_clip_id_and_frame_index.py")
         sys.exit(1)
 
  
