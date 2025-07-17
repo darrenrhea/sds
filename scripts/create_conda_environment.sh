@@ -33,7 +33,8 @@ then
     pytorch_package='pytorch::pytorch'
 else    
     echo "We seem to be on Linux"
-    pytorch_package='pytorch-cuda=12.1'
+    pytorch_package='pytorch-cuda=12.4'
+    # added advantage of 12.4 is that you get cuDNN 9.x
 fi
 
 conda create -y \
