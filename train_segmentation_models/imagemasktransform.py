@@ -1,7 +1,7 @@
 from colorama import Fore, Style
 import random
 import warnings
-from typing import Any, Dict, List, Sequence, Tuple, Union
+from typing import Any, Dict, List, Sequence, Tuple
 
 import cv2
 import numpy as np
@@ -14,7 +14,6 @@ from albumentations.core.transforms_interface import (
     to_tuple,
 )
 
-MyScaleInt = Union[int, Tuple[int, int]]
 
 from create_psf import create_trajectory, create_psfs
 

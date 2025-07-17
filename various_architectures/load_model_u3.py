@@ -8,7 +8,15 @@ from get_model_state_dict import (
 import torch
 
 
-def load_model_u3(backbone, path=None, num_class = 2, version = 1, multigpu = False, in_channels=3):
+def load_model_u3(
+        backbone,
+        path=None,
+        num_class = 2,
+        version = 1,
+        multigpu = False,
+        in_channels=3,
+        transpose_final=False
+):
 
     model, _ = construct_model_u3(backbone, in_channels=in_channels, num_class = num_class, include_classification = False, return_features = False)
 

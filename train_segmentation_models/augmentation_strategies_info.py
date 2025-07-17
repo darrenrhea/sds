@@ -12,6 +12,7 @@ valid_augmentation_strategy_ids = [
     "felix3",
     "someblur",
     "wednesday",
+    "aug_2025-07-12",
     "gamma",
     "imagemaskmotionblur",
     "sunday",

@@ -1,3 +1,4 @@
+import sys
 from offscreen_is_labelled_as_jetblack_wrapper import (
      offscreen_is_labelled_as_jetblack_wrapper
 )
@@ -123,20 +124,31 @@ def get_training_augmentation(
             A.ISONoise(color_shift=(0.01, 0.03), intensity=(0.1, 0.2), p=0.1),
         ]
        
+    elif augmentation_id == "aug_2025-07-12":
+        train_transform = [
+            A.RandomBrightnessContrast(
+                brightness_limit=(-0.02, 0.10),
+                contrast_limit=(-0.00001, 0.00001),  # turn it off
+                p=0.95,
+            ),
+            A.RGBShift(r_shift_limit=12, g_shift_limit=12, b_shift_limit=12, p=0.5),
+            A.ISONoise(color_shift=(0.01, 0.03), intensity=(0.1, 0.2), p=0.1),
+        ]
+
     elif augmentation_id == "wednesday":
         train_transform = [
             # A.HorizontalFlip(p = 0.2),
-            A.Compose([
-                A.RandomScale(scale_limit=(0, 0.2), interpolation=cv2.INTER_LINEAR, p = 1.0),
-                A.PadIfNeeded(min_height=frame_height, min_width=frame_width, p = 1.0),
-                A.RandomCrop(height=frame_height, width=frame_width, p = 1.0),
-            ], p = 0.2),
+            # A.Compose([
+            #     A.RandomScale(scale_limit=(0, 0.2), interpolation=cv2.INTER_LINEAR, p = 1.0),
+            #     A.PadIfNeeded(min_height=frame_height, min_width=frame_width, p = 1.0),
+            #     A.RandomCrop(height=frame_height, width=frame_width, p = 1.0),
+            # ], p = 0.2),
             # ImageMaskMotionBlur(blur_limit = (9, 31), p_class=0.5, allow_shifted = False, p = 1.0),
             A.RandomBrightnessContrast(brightness_limit=(-0.2, 0.2), contrast_limit=(-0.2, 0.2), p = 0.3),
             A.RGBShift(r_shift_limit=12, g_shift_limit=12, b_shift_limit=12, p=0.1),
             A.ISONoise(color_shift=(0.01, 0.03), intensity=(0.1, 0.2), p=0.1),
         ]
-        
+                
     elif augmentation_id == "forflat":
         train_transform = [
             A.RandomBrightnessContrast(brightness_limit=(-0.1, 0.2), contrast_limit=(-0.2, 0.2), p = 0.3),

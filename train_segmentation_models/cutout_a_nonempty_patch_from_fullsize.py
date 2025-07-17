@@ -16,6 +16,9 @@ def cutout_a_nonempty_patch_from_fullsize(
     Then this function cuts out a patch of size patch_height x patch_width from fullsize_image_np_u8
     If fullsize_image_np_u8 is the patch_size, then this function just returns fullsize_image_np_u8.
     """
+    onscreen_channel_index = 4  # the relevance mask, select patches that are somewhat onscreen
+    onscreen_channel_index = 3  # the answer, select patches with nonconstant answer
+
     assert (
         np.sum(
             fullsize_image_np_u8[:, :, onscreen_channel_index].astype(np.int64)
@@ -27,8 +30,12 @@ def cutout_a_nonempty_patch_from_fullsize(
             patch_height=patch_height,
             fullsize_image_np_u8=fullsize_image_np_u8
         )
-        if np.any(patch[:, :, onscreen_channel_index] > 0):
-            return patch
+        if np.any(patch[:, :, onscreen_channel_index] < 64):
+            answer = patch
+            break
+    
+    # prii(answer[:, :, :4])
+    return answer
         
   
 

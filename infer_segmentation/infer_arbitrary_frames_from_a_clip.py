@@ -1,4 +1,3 @@
-import textwrap
 from get_original_path import (
      get_original_path
 )
@@ -26,13 +25,14 @@ from typing import List, Tuple, Union, Optional
 def infer_arbitrary_frames_from_a_clip(
     final_model_id: str,
     clip_id: str,
+    clip_mother_dir: Path,
     original_suffix: str,
     frame_ranges: List[
         Union[
-            int,  # for a single frame
-            Tuple[int, int],  # for a range of frames
-            Tuple[int, int, int],  # for a range of frames with a step
-        ],
+            int,
+            Tuple[int, int],
+            Tuple[int, int, int]
+        ]
     ],
     model_id_or_other_suffix: str,
     print_in_terminal: bool = False,
@@ -49,25 +49,17 @@ def infer_arbitrary_frames_from_a_clip(
     infer the frames from that clip under that model.
     """
     if rgba_out_dir is not None:
-        assert (
-            rgba_out_dir.is_dir()
-        ), textwrap.dedent(
-            f"""\
-                {rgba_out_dir=}
-                is not a directory, and we dont make directories.
-                Suggest you make it yourself then try again.
-            """
-        )
+        assert rgba_out_dir.is_dir(), f"{rgba_out_dir=} is not a directory, and we dont make directories.  Suggest you make it yourself."
 
     frame_ranges_file_path = make_frame_ranges_file(
         clip_id=clip_id,
+        clip_mother_dir=clip_mother_dir,
         original_suffix=original_suffix,
         frame_ranges=frame_ranges
     )
 
-
     # shared_dir = get_the_large_capacity_shared_directory()
-    shared_dir = "/shared"
+    shared_dir = Path("/shared")
     output_dir = shared_dir / "inferences"
 
     infer_from_id(
